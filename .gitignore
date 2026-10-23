@@ -8,7 +8,7 @@ pnpm-debug.log*
 
 # Dependencies
 node_modules/
-package-lock.json* # (Optional: Only ignore if you are strictly using yarn/pnpm instead of npm)
+# package-lock.json* # Keep tracked so npm packages match exactly on both machines
 
 # Vite / Build Output
 dist/
