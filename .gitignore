@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependencies
+node_modules/
+package-lock.json* # (Optional: Only ignore if you are strictly using yarn/pnpm instead of npm)
+
+# Vite / Build Output
+dist/
+dist-ssr/
+*.local
+
+# Environment Variables (CRITICAL: Never commit secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor / OS files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+Thumbs.db
+
+# TypeScript Cache
+*.tsbuildinfo
+
+# Testing
+coverage/
