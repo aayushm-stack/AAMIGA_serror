@@ -1,35 +1,14 @@
 import React, { useState } from 'react';
 import { SadhanaMobile } from './SadhanaMobile';
 import { InterceptorMobile } from './InterceptorMobile';
-export { SadhanaMobile, InterceptorMobile };
+import { CompassMobile } from './CompassMobile';
+export { SadhanaMobile, InterceptorMobile, CompassMobile };
 
 export type FeatureTab = 'sadhana' | 'interceptor' | 'compass';
 
 export interface FeaturesPageProps {
   className?: string;
 }
-
-/**
- * Placeholder for Bhava Compass mobile view (Yoga Sutra 1.33 Chitta Prasadanam).
- */
-export const CompassMobile: React.FC = () => {
-  return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
-        <h3 className="text-base font-bold text-slate-900">
-          Bhava Compass (YS 1.33)
-        </h3>
-      </div>
-      <p className="text-xs text-slate-500 leading-relaxed">
-        Patanjali&apos;s 4-fold emotional attitude prescriptions: Maitri (friendliness), Karuna (compassion), Mudita (delight), and Upeksha (equanimity).
-      </p>
-      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
-        &lt;CompassMobile /&gt; component placeholder ready for modular controls.
-      </div>
-    </div>
-  );
-};
 
 /**
  * Shell component for the Features view with horizontal scrolling tab menu
