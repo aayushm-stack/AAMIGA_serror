@@ -47,10 +47,10 @@ export interface FourteenDayTrendPoint {
 }
 
 /**
- * Assigns stepped time-weight (w_i) to an entry based on time of day:
- * - Morning: 1.0 (w_i = 1.0)
- * - Afternoon: 1.5 (w_i = 1.5)
- * - Evening / Final recovery: 2.0 (w_i = 2.0, rewarding users who recover discipline by the end of the day)
+ * Assigns stepped time-weights (w_i) to an entry based on time of day:
+ * - Morning logs: weight w = 1.0
+ * - Afternoon logs: weight w = 1.5
+ * - Evening / Final recovery logs: weight w = 2.0 (rewarding users who recover discipline by the end of the day)
  */
 export function getTimeOfDayWeight(
   log: SadhanaLogInput,
@@ -65,7 +65,7 @@ export function getTimeOfDayWeight(
     return log.timeWeight;
   }
 
-  // 2. Explicit timeOfDay / slot / period string
+  // 2. Explicit timeOfDay / slot / period descriptor
   const period = String(log.timeOfDay || log.slot || log.period || '').toLowerCase();
   if (
     period.includes('morn') ||
@@ -93,7 +93,7 @@ export function getTimeOfDayWeight(
     return 2.0;
   }
 
-  // 3. Timestamp / createdAt / date with ISO time (24-hour scale)
+  // 3. Timestamp / createdAt / recordedAt / ISO string (24-hour clock)
   const rawTime =
     log.timestamp ||
     log.createdAt ||
@@ -104,13 +104,13 @@ export function getTimeOfDayWeight(
     const d = new Date(rawTime);
     if (!isNaN(d.getTime())) {
       const hour = d.getHours();
-      if (hour < 12) return 1.0; // Morning (<12:00)
+      if (hour < 12) return 1.0; // Morning (< 12:00)
       if (hour < 17) return 1.5; // Afternoon (12:00 - 16:59)
-      return 2.0; // Evening / Night / Final (>=17:00)
+      return 2.0; // Evening / Night / Final (>= 17:00)
     }
   }
 
-  // 4. Fallback based on chronological step order within the day
+  // 4. Chronological sequence fallback within the day
   if (totalLogsInDay <= 1) {
     return 1.0;
   }
@@ -143,28 +143,29 @@ function extractLogScore(log: SadhanaLogInput): number {
  * Calculates the consolidated Daily Equilibrium score (E_daily) for a specific calendar date.
  * Supports multiple logs per day using a stepped time-weighted average:
  *
- *   Morning logs: weight (w_i) = 1.0
- *   Afternoon logs: weight (w_i) = 1.5
- *   Evening/Final logs: weight (w_i) = 2.0 (rewarding users who recover discipline by the end of the day)
+ *   Morning logs: weight w = 1.0
+ *   Afternoon logs: weight w = 1.5
+ *   Evening/Final logs: weight w = 2.0 (rewarding users who recover discipline by the end of the day)
  *
- * Mathematical logic:
+ * Mathematical formula:
+ *   E_daily = Sum of (Score * weight) / Sum of weights
  *   \[ E_{daily} = \frac{\sum (S_i \cdot w_i)}{\sum w_i} \]
  *
  * @param logs Array of daily Trayopastambha logs or entries.
- * @param targetDate The specific calendar date ('YYYY-MM-DD'). If omitted, defaults to the log date or today.
+ * @param targetDate The specific calendar date ('YYYY-MM-DD'). Defaults to log date or today.
  * @returns Single consolidated E_daily score for that specific calendar date.
  */
 export function calculateDailyEquilibrium(
-  logs: SadhanaLogInput[],
+  logs: SadhanaLogInput[] | SadhanaLogInput,
   targetDate?: string
 ): number;
 export function calculateDailyEquilibrium(
   targetDate: string,
-  logs: SadhanaLogInput[]
+  logs: SadhanaLogInput[] | SadhanaLogInput
 ): number;
 export function calculateDailyEquilibrium(
-  param1: SadhanaLogInput[] | string,
-  param2?: string | SadhanaLogInput[]
+  param1: SadhanaLogInput[] | SadhanaLogInput | string,
+  param2?: string | SadhanaLogInput[] | SadhanaLogInput
 ): number {
   let logs: SadhanaLogInput[] = [];
   let targetDate: string | undefined;
@@ -174,7 +175,16 @@ export function calculateDailyEquilibrium(
     targetDate = typeof param2 === 'string' ? param2 : undefined;
   } else if (typeof param1 === 'string') {
     targetDate = param1;
-    logs = Array.isArray(param2) ? param2 : [];
+    if (Array.isArray(param2)) {
+      logs = param2;
+    } else if (param2 && typeof param2 === 'object') {
+      logs = [param2 as SadhanaLogInput];
+    } else {
+      logs = [];
+    }
+  } else if (param1 && typeof param1 === 'object') {
+    logs = [param1 as SadhanaLogInput];
+    targetDate = typeof param2 === 'string' ? param2 : undefined;
   }
 
   if (!logs || logs.length === 0) {
@@ -193,7 +203,7 @@ export function calculateDailyEquilibrium(
 
   const normalizedTargetDate = targetDate.slice(0, 10);
 
-  // Filter logs for that specific calendar date
+  // Filter logs strictly for that specific calendar date
   const dayLogs = logs.filter((log) => {
     if (!log) return false;
     if (log.date) {
@@ -218,25 +228,25 @@ export function calculateDailyEquilibrium(
     return 0;
   }
 
-  // Calculate weighted average: E_daily = \sum (S_i * w_i) / \sum w_i
+  // Calculate weighted average: E_daily = Sum of (Score * weight) / Sum of weights
   let weightedSum = 0;
   let totalWeight = 0;
 
   for (let i = 0; i < dayLogs.length; i++) {
     const log = dayLogs[i];
-    const s_i = extractLogScore(log);
-    const w_i = getTimeOfDayWeight(log, i, dayLogs.length);
+    const score = extractLogScore(log);
+    const weight = getTimeOfDayWeight(log, i, dayLogs.length);
 
-    weightedSum += s_i * w_i;
-    totalWeight += w_i;
+    weightedSum += score * weight;
+    totalWeight += weight;
   }
 
   if (totalWeight === 0) {
     return 0;
   }
 
-  const eDaily = weightedSum / totalWeight;
-  return Math.round(eDaily * 100) / 100;
+  const finalScore = weightedSum / totalWeight;
+  return Math.round(finalScore);
 }
 
 /**
