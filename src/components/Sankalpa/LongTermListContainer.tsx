@@ -134,13 +134,13 @@ export const LongTermListContainer: React.FC<LongTermListContainerProps> = ({
                               ? 'line-through decoration-red-800 decoration-2 text-red-900 bg-red-100/50 border-red-300 cursor-not-allowed'
                               : isPendingAdd
                               ? 'font-bold text-emerald-950 bg-white border-emerald-400 focus:ring-emerald-600/40'
-                              : 'font-serif italic text-charcoal bg-white border-[#E2E8F0] focus:ring-sage/40'
+                              : 'font-medium text-charcoal bg-white border-[#E2E8F0] focus:ring-sage/40'
                           }`}
                         />
                       </div>
                     ) : (
-                      <p className="text-sm font-serif italic text-charcoal/90 leading-relaxed font-medium">
-                        “{goal.text}”
+                      <p className="text-sm leading-snug font-medium text-charcoal">
+                        {goal.text}
                       </p>
                     )}
                   </div>
