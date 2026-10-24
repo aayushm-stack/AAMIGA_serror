@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { computeYuktaScore } from '../../engine/yuktaEngine';
 import { GunaType } from '../../types/iks';
-import { Utensils, Moon, Zap, BookOpen, Sparkles, CheckCircle2, Heart } from 'lucide-react';
+import { Utensils, Moon, Zap, BookOpen, Sparkles, CheckCircle2, Heart, ChevronDown, Check } from 'lucide-react';
 
 export interface SadhanaMobileProps {
   className?: string;
@@ -14,6 +14,111 @@ export interface SadhanaMobileProps {
  * Designed with compassionate, non-judgmental guidance for daily self-observation
  * based on Charaka Samhita 11.35 and Gita 6.17 Yukta moderation.
  */
+interface DropdownOption<T extends string> {
+  value: T;
+  label: string;
+}
+
+interface SadhanaDropdownProps<T extends string> {
+  value: T;
+  onChange: (val: T) => void;
+  options: DropdownOption<T>[];
+  className?: string;
+}
+
+/**
+ * Custom Dropdown Menu for Sadhana Hub.
+ * Features:
+ * - Rounded-xl (12px) container with subtle drop shadow
+ * - 6px internal padding preventing options from touching borders
+ * - Rounded-lg (8px) floating pill list items with modern hover highlight
+ */
+function SadhanaDropdown<T extends string>({
+  value,
+  onChange,
+  options,
+  className = '',
+}: SadhanaDropdownProps<T>) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
+  const selectedOption = options.find((opt) => opt.value === value) || options[0];
+
+  return (
+    <div ref={dropdownRef} className={`relative w-full ${className}`}>
+      {/* Dropdown Trigger Box */}
+      <button
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        style={{ borderRadius: '12px' }}
+        className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 flex items-center justify-between text-left focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition cursor-pointer shadow-2xs hover:border-slate-400"
+      >
+        <span className="truncate pr-2 font-medium">{selectedOption.label}</span>
+        <ChevronDown
+          className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
+            isOpen ? 'rotate-180 text-emerald-800' : ''
+          }`}
+        />
+      </button>
+
+      {/* Main Dropdown Menu Container: rounded-xl (12px), subtle drop shadow, internal padding */}
+      {isOpen && (
+        <div
+          role="listbox"
+          style={{
+            borderRadius: '12px',
+            padding: '6px',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
+          }}
+          className="absolute left-0 right-0 z-50 mt-1.5 bg-white border border-slate-200/90 rounded-xl shadow-lg p-1.5 space-y-1 max-h-64 overflow-y-auto"
+        >
+          {options.map((option) => {
+            const isSelected = option.value === value;
+            return (
+              <div
+                key={option.value}
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                style={{ borderRadius: '8px' }}
+                className={`w-full px-3 py-2 text-xs rounded-lg cursor-pointer transition-all duration-150 flex items-center justify-between gap-2 select-none hover:bg-emerald-50/90 hover:text-emerald-950 ${
+                  isSelected
+                    ? 'bg-emerald-50 text-emerald-900 font-semibold'
+                    : 'text-slate-700'
+                }`}
+              >
+                <span className="leading-relaxed">{option.label}</span>
+                {isSelected && (
+                  <Check className="w-3.5 h-3.5 text-emerald-700 flex-shrink-0" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) => {
   const { todayLog, addOrUpdateDailyLog, openShastraLens } = useBrahmaPath();
 
@@ -208,17 +313,15 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
               <label className="block text-xs font-medium text-slate-700">
                 Nourishment Quality
               </label>
-              <select
+              <SadhanaDropdown
                 value={nutritionQuality}
-                onChange={(e) =>
-                  setNutritionQuality(e.target.value as 'Sattvic' | 'Rajasic' | 'Tamasic')
-                }
-                className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
-              >
-                <option value="Sattvic">Sattvic (Fresh, light, wholesome, peaceful energy)</option>
-                <option value="Rajasic">Rajasic (Pungent, highly stimulating, spicy, restless)</option>
-                <option value="Tamasic">Tamasic (Heavy, processed, stale, sluggish)</option>
-              </select>
+                onChange={(val) => setNutritionQuality(val)}
+                options={[
+                  { value: 'Sattvic', label: 'Sattvic (Fresh, light, wholesome, peaceful energy)' },
+                  { value: 'Rajasic', label: 'Rajasic (Pungent, highly stimulating, spicy, restless)' },
+                  { value: 'Tamasic', label: 'Tamasic (Heavy, processed, stale, sluggish)' },
+                ]}
+              />
             </div>
           </div>
         </div>
@@ -251,19 +354,15 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
               <label className="block text-xs font-medium text-slate-700">
                 Quality of Rest
               </label>
-              <select
+              <SadhanaDropdown
                 value={restQuality}
-                onChange={(e) =>
-                  setRestQuality(
-                    e.target.value as 'Restorative' | 'Disturbed' | 'Lethargic'
-                  )
-                }
-                className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
-              >
-                <option value="Restorative">Surrendered into deep, peaceful sleep (Refreshed &amp; clear)</option>
-                <option value="Disturbed">Fragmented sleep with racing thoughts (Agitated / awakenings)</option>
-                <option value="Lethargic">Heavy, ungrounded grogginess upon waking (Sluggish / drained)</option>
-              </select>
+                onChange={(val) => setRestQuality(val)}
+                options={[
+                  { value: 'Restorative', label: 'Surrendered into deep, peaceful sleep (Refreshed & clear)' },
+                  { value: 'Disturbed', label: 'Fragmented sleep with racing thoughts (Agitated / awakenings)' },
+                  { value: 'Lethargic', label: 'Heavy, ungrounded grogginess upon waking (Sluggish / drained)' },
+                ]}
+              />
             </div>
 
             {/* Hours Slept Number Input */}
@@ -382,15 +481,15 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
               <label className="block text-xs font-medium text-slate-700">
                 Dominant Mental Quality (Observed Guna)
               </label>
-              <select
+              <SadhanaDropdown
                 value={dominantGuna}
-                onChange={(e) => setDominantGuna(e.target.value as GunaType)}
-                className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
-              >
-                <option value="Sattva">Sattva (Calm, lucid, quietly absorbed, harmonious)</option>
-                <option value="Rajas">Rajas (Driven, restless, hyperactive multitasking)</option>
-                <option value="Tamas">Tamas (Fatigued, procrastination, inertia, dullness)</option>
-              </select>
+                onChange={(val) => setDominantGuna(val)}
+                options={[
+                  { value: 'Sattva', label: 'Sattva (Calm, lucid, quietly absorbed, harmonious)' },
+                  { value: 'Rajas', label: 'Rajas (Driven, restless, hyperactive multitasking)' },
+                  { value: 'Tamas', label: 'Tamas (Fatigued, procrastination, inertia, dullness)' },
+                ]}
+              />
             </div>
           </div>
         </div>
