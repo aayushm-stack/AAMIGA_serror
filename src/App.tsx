@@ -23,10 +23,11 @@ import {
   FeaturesPage,
   ShastraLensDrawer,
   SettingsModal,
+  SankalpaHub,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
 
-type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness';
+type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa';
 
 /**
  * Main application content bound to the global IKS context and unified navigation.
@@ -92,8 +93,10 @@ function MainContent() {
       ) : (
         /* ================= VIEW 2: PRODUCTION MOBILE-FIRST UI ================= */
         <AppLayout>
-          {/* Top Bar with culturally aligned Sankalpa icon and isolated Settings trigger */}
+          {/* Top Bar with clickable Personalised Centre / Sankalpa icon and isolated Settings trigger */}
           <TopBar
+            onSankalpaClick={() => setActiveTab(activeTab === 'sankalpa' ? 'home' : 'sankalpa')}
+            isSankalpaActive={activeTab === 'sankalpa'}
             onSettingsClick={() => setIsSettingsOpen(true)}
           />
 
@@ -135,6 +138,13 @@ function MainContent() {
             {activeTab === 'breathe' && (
               <div className="space-y-4">
                 <BreathePage />
+              </div>
+            )}
+
+            {/* 5. SANKALPA VIEWPORT (Personalised Intentions & Goals) */}
+            {activeTab === 'sankalpa' && (
+              <div className="space-y-4">
+                <SankalpaHub onOpenShastraLens={openShastraLens} />
               </div>
             )}
           </main>
