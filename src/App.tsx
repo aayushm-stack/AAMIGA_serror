@@ -18,6 +18,7 @@ import {
   DoshaBalancingCard,
   GunaProgressBar,
   DashboardView,
+  VaultPage,
   ShastraLensDrawer,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
@@ -228,48 +229,7 @@ function MainContent() {
 
             {/* 3. VAULT TAB (Analytics & Offline Backup) */}
             {activeTab === 'vault' && (
-              <div className="space-y-4">
-                <div className="border-b border-slate-200 pb-2">
-                  <h2 className="font-serif text-lg font-bold text-charcoal">
-                    Vault &amp; Analytics
-                  </h2>
-                  <p className="text-xs text-charcoal/60">
-                    Equilibrium metrics, trigger analytics, and encrypted storage
-                  </p>
-                </div>
-
-                {/* Milan's Dashboard Analytics View */}
-                <DashboardView
-                  gunaDistribution={gunaDistribution}
-                  onInspectShastra={() => openShastraLens('gunas')}
-                />
-
-                {/* Client-Side Vault Actions */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-3">
-                  <h3 className="font-serif text-sm font-bold text-charcoal">
-                    Data Sovereignty &amp; Offline Backup
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    BrahmaPath runs 100% locally on your device without cloud telemetry.
-                  </p>
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <button
-                      type="button"
-                      onClick={exportPlainJsonBackup}
-                      className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium rounded-xl transition border border-slate-200"
-                    >
-                      Export JSON
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('harness')}
-                      className="py-2 px-3 bg-[#065F46] hover:bg-emerald-800 text-white text-xs font-semibold rounded-xl transition shadow-xs"
-                    >
-                      Encrypted Vault (.bplock)
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <VaultPage />
             )}
 
             {/* 4. BREATHE TAB (Prāṇamaya Kosha Regulation) */}
