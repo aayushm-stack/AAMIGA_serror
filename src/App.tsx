@@ -208,7 +208,9 @@ function MainContent() {
 
                 {!selectedBhavaKey ? (
                   <BhavaCompassGrid
-                    onSelectBhava={(item) => setSelectedBhavaKey(item.key)}
+                    onSelect={(item) => setSelectedBhavaKey(item.key)}
+                    selectedKey={selectedBhavaKey}
+                    onInspectShastra={() => openShastraLens('chitta_prasadanam')}
                   />
                 ) : (
                   <BhavaResultCard
