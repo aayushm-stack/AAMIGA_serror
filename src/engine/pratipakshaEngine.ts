@@ -1,18 +1,21 @@
 import { TriggerCategory, GunaType } from '../types/iks';
 
+export interface ReframeTemplate {
+  vitarkaExample: string;
+  pratipakshaPrompt: string;
+  suggestedReframe: string;
+  defaultMicroSwaps: string[];
+}
+
 /**
  * Pedagogical and cognitive reappraisal templates for each trigger category,
  * implementing Patanjali's Pratipaksha Bhavana (Yoga Sutra 2.33).
  */
-export const TRIGGER_REFRAME_TEMPLATES: Record<
-  TriggerCategory,
-  {
-    vitarkaExample: string;
-    pratipakshaPrompt: string;
-    suggestedReframe: string;
-    defaultMicroSwaps: string[];
-  }
-> = {
+export const TRIGGER_REFRAME_TEMPLATES: Record<TriggerCategory, ReframeTemplate> & {
+  Academic_Anxiety?: ReframeTemplate;
+  Social_Comparison?: ReframeTemplate;
+  Sensory_Craving?: ReframeTemplate;
+} = {
   Doomscrolling: {
     vitarkaExample:
       'Just 5 minutes of reels or outrage feeds to decompress before starting my study session.',
@@ -27,7 +30,7 @@ export const TRIGGER_REFRAME_TEMPLATES: Record<
       'Open one specific academic problem or chapter',
     ],
   },
-  Academic_Anxiety: {
+  'Academic Anxiety': {
     vitarkaExample:
       'Everyone else in the batch is far ahead in placements; I am hopelessly behind and doomed to fail.',
     pratipakshaPrompt:
@@ -41,7 +44,7 @@ export const TRIGGER_REFRAME_TEMPLATES: Record<
       'Step out to the corridor to clear mental tension',
     ],
   },
-  Social_Comparison: {
+  'Social Comparison': {
     vitarkaExample:
       'Browsing peers’ LinkedIn and internship announcements makes my own quiet efforts feel invisible and useless.',
     pratipakshaPrompt:
@@ -69,7 +72,7 @@ export const TRIGGER_REFRAME_TEMPLATES: Record<
       'Drink a cup of warm water or herbal infusion',
     ],
   },
-  Sensory_Craving: {
+  'Cheap Dopamine / Junk Stimulation': {
     vitarkaExample:
       'Under deadline pressure, intensely craving sugary junk snacks, energy drinks, or instant stimulation.',
     pratipakshaPrompt:
@@ -84,6 +87,11 @@ export const TRIGGER_REFRAME_TEMPLATES: Record<
     ],
   },
 };
+
+// Aliases for backwards compatibility with legacy seed data and logs
+TRIGGER_REFRAME_TEMPLATES.Academic_Anxiety = TRIGGER_REFRAME_TEMPLATES['Academic Anxiety'];
+TRIGGER_REFRAME_TEMPLATES.Social_Comparison = TRIGGER_REFRAME_TEMPLATES['Social Comparison'];
+TRIGGER_REFRAME_TEMPLATES.Sensory_Craving = TRIGGER_REFRAME_TEMPLATES['Cheap Dopamine / Junk Stimulation'];
 
 /**
  * Validates user-submitted Vitarka and Pratipaksha texts according to Patanjali's
@@ -100,20 +108,32 @@ export function validatePratipakshaReframe(
   const trimmedVitarka = vitarka.trim();
   const trimmedPratipaksha = pratipaksha.trim();
 
-  if (trimmedVitarka.length < 10 || trimmedPratipaksha.length < 10) {
+  // Basic validation: vitarka cannot be empty
+  if (trimmedVitarka.length < 5) {
     return {
       isValid: false,
       feedback:
-        'Please articulate both the unwholesome impulse (Vitarka) and the wholesome reframe (Pratipaksha) in at least 10 characters to engage cognitive discernment.',
+        'Please articulate the unwholesome urge (Vitarka) clearly (at least 5 characters). Naming the distraction breaks identification.',
+      resultingGuna: 'Tamas',
+    };
+  }
+
+  // Basic validation: pratipaksha cannot be empty
+  if (trimmedPratipaksha.length < 8) {
+    return {
+      isValid: false,
+      feedback:
+        'Please formulate a conscious opposing reframe (Pratipaksha Bhavana). A single word is insufficient to alter neural momentum.',
       resultingGuna: 'Rajas',
     };
   }
 
+  // Check if vitarka and pratipaksha are identical (user just copied or entered gibberish)
   if (trimmedVitarka.toLowerCase() === trimmedPratipaksha.toLowerCase()) {
     return {
       isValid: false,
       feedback:
-        'Yoga Sutra 2.33 requires actively cultivating the opposite wholesome attitude (Pratipaksha), rather than repeating the compulsive impulse.',
+        'The Pratipaksha reframe must actively oppose and neutralize the Vitarka impulse, not merely duplicate it.',
       resultingGuna: 'Rajas',
     };
   }
@@ -121,7 +141,7 @@ export function validatePratipakshaReframe(
   return {
     isValid: true,
     feedback:
-      'Yoga Sutra 2.33 (Vitarka-bādhane pratipakṣa-bhāvanam): By consciously evoking the opposing wholesome understanding, the mental agitation is pacified and Sattvic clarity is restored.',
+      'Cognitive pause verified. The unwholesome impulse has been consciously counter-balanced with Pratipaksha contemplation (YS 2.33).',
     resultingGuna: 'Sattva',
   };
 }

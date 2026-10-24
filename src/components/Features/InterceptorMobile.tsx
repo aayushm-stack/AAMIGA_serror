@@ -18,10 +18,10 @@ export interface InterceptorMobileProps {
 
 const TRIGGER_CATEGORIES: TriggerCategory[] = [
   'Doomscrolling',
-  'Academic_Anxiety',
-  'Social_Comparison',
+  'Academic Anxiety',
+  'Social Comparison',
   'Lethargy',
-  'Sensory_Craving',
+  'Cheap Dopamine / Junk Stimulation',
 ];
 
 /**
@@ -75,10 +75,12 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
     logInterception({
       triggerCategory: selectedTrigger,
       cascadeStageReached: currentStageInfo.stage,
-      initialGuna: urgeIntensity >= 4 ? 'Tamas' : 'Rajas',
+      urgeIntensity,
       vitarkaText,
       pratipakshaText,
+      selectedMicroSwap: selectedSwap,
       microSwapAction: selectedSwap,
+      initialGuna: urgeIntensity >= 4 ? 'Tamas' : 'Rajas',
       resolvedGunaState: validation.resultingGuna,
     });
 

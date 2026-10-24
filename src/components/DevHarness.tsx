@@ -165,10 +165,12 @@ export function DevHarness() {
     logInterception({
       triggerCategory: selectedTrigger,
       cascadeStageReached: currentStageInfo.stage,
-      initialGuna: urgeIntensity >= 4 ? 'Tamas' : 'Rajas',
+      urgeIntensity,
       vitarkaText,
       pratipakshaText,
+      selectedMicroSwap: selectedSwap,
       microSwapAction: selectedSwap,
+      initialGuna: urgeIntensity >= 4 ? 'Tamas' : 'Rajas',
       resolvedGunaState: validation.resultingGuna,
     });
 
@@ -640,10 +642,10 @@ export function DevHarness() {
                 {(
                   [
                     'Doomscrolling',
-                    'Academic_Anxiety',
-                    'Social_Comparison',
+                    'Academic Anxiety',
+                    'Social Comparison',
                     'Lethargy',
-                    'Sensory_Craving',
+                    'Cheap Dopamine / Junk Stimulation',
                   ] as TriggerCategory[]
                 ).map((cat) => (
                   <button

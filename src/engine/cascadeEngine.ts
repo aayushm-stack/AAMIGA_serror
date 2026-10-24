@@ -99,7 +99,7 @@ export function estimateCascadeStage(
     stepNumber = 2; // Sanga_Attachment
   } else if (intensity === 3) {
     // Default to Kama_Craving; shift to Krodha if anxiety/comparison is high
-    if (trigger === 'Academic_Anxiety' || trigger === 'Social_Comparison') {
+    if (trigger === 'Academic Anxiety' || (trigger as string) === 'Academic_Anxiety' || trigger === 'Social Comparison' || (trigger as string) === 'Social_Comparison') {
       stepNumber = 4; // Krodha_Agitation
     } else {
       stepNumber = 3; // Kama_Craving

@@ -2,19 +2,30 @@ import { GunaType } from './primitives';
 
 /**
  * Triggers initiating compulsive digital/behavioral loops.
+ * Strictly 5 core situational triggers rooted in modern student psychology.
  */
 export type TriggerCategory =
   | 'Doomscrolling'
-  | 'Academic_Anxiety'
-  | 'Social_Comparison'
+  | 'Academic Anxiety'
+  | 'Social Comparison'
   | 'Lethargy'
-  | 'Sensory_Craving';
+  | 'Cheap Dopamine / Junk Stimulation';
 
 /**
  * The 7-step psychological descent cascade described in Bhagavad Gita 2.62-63:
- * Dhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate...
+ * Dhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate |
+ * saṅgāt sañjāyate kāmaḥ kāmāt krodho 'bhijāyate ||
+ * krodhād bhavati sammohaḥ sammohāt smṛti-vibhramaḥ |
+ * smṛti-bhraṁśād buddhi-nāśo buddhi-nāśāt praṇaśyati ||
  */
 export type CascadeStage =
+  | 'Dhyana'
+  | 'Sanga'
+  | 'Kama'
+  | 'Krodha'
+  | 'Sammoha'
+  | 'Smriti_vibhrama'
+  | 'Buddhi_nasha'
   | 'Dhyana_Dwelling'
   | 'Sanga_Attachment'
   | 'Kama_Craving'
@@ -48,34 +59,51 @@ export interface CascadeStepInfo {
 export interface InterceptionRecord {
   /** Unique record identifier */
   id: string;
+
   /** ISO timestamp when the pause gate was triggered */
   timestamp: string;
+
   /** Categorical source of the compulsive urge */
   triggerCategory: TriggerCategory;
+
   /** Stage along the Gita 2.62-63 cascade where intervention occurred */
   cascadeStageReached: CascadeStage;
-  /** Emotional/energetic state when entering the gate */
-  initialGuna: GunaType;
-  /** Vitarka: The raw, unwholesome impulse or negative narrative */
+
+  /** Urge intensity on a scale of 1 (subtle urge) to 5 (overwhelming compulsion) */
+  urgeIntensity: number;
+
+  /** Vitarka: The raw, unwholesome impulse or negative narrative (Yoga Sutra 2.33) */
   vitarkaText: string;
-  /** Pratipaksha: The opposite wholesome cognitive reframe (YS 2.33) */
+
+  /** Pratipaksha: The opposite wholesome cognitive reframe (Yoga Sutra 2.33) */
   pratipakshaText: string;
-  /** Concrete micro-swap replacement (Śreyas over Preyas, e.g., sip water, deep exhale) */
-  microSwapAction: string;
+
+  /** Selected concrete micro-swap replacement (Śreyas over Preyas) */
+  selectedMicroSwap: string;
+
+  /** Concrete micro-swap replacement action (backwards compatibility alias) */
+  microSwapAction?: string;
+
+  /** Emotional/energetic state when entering the gate */
+  initialGuna?: GunaType;
+
   /** Attained psychological state following the intervention */
-  resolvedGunaState: GunaType;
+  resolvedGunaState?: GunaType;
+
   /**
    * Tracks whether the logged interaction was a positive buffer or a resolved/unresolved negative friction.
    */
   interactionType?:
     | 'positive_buffer'
+    | 'negative_friction'
     | 'resolved_negative_friction'
     | 'unresolved_negative_friction';
+
   /**
    * Whether the interaction or negative friction has been resolved.
-   * Defaults to false for unresolved negative friction; true for positive buffers and resolved friction.
    */
   isResolved?: boolean;
+
   /**
    * Whether the logged interaction is inherently positive.
    */

@@ -464,18 +464,18 @@ export function getTriggerFrequencyBreakdown(
 }[] {
   const categoryLabels: Record<TriggerCategory, string> = {
     Doomscrolling: 'Doomscrolling Feeds',
-    Academic_Anxiety: 'Academic / Exam Anxiety',
-    Social_Comparison: 'Social Comparison & Envy',
+    'Academic Anxiety': 'Academic / Exam Anxiety',
+    'Social Comparison': 'Social Comparison & Envy',
     Lethargy: 'Lethargy & Inertia',
-    Sensory_Craving: 'Sensory Cravings',
+    'Cheap Dopamine / Junk Stimulation': 'Cheap Dopamine & Junk Cravings',
   };
 
   const counts: Record<TriggerCategory, number> = {
     Doomscrolling: 0,
-    Academic_Anxiety: 0,
-    Social_Comparison: 0,
+    'Academic Anxiety': 0,
+    'Social Comparison': 0,
     Lethargy: 0,
-    Sensory_Craving: 0,
+    'Cheap Dopamine / Junk Stimulation': 0,
   };
 
   for (const item of interceptions) {

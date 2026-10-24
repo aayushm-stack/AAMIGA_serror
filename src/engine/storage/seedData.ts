@@ -291,7 +291,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
     },
     {
       hoursAgo: 110,
-      triggerCategory: 'Academic_Anxiety' as const,
+      triggerCategory: 'Academic Anxiety' as const, urgeIntensity: 4,
       cascadeStageReached: 'Krodha_Agitation' as const,
       initialGuna: 'Rajas' as const,
       vitarkaText:
@@ -304,7 +304,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
     },
     {
       hoursAgo: 84,
-      triggerCategory: 'Social_Comparison' as const,
+      triggerCategory: 'Social Comparison' as const, urgeIntensity: 3,
       cascadeStageReached: 'Sanga_Attachment' as const,
       initialGuna: 'Rajas' as const,
       vitarkaText:
@@ -330,7 +330,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
     },
     {
       hoursAgo: 30,
-      triggerCategory: 'Sensory_Craving' as const,
+      triggerCategory: 'Cheap Dopamine / Junk Stimulation' as const, urgeIntensity: 4,
       cascadeStageReached: 'Kama_Craving' as const,
       initialGuna: 'Rajas' as const,
       vitarkaText:
@@ -344,6 +344,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
     {
       hoursAgo: 4,
       triggerCategory: 'Doomscrolling' as const,
+      urgeIntensity: 5,
       cascadeStageReached: 'SmritiVibhrama_MemoryLoss' as const,
       initialGuna: 'Tamas' as const,
       vitarkaText:
@@ -364,10 +365,12 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       timestamp: timestampDate.toISOString(),
       triggerCategory: item.triggerCategory,
       cascadeStageReached: item.cascadeStageReached,
-      initialGuna: item.initialGuna,
+      urgeIntensity: (item as any).urgeIntensity ?? 3,
       vitarkaText: item.vitarkaText,
       pratipakshaText: item.pratipakshaText,
+      selectedMicroSwap: item.microSwapAction,
       microSwapAction: item.microSwapAction,
+      initialGuna: item.initialGuna,
       resolvedGunaState: item.resolvedGunaState,
     };
   });

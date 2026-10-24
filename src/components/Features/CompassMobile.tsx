@@ -34,7 +34,7 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
 
     if (nextState && logInterception) {
       logInterception({
-        triggerCategory: 'Academic_Anxiety',
+        triggerCategory: 'Academic Anxiety', urgeIntensity: 1, selectedMicroSwap: card.actionSteps?.[0] || 'Conscious deep exhalation and mindful pause.',
         cascadeStageReached: 'Dhyana_Dwelling',
         initialGuna: 'Rajas',
         vitarkaText: card.title,
