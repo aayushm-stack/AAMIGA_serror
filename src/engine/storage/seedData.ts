@@ -3,6 +3,7 @@ import {
   InterceptionRecord,
   UserPreferences,
 } from '../../types/iks';
+import { STORAGE_KEYS, setLocalItem } from './localStore';
 
 /**
  * Default starter preferences for students embarking on the BrahmaPath protocol.
@@ -31,176 +32,370 @@ function toDateString(date: Date): string {
 }
 
 /**
+ * 14-day template progression telling the transformation narrative:
+ * - Days 1-4 (offsets 13 down to 10): High Vata/Tamas, sleep disruption, screen binge, low scores.
+ * - Days 5-14 (offsets 9 down to 0): Progressive habit mastery, Pause Gate adoption, high Yukta scores & Sattva.
+ */
+const FOURTEEN_DAY_JUDGE_TEMPLATES = [
+  // --- First 4 Days: High Vata / Tamas, Chronic Overwhelm, Low Yukta ---
+  {
+    offset: 13,
+    ahara: {
+      nutritionQuality: 'Tamasic' as const,
+      digitalConsumptionMinutes: 320,
+      sensoryMindfulnessScore: 1,
+    },
+    nidra: {
+      hoursSlept: 4.8,
+      bedtimeConsistency: false,
+      restQuality: 'Disturbed' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 1,
+      focusedStudyBlocks: 0,
+      dominantGuna: 'Tamas' as const,
+    },
+    yuktaScore: 36,
+    generalReflection:
+      'Spiraling in late-night doomscrolling until 3:15 AM. Severe brain fog, missed morning lecture, high anxiety (Spiked Vata & Tamas).',
+  },
+  {
+    offset: 12,
+    ahara: {
+      nutritionQuality: 'Tamasic' as const,
+      digitalConsumptionMinutes: 285,
+      sensoryMindfulnessScore: 1,
+    },
+    nidra: {
+      hoursSlept: 5.2,
+      bedtimeConsistency: false,
+      restQuality: 'Disturbed' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 2,
+      focusedStudyBlocks: 1,
+      dominantGuna: 'Tamas' as const,
+    },
+    yuktaScore: 41,
+    generalReflection:
+      'High caffeine and energy drink crashes. Constant notification anxiety, struggled to sustain attention for even 10 minutes.',
+  },
+  {
+    offset: 11,
+    ahara: {
+      nutritionQuality: 'Rajasic' as const,
+      digitalConsumptionMinutes: 245,
+      sensoryMindfulnessScore: 2,
+    },
+    nidra: {
+      hoursSlept: 5.5,
+      bedtimeConsistency: false,
+      restQuality: 'Lethargic' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 2,
+      focusedStudyBlocks: 1,
+      dominantGuna: 'Rajas' as const,
+    },
+    yuktaScore: 45,
+    generalReflection:
+      'Restless comparison on LinkedIn seeing peers landing dream internships. Feeling left out and overwhelmed by academic debt.',
+  },
+  {
+    offset: 10,
+    ahara: {
+      nutritionQuality: 'Rajasic' as const,
+      digitalConsumptionMinutes: 210,
+      sensoryMindfulnessScore: 2,
+    },
+    nidra: {
+      hoursSlept: 5.8,
+      bedtimeConsistency: false,
+      restQuality: 'Disturbed' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 2,
+      focusedStudyBlocks: 2,
+      dominantGuna: 'Rajas' as const,
+    },
+    yuktaScore: 49,
+    generalReflection:
+      'Hit a breaking point. Installed BrahmaPath, defined first Sankalpa: "Conserve cognitive virya and cultivate Sattvic focus".',
+  },
+
+  // --- Next 10 Days: Steady Improvement into Sattvic Balance & High Yukta Scores ---
+  {
+    offset: 9,
+    ahara: {
+      nutritionQuality: 'Rajasic' as const,
+      digitalConsumptionMinutes: 175,
+      sensoryMindfulnessScore: 2,
+    },
+    nidra: {
+      hoursSlept: 6.2,
+      bedtimeConsistency: true,
+      restQuality: 'Lethargic' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 3,
+      focusedStudyBlocks: 2,
+      dominantGuna: 'Rajas' as const,
+    },
+    yuktaScore: 56,
+    generalReflection:
+      'First deliberate use of Pause Gate. Caught craving at step 3 (Kāma) and swapped phone for a glass of water.',
+  },
+  {
+    offset: 8,
+    ahara: {
+      nutritionQuality: 'Rajasic' as const,
+      digitalConsumptionMinutes: 140,
+      sensoryMindfulnessScore: 3,
+    },
+    nidra: {
+      hoursSlept: 6.5,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 3,
+      focusedStudyBlocks: 3,
+      dominantGuna: 'Rajas' as const,
+    },
+    yuktaScore: 63,
+    generalReflection:
+      'Practiced 4-7-8 breathing before evening study block. Noticed reduced palpitations when opening problem sets.',
+  },
+  {
+    offset: 7,
+    ahara: {
+      nutritionQuality: 'Rajasic' as const,
+      digitalConsumptionMinutes: 115,
+      sensoryMindfulnessScore: 3,
+    },
+    nidra: {
+      hoursSlept: 6.8,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 4,
+      focusedStudyBlocks: 3,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 69,
+    generalReflection:
+      'Screen time dropped below 2 hours for the first time in months. Mind feels noticeably calmer and less reactive.',
+  },
+  {
+    offset: 6,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 95,
+      sensoryMindfulnessScore: 4,
+    },
+    nidra: {
+      hoursSlept: 7.2,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 4,
+      focusedStudyBlocks: 4,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 75,
+    generalReflection:
+      'Crossed the Yukta equilibrium threshold (75)! Chariot status transition from Brisk to Calm.',
+  },
+  {
+    offset: 5,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 80,
+      sensoryMindfulnessScore: 4,
+    },
+    nidra: {
+      hoursSlept: 7.4,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 4,
+      focusedStudyBlocks: 4,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 80,
+    generalReflection:
+      'Applied Bhāva Compass (Muditā) when peer celebrated big placement offer. Envy dissolved into sincere sympathetic joy.',
+  },
+  {
+    offset: 4,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 70,
+      sensoryMindfulnessScore: 4,
+    },
+    nidra: {
+      hoursSlept: 7.6,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 5,
+      focusedStudyBlocks: 4,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 84,
+    generalReflection:
+      'Phone kept outside bedroom 45 minutes before sleep. Surrendered deeply to rest without bedtime racing thoughts.',
+  },
+  {
+    offset: 3,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 60,
+      sensoryMindfulnessScore: 5,
+    },
+    nidra: {
+      hoursSlept: 7.8,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 5,
+      focusedStudyBlocks: 5,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 88,
+    generalReflection:
+      'Completed 5 intense, deep study blocks on compiler optimization. No afternoon drowsiness or urge to check social feeds.',
+  },
+  {
+    offset: 2,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 50,
+      sensoryMindfulnessScore: 5,
+    },
+    nidra: {
+      hoursSlept: 7.8,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 5,
+      focusedStudyBlocks: 5,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 92,
+    generalReflection:
+      'Pratipaksha Bhavana is now instinctual: whenever distraction knocks, the wholesome counter-thought arises immediately.',
+  },
+  {
+    offset: 1,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 42,
+      sensoryMindfulnessScore: 5,
+    },
+    nidra: {
+      hoursSlept: 8.0,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 5,
+      focusedStudyBlocks: 5,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 95,
+    generalReflection:
+      'Sustained mental vitality throughout all labs. Dosha diagnosis shows balanced Vata and peak Sattvic clarity.',
+  },
+  {
+    offset: 0,
+    ahara: {
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 35,
+      sensoryMindfulnessScore: 5,
+    },
+    nidra: {
+      hoursSlept: 8.0,
+      bedtimeConsistency: true,
+      restQuality: 'Restorative' as const,
+    },
+    brahmacharya: {
+      energyConservationRating: 5,
+      focusedStudyBlocks: 5,
+      dominantGuna: 'Sattva' as const,
+    },
+    yuktaScore: 97,
+    generalReflection:
+      'Svastha state. Katha Upanishad Chariot in complete harmony: Buddhi holds the reins firmly, and the senses follow like noble horses.',
+  },
+];
+
+/**
+ * Generates an array of 14 days of realistic Trayopastambha daily logs
+ * for judges, illustrating the complete journey from initial Rajas/Tamas
+ * and high Vata into stable Sattvic equilibrium.
+ */
+export function generate14DayJudgeLogs(): TrayopastambhaLog[] {
+  const now = new Date();
+
+  return FOURTEEN_DAY_JUDGE_TEMPLATES.map((tmpl) => {
+    const targetDate = new Date(now);
+    targetDate.setDate(now.getDate() - tmpl.offset);
+    const dateStr = toDateString(targetDate);
+
+    return {
+      id: `sadhana-log-${dateStr}`,
+      date: dateStr,
+      ahara: tmpl.ahara,
+      nidra: tmpl.nidra,
+      brahmacharya: tmpl.brahmacharya,
+      yuktaScore: tmpl.yuktaScore,
+      generalReflection: tmpl.generalReflection,
+    };
+  });
+}
+
+/**
+ * Secret judge demo injection utility.
+ * Instantly populates local storage with 14 days of narrative data,
+ * sets the account creation date to 14 days ago, and adds realistic
+ * Pause Gate interception records.
+ *
+ * @returns The generated 14-day TrayopastambhaLog array.
+ */
+export function injectJudgeDemoData(): TrayopastambhaLog[] {
+  const logs = generate14DayJudgeLogs();
+  const interceptions = generateDemoInterceptions();
+
+  const fourteenDaysAgo = new Date();
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
+
+  const judgePreferences: UserPreferences = {
+    ...DEFAULT_PREFERENCES,
+    accountCreationDate: toDateString(fourteenDaysAgo),
+    onboardingCompleted: true,
+  };
+
+  // Persist directly to local storage keys
+  setLocalItem(STORAGE_KEYS.LOGS, logs);
+  setLocalItem(STORAGE_KEYS.INTERCEPTIONS, interceptions);
+  setLocalItem(STORAGE_KEYS.PREFS, judgePreferences);
+
+  return logs;
+}
+
+/**
  * Generates 7 days of realistic student sadhana logs ending today.
  * Demonstrates a tangible trajectory progressing from Rajas/Tamas towards Sattva.
  */
 export function generateDemoSadhanaLogs(): TrayopastambhaLog[] {
-  const now = new Date();
-
-  const dayTemplates = [
-    {
-      offset: 6,
-      ahara: {
-        nutritionQuality: 'Tamasic' as const,
-        digitalConsumptionMinutes: 240,
-        sensoryMindfulnessScore: 1,
-      },
-      nidra: {
-        hoursSlept: 5.2,
-        bedtimeConsistency: false,
-        restQuality: 'Disturbed' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 2,
-        focusedStudyBlocks: 1,
-        dominantGuna: 'Tamas' as const,
-      },
-      yuktaScore: 42,
-      generalReflection:
-        'Late night social media scrolling till 2:30 AM. Woke up groggy and missed morning lecture.',
-    },
-    {
-      offset: 5,
-      ahara: {
-        nutritionQuality: 'Rajasic' as const,
-        digitalConsumptionMinutes: 190,
-        sensoryMindfulnessScore: 2,
-      },
-      nidra: {
-        hoursSlept: 6.0,
-        bedtimeConsistency: false,
-        restQuality: 'Disturbed' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 2,
-        focusedStudyBlocks: 2,
-        dominantGuna: 'Rajas' as const,
-      },
-      yuktaScore: 51,
-      generalReflection:
-        'High caffeine and constant WhatsApp notifications. Struggled with sustained attention on DSA.',
-    },
-    {
-      offset: 4,
-      ahara: {
-        nutritionQuality: 'Rajasic' as const,
-        digitalConsumptionMinutes: 145,
-        sensoryMindfulnessScore: 3,
-      },
-      nidra: {
-        hoursSlept: 6.5,
-        bedtimeConsistency: true,
-        restQuality: 'Lethargic' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 3,
-        focusedStudyBlocks: 3,
-        dominantGuna: 'Rajas' as const,
-      },
-      yuktaScore: 62,
-      generalReflection:
-        'Installed BrahmaPath and set first Sankalpa. Used Pause Gate once before dinner.',
-    },
-    {
-      offset: 3,
-      ahara: {
-        nutritionQuality: 'Rajasic' as const,
-        digitalConsumptionMinutes: 110,
-        sensoryMindfulnessScore: 3,
-      },
-      nidra: {
-        hoursSlept: 7.0,
-        bedtimeConsistency: true,
-        restQuality: 'Restorative' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 4,
-        focusedStudyBlocks: 4,
-        dominantGuna: 'Sattva' as const,
-      },
-      yuktaScore: 71,
-      generalReflection:
-        'Replaced post-lunch Instagram loop with 4-7-8 breathing. Energy felt steady through labs.',
-    },
-    {
-      offset: 2,
-      ahara: {
-        nutritionQuality: 'Sattvic' as const,
-        digitalConsumptionMinutes: 80,
-        sensoryMindfulnessScore: 4,
-      },
-      nidra: {
-        hoursSlept: 7.5,
-        bedtimeConsistency: true,
-        restQuality: 'Restorative' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 4,
-        focusedStudyBlocks: 4,
-        dominantGuna: 'Sattva' as const,
-      },
-      yuktaScore: 82,
-      generalReflection:
-        'Kept phone outside bedroom 30 minutes before sleep. Slept deeply without racing thoughts.',
-    },
-    {
-      offset: 1,
-      ahara: {
-        nutritionQuality: 'Sattvic' as const,
-        digitalConsumptionMinutes: 65,
-        sensoryMindfulnessScore: 4,
-      },
-      nidra: {
-        hoursSlept: 7.8,
-        bedtimeConsistency: true,
-        restQuality: 'Restorative' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 5,
-        focusedStudyBlocks: 5,
-        dominantGuna: 'Sattva' as const,
-      },
-      yuktaScore: 89,
-      generalReflection:
-        '5 focused study blocks completed. Mind felt clear during complex compiler design concepts.',
-    },
-    {
-      offset: 0,
-      ahara: {
-        nutritionQuality: 'Sattvic' as const,
-        digitalConsumptionMinutes: 45,
-        sensoryMindfulnessScore: 5,
-      },
-      nidra: {
-        hoursSlept: 8.0,
-        bedtimeConsistency: true,
-        restQuality: 'Restorative' as const,
-      },
-      brahmacharya: {
-        energyConservationRating: 5,
-        focusedStudyBlocks: 5,
-        dominantGuna: 'Sattva' as const,
-      },
-      yuktaScore: 94,
-      generalReflection:
-        'Svastha feeling throughout the day. Chariot gait steady, senses under calm reins.',
-    },
-  ];
-
-  return dayTemplates.map((template, idx) => {
-    const targetDate = new Date(now);
-    targetDate.setDate(now.getDate() - template.offset);
-
-    return {
-      id: `sadhana-log-${toDateString(targetDate)}`,
-      date: toDateString(targetDate),
-      ahara: template.ahara,
-      nidra: template.nidra,
-      brahmacharya: template.brahmacharya,
-      yuktaScore: template.yuktaScore,
-      generalReflection: template.generalReflection,
-    };
-  });
+  return generate14DayJudgeLogs().slice(-7);
 }
 
 /**
