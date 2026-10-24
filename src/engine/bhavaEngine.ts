@@ -116,41 +116,77 @@ export const BHAVA_COMPASS_MAP: Record<BhavaEmotion, BhavaPrescription> = {
 };
 
 /**
- * 8 Bhava Compass cards covering student psychological friction and positive emotional buffers
+ * Bhava Compass cards covering student psychological friction and positive emotional buffers
  * rooted in Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33).
  */
 export const BHAVA_CARDS: BhavaCardData[] = [
-  // --- Negative Friction Cards (Antidotes via YS 1.33) ---
+  // --- 1. Positive Buffer Card (Maitri) ---
   {
-    id: 'burnout-effortless',
-    title: 'Academic Burnout seeing others succeed effortlessly',
-    sanskritTrait: 'Muditā (मुदिता)',
+    id: 'celebrating-shared-success',
+    title: 'Celebrating a Shared Success & Team Win',
+    sanskritTrait: 'Maitrī (Friendliness)',
+    isPositive: true,
+    appreciationMessage:
+      "Your mind expands when you elevate others! Taking a moment to genuinely celebrate a team win or a friend's good news proves that you are operating from a place of abundance. Shared joy completely cancels out competitive burnout. Keep sharing that light!",
+  },
+
+  // --- 2. Positive Buffer Card (Mudita) ---
+  {
+    id: 'inspired-hard-work',
+    title: "Inspired by Someone's Hard Work",
+    sanskritTrait: 'Muditā (Joy in Virtue)',
+    isPositive: true,
+    appreciationMessage:
+      "Recognizing and admiring someone else's intense dedication or good character is a beautiful trait. It means your ego is quiet enough to let someone else shine without feeling threatened. Let their dedication fuel your own focus and study session today!",
+  },
+
+  // --- 3. Positive Buffer Card (Karuna) ---
+  {
+    id: 'handling-setback-grace',
+    title: 'Handling a Setback with Grace',
+    sanskritTrait: 'Karuṇā (Self-Compassion)',
+    isPositive: true,
+    appreciationMessage:
+      'You faced a bad grade, a rejected application, or a tough setback today—and instead of spiraling into self-hate, you chose resilience and self-forgiveness. That takes immense emotional maturity. Be proud of how you handled this; this is what true self-mastery looks like.',
+  },
+
+  // --- 4. Negative Friction Card (Mudita) ---
+  {
+    id: 'placement-envy',
+    title: 'Placement Envy & Academic Comparison',
+    sanskritTrait: 'Muditā (Joy in Others)',
     isPositive: false,
     explanationText:
-      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
+      "It burns to watch someone else get the exact offer, grade, or recognition you’ve been working so hard for. Feeling this envy doesn't make you a bad person; it just means you care deeply about your future, and right now, you are scared of being left behind.",
     actionSteps: [
-      'Silently wish them well, and watch your own mental burden disappear.',
-      'Refocus attention onto your immediate Swadharma.',
+      'Take a deep breath and let yourself feel the sting without judging yourself for it.',
+      "Remind yourself of a core truth: someone else's success does not consume your opportunities. Your timeline is uniquely yours.",
+      "Try to silently wish them well. Releasing this heavy envy isn't for them—it’s to free up your own mental bandwidth so you can get back to your own grind with a clear head.",
     ],
     isResolved: false,
   },
+
+  // --- 5. Negative Friction Card (Karuna) ---
   {
-    id: 'imposter-syndrome',
-    title: 'Imposter Syndrome / Feeling Left Out',
-    sanskritTrait: 'Karuṇā (करुणा)',
+    id: 'imposter-syndrome-self-doubt',
+    title: 'Imposter Syndrome & Self-Doubt',
+    sanskritTrait: 'Karuṇā (Self-Compassion)',
     isPositive: false,
     explanationText:
-      'Feeling fraudulent or left behind creates intense self-directed hostility; counter self-criticism with Karuna.',
+      "You are looking around the room and feeling like everyone else understands the material effortlessly, while you are just pretending. Carrying the weight of feeling 'not good enough' or like a fraud is exhausting.",
     actionSteps: [
-      'Recognize that peers experience identical self-doubt in silence.',
-      'Apply gentle, non-judgmental kindness to your current learning stage.',
+      'Remember that people only display their highlights, not their midnight struggles or failures. You are comparing your messy behind-the-scenes to their polished front stage.',
+      'You belong here. You earned your seat.',
+      'Talk to yourself right now like you would talk to a tired, overwhelmed friend. Close the books for just 10 minutes, step outside, and give yourself some grace.',
     ],
     isResolved: false,
   },
+
+  // --- Negative Friction Card (Upeksha) ---
   {
     id: 'toxic-partner',
     title: 'Dealing with a toxic project partner',
-    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    sanskritTrait: 'Upekṣā (Equanimity)',
     isPositive: false,
     explanationText:
       'Passive-aggressive friction or slackers drain mental bandwidth; practice serene Upeksha.',
@@ -160,23 +196,27 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     ],
     isResolved: false,
   },
+
+  // --- Negative Friction Card (Mudita) ---
   {
-    id: 'peer-envy',
-    title: 'Peer Envy / Placement Jealousy',
-    sanskritTrait: 'Muditā (मुदिता)',
+    id: 'burnout-effortless',
+    title: 'Academic Burnout seeing others succeed effortlessly',
+    sanskritTrait: 'Muditā (Sympathetic Joy)',
     isPositive: false,
     explanationText:
-      'Resentment at peer accolades contracts the intellect; celebrate virtue to expand the heart.',
+      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
     actionSteps: [
-      'Acknowledge the effort behind their milestone.',
-      'Remind yourself that another’s accomplishment never diminishes your potential.',
+      'Silently wish them well, and watch your own mental burden disappear.',
+      'Refocus attention onto your immediate Swadharma.',
     ],
     isResolved: false,
   },
+
+  // --- Negative Friction Card (Upeksha) ---
   {
     id: 'hostility-online',
     title: 'Hostility & Online Flame',
-    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    sanskritTrait: 'Upekṣā (Equanimity)',
     isPositive: false,
     explanationText:
       'Malicious remarks and flame wars hook the ego; practice majestic neutrality and non-engagement.',
@@ -185,32 +225,6 @@ export const BHAVA_CARDS: BhavaCardData[] = [
       'Take 5 deep exhalations and leave the unvirtuous comment unaddressed.',
     ],
     isResolved: false,
-  },
-
-  // --- Positive Buffer Cards (Emotional Surplus via YS 1.33) ---
-  {
-    id: 'celebrating-shared-success',
-    title: 'Celebrating a Shared Success & Team Win',
-    sanskritTrait: 'Maitrī (Friendliness)',
-    isPositive: true,
-    appreciationMessage:
-      "Your mind expands when you elevate others! Taking a moment to genuinely celebrate a team win or a friend's good news proves that you are operating from a place of abundance. Shared joy completely cancels out competitive burnout. Keep sharing that light!",
-  },
-  {
-    id: 'inspired-hard-work',
-    title: "Inspired by Someone's Hard Work",
-    sanskritTrait: 'Muditā (Joy in Virtue)',
-    isPositive: true,
-    appreciationMessage:
-      "Recognizing and admiring someone else's intense dedication or good character is a beautiful trait. It means your ego is quiet enough to let someone else shine without feeling threatened. Let their dedication fuel your own focus and study session today!",
-  },
-  {
-    id: 'handling-setback-grace',
-    title: 'Handling a Setback with Grace',
-    sanskritTrait: 'Karuṇā (Self-Compassion)',
-    isPositive: true,
-    appreciationMessage:
-      'You faced a bad grade, a rejected application, or a tough setback today—and instead of spiraling into self-hate, you chose resilience and self-forgiveness. That takes immense emotional maturity. Be proud of how you handled this; this is what true self-mastery looks like.',
   },
 ];
 
