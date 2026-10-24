@@ -73,6 +73,19 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     practicalModernApplication:
       'This is the exact logic behind the app\'s Yukta Scoring algorithm. The app doesn\'t demand 14 hours of study and zero entertainment. It rewards you for balanced sleep (6.5 to 8 hours), mindful digital boundaries, and sustainable daily focus.',
   },
+  breathing: {
+    id: 'shastra-breathing',
+    featureKey: 'breathing',
+    sanskritVerse: 'तस्माद्वा एतस्मादन्नरसमयात् । अन्योऽन्तर आत्मा प्राणमयः । तेनैष पूर्णः ॥',
+    transliteration:
+      'tasmād vā etasmād anna-rasamayāt | anyo\'ntara ātmā prāṇamayaḥ | tenaiṣa pūrṇaḥ ||',
+    sourceText: 'Taittiriya Upanishad, Brahmananda Valli 2.2',
+    commentaryReference: 'Shankara Bhashya on Taittiriya Upanishad 2.2 & Yoga Sutra 2.49',
+    literalMeaning:
+      'Beyond the physical body (Annamaya Kosha) lies the vital energy sheath (Pranamaya Kosha), governed by the breath (Prana). Because the breath acts as the physical bridge to the mental sheath (Manomaya Kosha), regulating respiration directly stabilizes an agitated mind.',
+    practicalModernApplication:
+      'This anchors the Breathing Sanctum. When you are overwhelmed, logic and reading don\'t always work. The expanding and contracting concentric rings bypass the thinking brain, using paced rhythms to mechanically slow your heart rate and restore calm.',
+  },
   interceptor: {
     id: 'shastra-interceptor',
     featureKey: 'interceptor',
@@ -84,19 +97,6 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
       'When the mind is afflicted by unwholesome thoughts or destructive impulses (vitarkas), one should deliberately cultivate the exact opposite, wholesome perspective (Pratipaksha Bhavana). This active cognitive reframing cuts the root of toxic loops by redirecting mental energy (Chitta Vritti) rather than merely suppressing it.',
     practicalModernApplication:
       'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
-  },
-  breathing: {
-    id: 'shastra-breathing',
-    featureKey: 'breathing',
-    sanskritVerse: 'तस्माद्वा एतस्मादन्नरसमयात् । अन्योऽन्तर आत्मा प्राणमयः । तेनैष पूर्णः ॥',
-    transliteration:
-      'tasmād vā etasmād anna-rasamayāt | anyo\'ntara ātmā prāṇamayaḥ | tenaiṣa pūrṇaḥ ||',
-    sourceText: 'Taittiriya Upanishad, Brahmananda Valli 2.2',
-    commentaryReference: 'Shankara Bhashya on Taittiriya Upanishad 2.2 & Yoga Sutra 2.49',
-    literalMeaning:
-      'Verily, distinct from this physical body made of food-essence (Annamaya) is another inner sheath consisting of vital breath and prana (Pranamaya), by which the physical body is completely pervaded and enlivened.',
-    practicalModernApplication:
-      'Acts as the foundation for the Breathing Sanctum: pacing conscious exhalations (Rechaka) and retentions (Kumbhaka) regulates autonomic nervous tone, soothing sympathetic digital overdrive.',
   },
   chitta_prasadanam: {
     id: 'shastra-chitta_prasadanam',

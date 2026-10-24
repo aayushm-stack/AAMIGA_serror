@@ -70,6 +70,20 @@
     "practicalModernApplication": "This is the exact logic behind the app's Yukta Scoring algorithm. The app doesn't demand 14 hours of study and zero entertainment. It rewards you for balanced sleep (6.5 to 8 hours), mindful digital boundaries, and sustainable daily focus."
   },
   {
+    "id": "shastra-breathing",
+    "featureKey": "breathing",
+    "verse": "तस्माद्वा एतस्मादन्नरसमयात् । अन्योऽन्तर आत्मा प्राणमयः । तेनैष पूर्णः ॥",
+    "sanskritVerse": "तस्माद्वा एतस्मादन्नरसमयात् । अन्योऽन्तर आत्मा प्राणमयः । तेनैष पूर्णः ॥",
+    "transliteration": "tasmād vā etasmād anna-rasamayāt | anyo'ntara ātmā prāṇamayaḥ | tenaiṣa pūrṇaḥ ||",
+    "source": "Taittiriya Upanishad, Brahmananda Valli 2.2",
+    "sourceText": "Taittiriya Upanishad, Brahmananda Valli 2.2",
+    "commentaryReference": "Shankara Bhashya on Taittiriya Upanishad 2.2 & Yoga Sutra 2.49",
+    "commentary": "Beyond the physical body (Annamaya Kosha) lies the vital energy sheath (Pranamaya Kosha), governed by the breath (Prana). Because the breath acts as the physical bridge to the mental sheath (Manomaya Kosha), regulating respiration directly stabilizes an agitated mind.",
+    "literalMeaning": "Beyond the physical body (Annamaya Kosha) lies the vital energy sheath (Pranamaya Kosha), governed by the breath (Prana). Because the breath acts as the physical bridge to the mental sheath (Manomaya Kosha), regulating respiration directly stabilizes an agitated mind.",
+    "application": "This anchors the Breathing Sanctum. When you are overwhelmed, logic and reading don't always work. The expanding and contracting concentric rings bypass the thinking brain, using paced rhythms to mechanically slow your heart rate and restore calm.",
+    "practicalModernApplication": "This anchors the Breathing Sanctum. When you are overwhelmed, logic and reading don't always work. The expanding and contracting concentric rings bypass the thinking brain, using paced rhythms to mechanically slow your heart rate and restore calm."
+  },
+  {
     "id": "shastra-interceptor",
     "featureKey": "interceptor",
     "verse": "वितर्कबाधने प्रतिपक्षभावनम्॥",
@@ -84,24 +98,13 @@
     "practicalModernApplication": "You can't just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain."
   },
   {
-    "id": "shastra-breathing",
-    "featureKey": "breathing",
-    "verse": "प्राणो हि भूतानामायुः। तस्मात् सर्वायुषमुच्यते॥",
-    "sanskritVerse": "प्राणो हि भूतानामायुः। तस्मात् सर्वायुषमुच्यते॥",
-    "source": "Taittiriya Upanishad 2.3 (Pranamaya Kosha)",
-    "sourceText": "Taittiriya Upanishad 2.3 (Pranamaya Kosha)",
-    "commentary": "Shankara Bhashya elucidates that Prana is the vital breath sheath bridging gross physical matter (Annamaya) and cognitive fluctuations (Manomaya). Conscious regulation of respiratory rhythms harmonizes inward Prana and downward Apana, pacifying Rajasic restlessness and inducing mental stillness.",
-    "literalMeaning": "Shankara Bhashya elucidates that Prana is the vital breath sheath bridging gross physical matter (Annamaya) and cognitive fluctuations (Manomaya). Conscious regulation of respiratory rhythms harmonizes inward Prana and downward Apana, pacifying Rajasic restlessness and inducing mental stillness.",
-    "application": "Drives the visual Breathing Sanctum, utilizing guided Sama Vritti (4-4-4-4) and Pranayama Restoration (4-7-8) concentric animations to rapidly reset autonomic nervous system arousal during moments of distraction.",
-    "practicalModernApplication": "Drives the visual Breathing Sanctum, utilizing guided Sama Vritti (4-4-4-4) and Pranayama Restoration (4-7-8) concentric animations to rapidly reset autonomic nervous system arousal during moments of distraction."
-  },
-  {
     "id": "shastra-chitta_prasadanam",
     "featureKey": "chitta_prasadanam",
     "verse": "मैत्रीकरुणामुदितोपेक्षाणां सुखदुःखपुण्यापुण्यविषयाणां भावनातश्चित्तप्रसादनम्॥",
     "sanskritVerse": "मैत्रीकरुणामुदितोपेक्षाणां सुखदुःखपुण्यापुण्यविषयाणां भावनातश्चित्तप्रसादनम्॥",
     "source": "Patanjali Yoga Sutras 1.33",
     "sourceText": "Patanjali Yoga Sutras 1.33",
+    "commentaryReference": "Vyasa Bhashya on Patanjali Yoga Sutra 1.33",
     "commentary": "The mind is purified and pacified (Chitta Prasadanam) by cultivating friendliness (Maitri) toward the happy, compassion (Karuna) for the suffering, joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the wicked or toxic. Practicing these specific attitudes acts as a social shield, actively dissolving modern interpersonal frictions.",
     "literalMeaning": "The mind is purified and pacified (Chitta Prasadanam) by cultivating friendliness (Maitri) toward the happy, compassion (Karuna) for the suffering, joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the wicked or toxic. Practicing these specific attitudes acts as a social shield, actively dissolving modern interpersonal frictions.",
     "application": "Social media FOMO and peer comparison can easily ruin a good day. The Bhava Compass acts as your emotional reset button. When you feel triggered or stressed by others, it gives you quick journaling prompts to drop the negativity and get your peace back.",
