@@ -1,32 +1,12 @@
 import React, { useState } from 'react';
+import { SadhanaMobile } from './SadhanaMobile';
+export { SadhanaMobile };
 
 export type FeatureTab = 'sadhana' | 'interceptor' | 'compass';
 
 export interface FeaturesPageProps {
   className?: string;
 }
-
-/**
- * Placeholder for Sadhana Hub mobile view (Trayopastambha daily log & sliders).
- */
-export const SadhanaMobile: React.FC = () => {
-  return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-        <h3 className="text-base font-bold text-slate-900">
-          Sadhana Hub (Trayopastambha)
-        </h3>
-      </div>
-      <p className="text-xs text-slate-500 leading-relaxed">
-        Daily tracking of Ahara (diet &amp; sensory input), Nidra (rest &amp; sleep), and Brahmacharya (vital energy conservation).
-      </p>
-      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
-        &lt;SadhanaMobile /&gt; component placeholder ready for modular controls.
-      </div>
-    </div>
-  );
-};
 
 /**
  * Placeholder for Pause Gate mobile view (Gita 2.62-63 Distraction Interceptor).
