@@ -830,7 +830,7 @@ export function DevHarness() {
             <div className="grid grid-cols-3 gap-2 w-full max-w-md mx-auto">
               {(
                 [
-                  { key: 'SamaVritti', title: 'Sama Vritti', cycle: '4-4-4-4 Box' },
+                  { key: 'SamaVritti', title: 'Samavritti', cycle: '4-4-4-4 Box' },
                   { key: 'Relaxation478', title: 'Relaxation', cycle: '4-7-8 Box' },
                   { key: 'NadiShodhana', title: 'Nadi Shodhana', cycle: '4-4-6 Box' },
                 ] as const
@@ -903,7 +903,7 @@ export function DevHarness() {
                       {breathing.secondsRemainingInPhase}s
                     </span>
                     <span className="text-[10px] text-emerald-200 mt-1 uppercase tracking-wider">
-                      {breathing.phase.replace('_', ' ').split(' ')[0]}
+                      {breathing.actionText}
                     </span>
                   </div>
                 </div>

@@ -14,7 +14,7 @@ export interface ChariotHomeProps {
 }
 
 export interface ChariotStatusBadgeProps {
-  state?: 'Calm' | 'Brisk' | 'Galloping' | 'Gallop';
+  state?: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' | 'Gallop';
   text?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -32,14 +32,25 @@ export const ChariotStatusBadge: React.FC<ChariotStatusBadgeProps> = ({
   className = '',
   style,
 }) => {
-  const normalized: 'Calm' | 'Brisk' | 'Galloping' =
+  const normalized: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' =
     state === 'Gallop' || state === 'Galloping'
       ? 'Galloping'
       : state === 'Brisk'
       ? 'Brisk'
+      : state === 'Resting'
+      ? 'Resting'
       : 'Calm';
 
   const badgeConfig = {
+    Resting: {
+      defaultText: 'RESTING • EQUILIBRIUM',
+      bgClass: 'bg-[#F1F5F9]',
+      textClass: 'text-[#475569]',
+      borderClass: 'border-[#64748B]/40',
+      inlineBg: '#F1F5F9',
+      inlineColor: '#475569',
+      inlineBorder: 'rgba(100, 116, 139, 0.4)',
+    },
     Calm: {
       defaultText: 'CALM • SATTVIC POISE',
       bgClass: 'bg-[#DEF7EC]',

@@ -44,12 +44,16 @@ export const BreathePage: React.FC<BreathePageProps> = ({ className = '' }) => {
         <div className="grid grid-cols-3 gap-2 w-full max-w-md mx-auto">
           {(
             [
-              { key: 'SamaVritti', title: 'Sama Vritti', cycle: '4-4-4-4 Box' },
+              { key: 'SamaVritti', title: 'Samavritti', cycle: '4-4-4-4 Box' },
               { key: 'Relaxation478', title: 'Relaxation', cycle: '4-7-8 Box' },
               { key: 'NadiShodhana', title: 'Nadi Shodhana', cycle: '4-4-6 Box' },
             ] as const
           ).map((m) => {
-            const isActive = breathing.mode === m.key;
+            const isActive =
+              breathing.mode === m.key ||
+              (m.key === 'SamaVritti' && breathing.mode === 'Samavritti') ||
+              (m.key === 'Relaxation478' && (breathing.mode === 'relaxation' || breathing.mode === 'Relaxation')) ||
+              (m.key === 'NadiShodhana' && breathing.mode === 'Nadi Shodhana');
             return (
               <button
                 key={m.key}
@@ -116,8 +120,8 @@ export const BreathePage: React.FC<BreathePageProps> = ({ className = '' }) => {
                 <span className="text-3xl font-extrabold tracking-tight">
                   {breathing.secondsRemainingInPhase}s
                 </span>
-                <span className="text-[10px] text-emerald-200 mt-1 uppercase tracking-wider font-semibold">
-                  {breathing.phase.replace('_', ' ').split(' ')[0]}
+                <span className="text-xs text-emerald-200 mt-1 uppercase tracking-wider font-bold">
+                  {breathing.actionText}
                 </span>
               </div>
             </div>

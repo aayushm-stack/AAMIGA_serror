@@ -48,7 +48,14 @@ export type ChariotState = 'Resting' | 'Calm' | 'Brisk' | 'Gallop' | 'Galloping'
  * - `Relaxation478`: Extended exhalation technique to downregulate autonomic nervous arousal.
  * - `NadiShodhana`: Alternate nostril breathing balancing IDA and PINGALA energy channels.
  */
-export type BreathingMode = 'SamaVritti' | 'Relaxation478' | 'NadiShodhana';
+export type BreathingMode =
+  | 'SamaVritti'
+  | 'Relaxation478'
+  | 'NadiShodhana'
+  | 'Samavritti'
+  | 'relaxation'
+  | 'Relaxation'
+  | 'Nadi Shodhana';
 
 /**
  * Breath Phases (Patanjali Yoga Sutras 2.49-50):
