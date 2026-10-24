@@ -8,7 +8,13 @@ export type BhavaEmotion =
   | 'Peer_Envy'
   | 'Other_Suffering'
   | 'Shared_Success'
-  | 'Toxic_Hostility';
+  | 'Toxic_Hostility'
+  | 'Imposter_Syndrome'
+  | 'Academic_Burnout'
+  | 'Toxic_Partner'
+  | 'Imposter Syndrome / Feeling Left Out'
+  | 'Academic Burnout seeing others succeed effortlessly'
+  | 'Dealing with a toxic project partner';
 
 /**
  * The four tranquilizing mental attitudes (Chitta Prasadanam - Yoga Sutra 1.33):
