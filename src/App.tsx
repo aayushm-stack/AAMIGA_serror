@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AccountProvider } from './context/AccountContext';
 import { BrahmaPathProvider, useBrahmaPath } from './context/BrahmaPathContext';
 import { DevHarness } from './components/DevHarness';
 import {
@@ -21,6 +22,7 @@ import {
   VaultPage,
   FeaturesPage,
   ShastraLensDrawer,
+  SettingsModal,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
 
@@ -44,6 +46,9 @@ function MainContent() {
 
   // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness'
   const [activeTab, setActiveTab] = useState<AppViewTab>('home');
+
+  // Global Settings Modal state (isolated from daily workflows)
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
 
   // Bhava Compass interaction state
   const [selectedBhavaKey, setSelectedBhavaKey] = useState<BhavaKey | null>(null);
@@ -75,7 +80,7 @@ function MainContent() {
             <button
               type="button"
               onClick={() => setActiveTab('home')}
-              className="px-3 py-1 bg-[#D97706] text-white rounded text-xs font-semibold hover:bg-amber-700 transition flex items-center gap-1 shadow-xs"
+              className="px-3 py-1 bg-[#D97706] text-white rounded text-xs font-semibold hover:bg-amber-700 transition flex items-center gap-1 shadow-xs cursor-pointer"
             >
               📱 Back to Mobile UI
             </button>
@@ -87,10 +92,9 @@ function MainContent() {
       ) : (
         /* ================= VIEW 2: PRODUCTION MOBILE-FIRST UI ================= */
         <AppLayout>
-          {/* Top Bar with Settings (⚙️) icon switching to DevHarness */}
+          {/* Top Bar with culturally aligned Sankalpa icon and isolated Settings trigger */}
           <TopBar
-            onProfileClick={() => openShastraLens('chariot')}
-            onSettingsClick={() => setActiveTab('harness')}
+            onSettingsClick={() => setIsSettingsOpen(true)}
           />
 
           <main className="p-4 space-y-4">
@@ -155,17 +159,26 @@ function MainContent() {
         commentaryReference={activeLensData?.commentaryReference}
         practicalApplication={activeLensData?.practicalModernApplication}
       />
+
+      {/* Global Settings & Account Modal - Kept out of daily workflow */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onOpenDevHarness={() => setActiveTab('harness')}
+      />
     </div>
   );
 }
 
 /**
- * Root Application Wrapper supplying global context.
+ * Root Application Wrapper supplying decoupled global account state and IKS context.
  */
 export default function App() {
   return (
-    <BrahmaPathProvider>
-      <MainContent />
-    </BrahmaPathProvider>
+    <AccountProvider>
+      <BrahmaPathProvider>
+        <MainContent />
+      </BrahmaPathProvider>
+    </AccountProvider>
   );
 }

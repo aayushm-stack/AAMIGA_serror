@@ -22,6 +22,8 @@ type TabKey = 'sadhana' | 'interceptor' | 'breathing' | 'bhava' | 'vault';
 
 export function DevHarness() {
   const {
+    userName,
+    setUserName,
     logs,
     preferences,
     todayLog,
@@ -266,6 +268,34 @@ export function DevHarness() {
               >
                 📜 Trayopastambha Lens
               </button>
+            </div>
+          </div>
+
+          {/* Global Settings & Account Preferred Name Section */}
+          <div className="p-3 bg-white border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                ⚙️ Global Settings:
+              </span>
+              <span className="text-[11px] text-slate-500">
+                (Account identity kept out of daily task flow)
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <label htmlFor="harness-preferred-name" className="text-xs font-semibold text-slate-700 whitespace-nowrap">
+                Preferred Name:
+              </label>
+              <input
+                id="harness-preferred-name"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Preferred Name (e.g. Arjuna)"
+                className="px-2.5 py-1 text-xs border border-slate-300 rounded bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              />
+              <span className="text-[11px] text-amber-800 font-medium">
+                Active: {userName || 'Sadhaka'}
+              </span>
             </div>
           </div>
 
