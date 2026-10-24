@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Compass,
   Target,
   Trash2,
   MinusCircle,
@@ -36,24 +35,11 @@ export const LongTermListContainer: React.FC<LongTermListContainerProps> = ({
       aria-label="Horizon Goals"
       className={`space-y-3 pt-2 ${className}`}
     >
-      {/* Distinct Typography Heading: Horizon Goals */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#E2E8F0]">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-sage" />
-          <div>
-            <h2 className="font-serif text-lg font-bold text-charcoal tracking-wide">
-              Horizon Goals
-            </h2>
-            <p className="text-[10px] uppercase tracking-wider text-charcoal/50">
-              Strategic Vision • Enduring Dharmic Trajectory
-            </p>
-          </div>
-        </div>
-
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-sage/10 text-sage border border-sage/20 shadow-2xs">
-          <Compass className="w-3 h-3" />
-          <span>Long-Term</span>
-        </span>
+      {/* Primary Heading: Horizon Goals */}
+      <div className="pb-2 border-b border-[#E2E8F0]">
+        <h2 className="font-serif text-lg font-bold text-charcoal tracking-wide">
+          Horizon Goals
+        </h2>
       </div>
 
       {/* List Container */}

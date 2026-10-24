@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Circle,
-  Sparkles,
   Trash2,
   MinusCircle,
   PlusCircle,
@@ -36,24 +35,11 @@ export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
       aria-label="Immediate Intentions"
       className={`space-y-3 ${className}`}
     >
-      {/* Distinct Typography Heading: Immediate Intentions */}
-      <div className="flex items-center justify-between pb-1.5 border-b border-[#E2E8F0]">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-terracotta animate-pulse" />
-          <div>
-            <h2 className="font-serif text-lg font-bold text-charcoal tracking-wide">
-              Immediate Intentions
-            </h2>
-            <p className="text-[10px] uppercase tracking-wider text-charcoal/50">
-              High-Frequency Daily Resolves • F-Pattern Scanning
-            </p>
-          </div>
-        </div>
-
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-orange-100/70 text-terracotta border border-orange-200/60 shadow-2xs">
-          <Sparkles className="w-3 h-3" />
-          <span>Present-Tense</span>
-        </span>
+      {/* Primary Heading: Immediate Intentions */}
+      <div className="pb-2 border-b border-[#E2E8F0]">
+        <h2 className="font-serif text-lg font-bold text-charcoal tracking-wide">
+          Immediate Intentions
+        </h2>
       </div>
 
       {/* List Container */}
