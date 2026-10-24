@@ -10,38 +10,40 @@ import { BhavaEmotion, BhavaPrescription } from '../types/iks';
  * - Virtuous / Successful (Punya) -> Sympathetic Joy (Mudita)
  * - Hostile / Harmful (Apunya) -> Equanimity / Neutrality (Upeksha)
  *
- * Expanded with deep empathy for modern student psychology (imposter feelings,
- * effortless peer success burnout, and toxic project partners).
+ * Expanded with deep, humanized resolutions addressing modern student psychology:
+ * - "Imposter Syndrome / Feeling Left Out" -> Karuna (Self-Compassion)
+ * - "Academic Burnout seeing others succeed effortlessly" -> Mudita (Sympathetic Joy)
+ * - "Dealing with a toxic project partner" -> Upeksha (Equanimity)
  */
 
 const IMPOSTER_PRESCRIPTION: BhavaPrescription = {
-  emotion: 'Imposter_Syndrome',
+  emotion: 'Imposter Syndrome / Feeling Left Out',
   recommendedAttitude: 'Karuna_Compassion',
   sanskritSutra: 'duḥkheṣu karuṇā-bhāvanā (दुःखेषु करुणा-भावना - YS 1.33)',
   cognitivePrompt:
-    "When you feel like an imposter or that everyone else has their life sorted out while you flounder, your inner student is suffering. Offer yourself Karuna (deep self-compassion). You don't need to be finished, flawless, or extraordinary to belong in this room.",
+    "When you feel like an imposter or that everyone else has their life sorted out while you flounder, your inner student is suffering. Cultivate Karuna. You do not need to be flawless, finished, or extraordinary to belong in this room. Offer yourself the exact same gentle warmth and patience you would offer to a beloved friend in tears.",
   actionableStep:
-    'Rest a gentle hand over your heart. Take a slow, grounding breath and remind yourself: "I am learning at my own steady pace. My worth is inherent, not conditional on perfection."',
+    'Rest a gentle hand over your heart. Breathe in kindness for yourself, and breathe out the exhausting pressure to prove your worth to anyone.',
   targetGunaShift: 'Sattva',
 };
 
 const BURNOUT_PRESCRIPTION: BhavaPrescription = {
-  emotion: 'Academic_Burnout',
+  emotion: 'Academic Burnout seeing others succeed effortlessly',
   recommendedAttitude: 'Mudita_SympatheticJoy',
   sanskritSutra: 'puṇyeṣu muditā-bhāvanā (पुण्येषु मुदिता-भावना - YS 1.33)',
   cognitivePrompt:
     "When we compare our chapter 1 to someone else's chapter 10, our mind contracts. Cultivate Mudita. Silently wish them well, and watch your own mental burden disappear.",
   actionableStep:
-    'Notice how effortless external appearances can be deceptive. Silently send them a wave of sincere goodwill: "May your hard work bear fruit." Then gently bring your focus back to your own next single breath and single step.',
+    'Notice how effortless external appearances can be deceptive. Silently wish them well: "May your hard work bear fruit." Then gently bring your focus back to your own single breath and single step.',
   targetGunaShift: 'Sattva',
 };
 
 const TOXIC_PARTNER_PRESCRIPTION: BhavaPrescription = {
-  emotion: 'Toxic_Partner',
+  emotion: 'Dealing with a toxic project partner',
   recommendedAttitude: 'Upeksha_Equanimity',
   sanskritSutra: 'apuṇyeṣu upekṣā-bhāvanā (अपुण्येषु उपेक्षा-भावना - YS 1.33)',
   cognitivePrompt:
-    "When a project partner is uncooperative, critical, or passive-aggressive, retaliating absorbs their chaos into your own nervous system. Practice Upekṣā: detached equanimity that protects your energy while keeping your boundaries clear and dignified.",
+    "When a project partner brings passive aggression, blame, or uncooperative chaos, retaliating only invites their turbulence into your own nervous system. Practice Upekṣā: detached equanimity that protects your peace while keeping your boundaries clear, dignified, and firm.",
   actionableStep:
     'Document facts objectively without emotional debate. Do not absorb their turbulence as personal commentary. Preserve your vital prāṇa for the work that is genuinely in your control.',
   targetGunaShift: 'Sattva',
@@ -49,22 +51,22 @@ const TOXIC_PARTNER_PRESCRIPTION: BhavaPrescription = {
 
 export const BHAVA_COMPASS_MAP: Record<BhavaEmotion, BhavaPrescription> = {
   // --- Modern Student Psychology Triggers ---
-  Imposter_Syndrome: IMPOSTER_PRESCRIPTION,
-  'Imposter Syndrome / Feeling Left Out': {
+  'Imposter Syndrome / Feeling Left Out': IMPOSTER_PRESCRIPTION,
+  Imposter_Syndrome: {
     ...IMPOSTER_PRESCRIPTION,
-    emotion: 'Imposter Syndrome / Feeling Left Out',
+    emotion: 'Imposter_Syndrome',
   },
 
-  Academic_Burnout: BURNOUT_PRESCRIPTION,
-  'Academic Burnout seeing others succeed effortlessly': {
+  'Academic Burnout seeing others succeed effortlessly': BURNOUT_PRESCRIPTION,
+  Academic_Burnout: {
     ...BURNOUT_PRESCRIPTION,
-    emotion: 'Academic Burnout seeing others succeed effortlessly',
+    emotion: 'Academic_Burnout',
   },
 
-  Toxic_Partner: TOXIC_PARTNER_PRESCRIPTION,
-  'Dealing with a toxic project partner': {
+  'Dealing with a toxic project partner': TOXIC_PARTNER_PRESCRIPTION,
+  Toxic_Partner: {
     ...TOXIC_PARTNER_PRESCRIPTION,
-    emotion: 'Dealing with a toxic project partner',
+    emotion: 'Toxic_Partner',
   },
 
   // --- Classical Chitta Prasadanam Triggers ---
@@ -115,7 +117,7 @@ export const BHAVA_COMPASS_MAP: Record<BhavaEmotion, BhavaPrescription> = {
 
 /**
  * Retrieves the specific Chitta Prasadanam psychological prescription for an emotional trigger.
- * Resilient to key aliases and student stress phrasing.
+ * Resilient to full student trigger phrasing and shorthand keys.
  */
 export function getBhavaPrescription(emotion: BhavaEmotion | string): BhavaPrescription {
   if (emotion in BHAVA_COMPASS_MAP) {
@@ -125,13 +127,13 @@ export function getBhavaPrescription(emotion: BhavaEmotion | string): BhavaPresc
   if (typeof emotion === 'string') {
     const lower = emotion.toLowerCase();
     if (lower.includes('imposter') || lower.includes('left out')) {
-      return BHAVA_COMPASS_MAP['Imposter_Syndrome'];
+      return BHAVA_COMPASS_MAP['Imposter Syndrome / Feeling Left Out'];
     }
     if (lower.includes('burnout') || lower.includes('effortless')) {
-      return BHAVA_COMPASS_MAP['Academic_Burnout'];
+      return BHAVA_COMPASS_MAP['Academic Burnout seeing others succeed effortlessly'];
     }
     if (lower.includes('partner') || (lower.includes('toxic') && lower.includes('project'))) {
-      return BHAVA_COMPASS_MAP['Toxic_Partner'];
+      return BHAVA_COMPASS_MAP['Dealing with a toxic project partner'];
     }
     if (lower.includes('hostil') || lower.includes('toxic')) {
       return BHAVA_COMPASS_MAP['Toxic_Hostility'];
@@ -147,5 +149,5 @@ export function getBhavaPrescription(emotion: BhavaEmotion | string): BhavaPresc
     }
   }
 
-  return BHAVA_COMPASS_MAP['Academic_Burnout'];
+  return BHAVA_COMPASS_MAP['Academic Burnout seeing others succeed effortlessly'];
 }

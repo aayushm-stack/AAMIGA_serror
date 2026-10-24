@@ -20,45 +20,46 @@ interface EmotionItem {
   key: BhavaEmotion;
   label: string;
   subtext: string;
-  category: 'Student Turmoil' | 'Interpersonal Dynamics';
+  category: 'Student Psychology' | 'Interpersonal Dynamics';
   prescribedLabel: string;
 }
 
 const EMOTION_ITEMS: EmotionItem[] = [
-  // --- Student Psychology Triggers ---
+  // --- Modern Student Psychology Triggers ---
   {
-    key: 'Academic_Burnout',
+    key: 'Academic Burnout seeing others succeed effortlessly',
     label: 'Academic Burnout seeing others succeed effortlessly',
-    subtext: 'Exhaustion & comparison when peers make high scores look effortless',
-    category: 'Student Turmoil',
-    prescribedLabel: 'Mudita (Joy in Others)',
+    subtext: 'Exhaustion & comparison when peers make high scores and success look effortless',
+    category: 'Student Psychology',
+    prescribedLabel: 'Mudita (Sympathetic Joy)',
   },
   {
-    key: 'Imposter_Syndrome',
+    key: 'Imposter Syndrome / Feeling Left Out',
     label: 'Imposter Syndrome / Feeling Left Out',
-    subtext: 'Feeling unworthy, fraudulent, or falling behind everyone else',
-    category: 'Student Turmoil',
+    subtext: 'Feeling like a fraud, unworthy, or hopelessly left behind by everyone else',
+    category: 'Student Psychology',
     prescribedLabel: 'Karuna (Self-Compassion)',
   },
   {
-    key: 'Toxic_Partner',
+    key: 'Dealing with a toxic project partner',
     label: 'Dealing with a toxic project partner',
-    subtext: 'Blame-shifting, slackers, or uncooperative team friction',
-    category: 'Student Turmoil',
+    subtext: 'Blame-shifting, passive-aggression, slackers, or uncooperative team friction',
+    category: 'Student Psychology',
     prescribedLabel: 'Upeksha (Equanimity)',
   },
-  // --- Classical Interpersonal Dynamics ---
+
+  // --- Classical Chitta Prasadanam Dynamics ---
   {
     key: 'Peer_Envy',
     label: 'Peer Envy / Placement Jealousy',
     subtext: 'Resentment at peer accolades, offers, or milestones',
     category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Mudita (Sympathetic Joy)',
+    prescribedLabel: 'Mudita (Joy in Virtue)',
   },
   {
     key: 'Other_Suffering',
     label: 'Witnessing a Peer’s Distress',
-    subtext: 'Classmates breaking under exam pressure or silence',
+    subtext: 'Classmates breaking under exam pressure or suffering in silence',
     category: 'Interpersonal Dynamics',
     prescribedLabel: 'Karuna (Compassion)',
   },
@@ -72,7 +73,7 @@ const EMOTION_ITEMS: EmotionItem[] = [
   {
     key: 'Toxic_Hostility',
     label: 'Hostility & Online Flame',
-    subtext: 'Malicious remarks, toxic threads, and petty provocation',
+    subtext: 'Malicious remarks, toxic threads, and unprovoked provocation',
     category: 'Interpersonal Dynamics',
     prescribedLabel: 'Upeksha (Serene Immunity)',
   },
@@ -82,15 +83,15 @@ const EMOTION_ITEMS: EmotionItem[] = [
  * Mobile-first Bhava Compass (Yoga Sutra 1.33 Chitta Prasadanam).
  * Maps student psychological turmoil and interpersonal perturbations directly
  * to the four classical serene counter-attitudes:
- * - Maitrī (Friendliness for the thriving)
- * - Karuṇā (Compassion for the suffering & self-compassion)
- * - Muditā (Sympathetic joy for others' virtue & success)
+ * - Maitrī (Friendliness toward the happy/prosperous)
+ * - Karuṇā (Compassion toward the suffering & self-compassion)
+ * - Muditā (Sympathetic delight in others' virtue & success)
  * - Upekṣā (Majestic equanimity and non-reactivity toward toxicity)
  */
 export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) => {
   const { openShastraLens } = useBrahmaPath();
   const [selectedEmotion, setSelectedEmotion] =
-    useState<BhavaEmotion>('Academic_Burnout');
+    useState<BhavaEmotion>('Academic Burnout seeing others succeed effortlessly');
 
   const prescription = getBhavaPrescription(selectedEmotion);
 
@@ -229,7 +230,7 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
           </div>
           <div className="text-xs sm:text-sm text-slate-800 leading-relaxed bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
             <p className="font-serif italic text-slate-800 leading-relaxed text-sm">
-              "{prescription.cognitivePrompt}"
+              &ldquo;{prescription.cognitivePrompt}&rdquo;
             </p>
           </div>
         </div>
