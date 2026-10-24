@@ -59,6 +59,20 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     practicalModernApplication:
       'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
   },
+  yukta: {
+    id: 'shastra-yukta',
+    featureKey: 'yukta',
+    sanskritVerse:
+      'युक्ताहारविहारस्य युक्तचेष्टस्य कर्मसु ।\nयुक्तस्वप्नावबोधस्य योगो भवति दुःखहा ॥',
+    transliteration:
+      'yuktāhāra-vihārasya yukta-ceṣṭasya karmasu |\nyukta-svapnāvabodhasya yogo bhavati duḥkha-hā ||',
+    sourceText: 'Bhagavad Gita 6.17',
+    commentaryReference: 'Adi Shankaracharya Bhashya on Bhagavad Gita 6.17',
+    literalMeaning:
+      'For one who is moderate in eating and recreation, balanced in effort at work, and regulated in sleep and waking, yoga removes all sorrow. True discipline is not extreme asceticism or self-punishment; it is finding sustainable harmony in daily routines.',
+    practicalModernApplication:
+      'This is the exact logic behind the app\'s Yukta Scoring algorithm. The app doesn\'t demand 14 hours of study and zero entertainment. It rewards you for balanced sleep (6.5 to 8 hours), mindful digital boundaries, and sustainable daily focus.',
+  },
   interceptor: {
     id: 'shastra-interceptor',
     featureKey: 'interceptor',

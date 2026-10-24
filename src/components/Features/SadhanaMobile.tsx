@@ -113,14 +113,25 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             Charaka Samhita 11.35 &amp; Gita 6.17 Yukta Equilibrium
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => openShastraLens('trayopastambha')}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+        <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+          <button
+            type="button"
+            onClick={() => openShastraLens('trayopastambha')}
+            style={{ color: '#065F46' }}
+            className="text-xs font-semibold hover:underline cursor-pointer"
+          >
+            [Pillars]
+          </button>
+          <span className="text-slate-300">|</span>
+          <button
+            type="button"
+            onClick={() => openShastraLens('yukta')}
+            style={{ color: '#065F46' }}
+            className="text-xs font-semibold hover:underline cursor-pointer"
+          >
+            [Gita 6.17 Yukta]
+          </button>
+        </div>
       </div>
 
       {/* Feedback Alert Banner */}

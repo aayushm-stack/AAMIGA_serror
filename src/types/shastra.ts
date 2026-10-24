@@ -53,7 +53,8 @@ export type ShastraFeatureKey =
   | 'chariot'
   | 'brahmacharya'
   | 'cascade'
-  | 'pratipaksha';
+  | 'pratipaksha'
+  | 'yukta';
 
 /**
  * Scriptural knowledge metadata linking application features directly to authoritative Indian Knowledge Systems texts.
