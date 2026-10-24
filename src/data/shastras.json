@@ -14,16 +14,45 @@
     "practicalModernApplication": "This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet."
   },
   {
+    "id": "shastra-brahmacharya",
+    "featureKey": "brahmacharya",
+    "verse": "ब्रह्मचर्यप्रतिष्ठायां वीर्यलाभः ॥",
+    "sanskritVerse": "ब्रह्मचर्यप्रतिष्ठायां वीर्यलाभः ॥",
+    "transliteration": "brahmacarya-pratiṣṭhāyāṁ vīrya-lābhaḥ ||",
+    "source": "Patanjali Yoga Sutras 2.38",
+    "sourceText": "Patanjali Yoga Sutras 2.38",
+    "commentaryReference": "Vyasa Bhashya on Patanjali Yoga Sutra 2.38",
+    "commentary": "Upon being firmly established in Brahmacharya (sensory restraint and disciplined focus), one attains profound vitality and vigor (Virya). By deliberately withdrawing attention from endless digital fragmentation and overstimulation, you reclaim the mental stamina required for true self-mastery.",
+    "literalMeaning": "Upon being firmly established in Brahmacharya (sensory restraint and disciplined focus), one attains profound vitality and vigor (Virya). By deliberately withdrawing attention from endless digital fragmentation and overstimulation, you reclaim the mental stamina required for true self-mastery.",
+    "application": "Think of your attention like a battery. The Energy Conservation slider exists because true focus isn't just about logging hours at a desk—it's about how well you protect your mental charge from draining notifications and digital noise.",
+    "practicalModernApplication": "Think of your attention like a battery. The Energy Conservation slider exists because true focus isn't just about logging hours at a desk—it's about how well you protect your mental charge from draining notifications and digital noise."
+  },
+  {
+    "id": "shastra-cascade",
+    "featureKey": "cascade",
+    "verse": "ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते । सङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥",
+    "sanskritVerse": "ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते ।\nसङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥\nक्रोधाद्भवति संमोहः संमोहात्स्मृतिविभ्रमः ।\nस्मृतिभ्रंशाद् बुद्धिनाशो बुद्धिनाशात्प्रणश्यति ॥",
+    "transliteration": "dhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate | saṅgāt sañjāyate kāmaḥ kāmāt krodho 'bhijāyate ||",
+    "source": "Bhagavad Gita 2.62-63",
+    "sourceText": "Bhagavad Gita 2.62-63",
+    "commentaryReference": "Adi Shankaracharya Bhashya on Bhagavad Gita 2.62-63",
+    "commentary": "Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.",
+    "literalMeaning": "Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.",
+    "application": "Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.",
+    "practicalModernApplication": "Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect."
+  },
+  {
     "id": "shastra-interceptor",
     "featureKey": "interceptor",
     "verse": "वितर्कबाधने प्रतिपक्षभावनम्॥",
     "sanskritVerse": "वितर्कबाधने प्रतिपक्षभावनम्॥",
-    "source": "Patanjali Yoga Sutras 2.33",
-    "sourceText": "Patanjali Yoga Sutras 2.33",
-    "commentary": "The Vyasa Bhashya expounds that vitarkas are unwholesome mental impulses rooted in greed, anger, or delusion that lead to unending distress. Pratipaksha Bhavana is the deliberate mental cultivation of the exact opposite, wholesome thought wave, thereby neutralizing cognitive degradation at its root.",
-    "literalMeaning": "The Vyasa Bhashya expounds that vitarkas are unwholesome mental impulses rooted in greed, anger, or delusion that lead to unending distress. Pratipaksha Bhavana is the deliberate mental cultivation of the exact opposite, wholesome thought wave, thereby neutralizing cognitive degradation at its root.",
-    "application": "Powers the Distraction Interceptor modal, interrupting compulsive doomscrolling or impulsive loops by prompting the user to name the vitarka, trace the Gita 2.62-63 cascade, and compose an opposing Sattvic cognitive reframe.",
-    "practicalModernApplication": "Powers the Distraction Interceptor modal, interrupting compulsive doomscrolling or impulsive loops by prompting the user to name the vitarka, trace the Gita 2.62-63 cascade, and compose an opposing Sattvic cognitive reframe."
+    "source": "Patanjali Yoga Sutras 2.33 & Bhagavad Gita 2.62-63",
+    "sourceText": "Patanjali Yoga Sutras 2.33 & Bhagavad Gita 2.62-63",
+    "commentaryReference": "Vyasa Bhashya on YS 2.33 & Shankara Bhashya on Gita 2.62",
+    "commentary": "Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.",
+    "literalMeaning": "Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.",
+    "application": "Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.",
+    "practicalModernApplication": "Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect."
   },
   {
     "id": "shastra-breathing",

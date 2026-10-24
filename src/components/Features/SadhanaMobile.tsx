@@ -298,7 +298,7 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 3. Brahmacharya (Energy Stewardship &amp; Focus)
               </h3>
             </div>
-            <span className="text-[10px] text-slate-400 font-medium">Vital Force</span>
+            <button type="button" onClick={() => openShastraLens('brahmacharya')} className="text-[10px] text-amber-800 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded border border-amber-200 font-medium transition cursor-pointer">Shastra Lens: YS 2.38</button>
           </div>
 
           <div className="space-y-3">

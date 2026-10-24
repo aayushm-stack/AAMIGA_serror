@@ -21,6 +21,32 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     practicalModernApplication:
       'This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet.',
   },
+  brahmacharya: {
+    id: 'shastra-brahmacharya',
+    featureKey: 'brahmacharya',
+    sanskritVerse: 'ब्रह्मचर्यप्रतिष्ठायां वीर्यलाभः ॥',
+    transliteration: 'brahmacarya-pratiṣṭhāyāṁ vīrya-lābhaḥ ||',
+    sourceText: 'Patanjali Yoga Sutras 2.38',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.38',
+    literalMeaning:
+      'Upon being firmly established in Brahmacharya (sensory restraint and disciplined focus), one attains profound vitality and vigor (Virya). By deliberately withdrawing attention from endless digital fragmentation and overstimulation, you reclaim the mental stamina required for true self-mastery.',
+    practicalModernApplication:
+      'Think of your attention like a battery. The Energy Conservation slider exists because true focus isn\'t just about logging hours at a desk—it\'s about how well you protect your mental charge from draining notifications and digital noise.',
+  },
+  cascade: {
+    id: 'shastra-cascade',
+    featureKey: 'cascade',
+    sanskritVerse:
+      'ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते ।\nसङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥\nक्रोधाद्भवति संमोहः संमोहात्स्मृतिविभ्रमः ।\nस्मृतिभ्रंशाद् बुद्धिनाशो बुद्धिनाशात्प्रणश्यति ॥',
+    transliteration:
+      'dhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate |\nsaṅgāt sañjāyate kāmaḥ kāmāt krodho \'bhijāyate ||\nkrodhād bhavati saṁmohaḥ saṁmohāt smṛti-vibhramaḥ |\nsmṛti-bhraṁśād buddhi-nāśo buddhi-nāśāt praṇaśyati ||',
+    sourceText: 'Bhagavad Gita 2.62-63',
+    commentaryReference: 'Adi Shankaracharya Bhashya on Bhagavad Gita 2.62-63',
+    literalMeaning:
+      'Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.',
+    practicalModernApplication:
+      'Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.',
+  },
   interceptor: {
     id: 'shastra-interceptor',
     featureKey: 'interceptor',
@@ -31,9 +57,9 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Yoga Sutra 2.33 & Bhagavad Gita 2.62-63',
     commentaryReference: 'Vyasa Bhashya on YS 2.33 & Shankara Bhashya on Gita 2.62',
     literalMeaning:
-      'When unwholesome impulses (Vitarka) disturb the mind, actively cultivate the opposing wholesome contemplation (Pratipaksha). Dwelling upon sense-objects engenders attachment; from attachment springs intense craving, and thwarted craving gives rise to agitation.',
+      'Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.',
     practicalModernApplication:
-      'Powers the 90-second Pause Gate: intercepts compulsive dopamine scrolling loops before they cascade from subtle dwelling (Dhyāna) into loss of working memory and executive collapse (Buddhi-nāśa).',
+      'Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.',
   },
   breathing: {
     id: 'shastra-breathing',

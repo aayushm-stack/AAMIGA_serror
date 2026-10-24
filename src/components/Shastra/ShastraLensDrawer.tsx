@@ -51,15 +51,15 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
         aria-hidden="true"
       />
 
-      {/* Stark Parchment Bottom-Sheet Container with responsive scroll classes */}
+      {/* Stark Parchment Bottom-Sheet Container: scrollable, flex-col with gap-4 */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Shastra Lens Exegesis"
-        className="relative z-10 w-full max-w-md bg-parchment rounded-t-[28px] border-t border-x border-[#E2E8F0] shadow-2xl p-6 max-h-[80vh] overflow-y-auto overscroll-contain pb-12 animate-in slide-in-from-bottom duration-300"
+        className="relative z-10 w-full max-w-md bg-parchment rounded-t-[28px] border-t border-x border-[#E2E8F0] shadow-2xl p-6 max-h-[80vh] overflow-y-auto overscroll-contain pb-12 flex flex-col gap-4 animate-in slide-in-from-bottom duration-300"
       >
         {/* Pull handle indicator */}
-        <div className="w-10 h-1 bg-charcoal/20 rounded-full mx-auto mb-3" />
+        <div className="w-10 h-1 bg-charcoal/20 rounded-full mx-auto" />
 
         {/* Top Header Row with Close "X" at top right */}
         <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]/80">
@@ -90,7 +90,7 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
 
         {/* Source Badge if provided */}
         {source && (
-          <div className="mt-4 text-center">
+          <div className="text-center">
             <span className="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-sage/10 text-sage border border-sage/20">
               {source}
             </span>
@@ -98,21 +98,21 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
         )}
 
         {/* Centered, Large, Serif Sanskrit Verse */}
-        <div className="my-5 p-5 bg-white/70 rounded-2xl border border-orange-200/60 shadow-xs text-center">
+        <div className="p-5 bg-white/70 rounded-2xl border border-orange-200/60 shadow-xs text-center flex flex-col gap-2">
           <p className="font-serif text-xl sm:text-2xl font-bold text-charcoal leading-relaxed tracking-wide">
             {verse}
           </p>
 
           {transliteration && (
-            <p className="font-serif italic text-xs sm:text-sm text-charcoal/70 mt-3 leading-relaxed">
+            <p className="font-serif italic text-xs sm:text-sm text-charcoal/70 leading-relaxed">
               {transliteration}
             </p>
           )}
         </div>
 
-        {/* Commentary & English Meaning Section */}
+        {/* English Meaning & Rationale Section */}
         {meaningText && (
-          <div className="space-y-2 mb-4">
+          <div className="flex flex-col gap-2">
             <span className="text-[11px] uppercase tracking-wider font-semibold text-charcoal/60 block">
               English Meaning & Rationale
             </span>
@@ -122,9 +122,9 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
           </div>
         )}
 
-        {/* Commentary Citation Reference if provided separately */}
+        {/* Canonical Reference citation if provided */}
         {commentaryReference && commentaryReference !== meaningText && (
-          <div className="space-y-1 mb-4">
+          <div className="flex flex-col gap-1">
             <span className="text-[10px] uppercase tracking-wider font-semibold text-charcoal/50 block">
               Canonical Reference
             </span>
@@ -134,9 +134,9 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
           </div>
         )}
 
-        {/* Applied UX Alignment */}
+        {/* Applied UX Alignment Section */}
         {practicalApplication && (
-          <div className="space-y-1.5 mb-2">
+          <div className="flex flex-col gap-1.5">
             <span className="text-[11px] uppercase tracking-wider font-semibold text-sage block">
               Applied UX Alignment
             </span>

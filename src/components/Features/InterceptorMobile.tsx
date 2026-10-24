@@ -181,7 +181,7 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
           <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
             Gita 2.62-63 Descent Tracker:
           </span>
-          <span className="text-[10px] text-slate-400">7-Step Cascade</span>
+          <button type="button" onClick={() => openShastraLens('cascade')} className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 transition cursor-pointer">Shastra Lens: Cascade Exegesis</button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
           {GITA_CASCADE_STEPS.map((step) => {

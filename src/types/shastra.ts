@@ -50,7 +50,9 @@ export type ShastraFeatureKey =
   | 'breathing'
   | 'chitta_prasadanam'
   | 'gunas'
-  | 'chariot';
+  | 'chariot'
+  | 'brahmacharya'
+  | 'cascade';
 
 /**
  * Scriptural knowledge metadata linking application features directly to authoritative Indian Knowledge Systems texts.
