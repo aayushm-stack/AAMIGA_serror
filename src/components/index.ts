@@ -52,6 +52,7 @@ export {
 // Shastra Lens Universal Components
 export { ShastraLensButton } from './Shastra/ShastraLensButton';
 export { ShastraLensDrawer } from './Shastra/ShastraLensDrawer';
+export { ShastraLens } from './Shastra/ShastraLens';
 
 export { VaultPage } from './Analytics/VaultPage';
 

@@ -17,9 +17,9 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Charaka Samhita, Sutrasthana 11.35',
     commentaryReference: 'Chakrapani Datta, Ayurveda Dipika on Charaka Sutrasthana 11.35',
     literalMeaning:
-      'Three are the supporting pillars of embodied life: wholesome nourishment and sensory intake (Āhāra), restorative sleep (Svapna), and regulated conduct with preservation of vital energy (Brahmacharya).',
+      'There are three foundational subsidiary pillars (Trayopastambha) of life: Ahara (intake), Nidra (sleep), and Brahmacharya (restraint/energy conservation). Just as a building is supported by its pillars, physical and mental stability is sustained by what we consume, how deeply we rest, and how effectively we conserve our vital energy.',
     practicalModernApplication:
-      'Directs students to balance food and digital intake (<120m/day), preserve consistent circadian sleep schedules, and protect deep cognitive vitality from fragmentation.',
+      'This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet.',
   },
   interceptor: {
     id: 'shastra-interceptor',

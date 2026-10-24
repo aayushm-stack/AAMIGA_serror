@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { X, BookOpen } from 'lucide-react';
 
-interface ShastraLensDrawerProps {
+export interface ShastraLensDrawerProps {
   verse: string;
-  commentary: string;
+  commentary?: string;
+  literalMeaning?: string;
+  commentaryReference?: string;
   source?: string;
   transliteration?: string;
   practicalApplication?: string;
@@ -13,7 +15,9 @@ interface ShastraLensDrawerProps {
 
 export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
   verse,
-  commentary,
+  commentary = '',
+  literalMeaning,
+  commentaryReference,
   source,
   transliteration,
   practicalApplication,
@@ -36,6 +40,8 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
 
   if (!isOpen) return null;
 
+  const meaningText = literalMeaning || commentary;
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-charcoal/40 backdrop-blur-xs transition-opacity duration-300">
       {/* Backdrop touch dismiss */}
@@ -45,12 +51,12 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
         aria-hidden="true"
       />
 
-      {/* Stark Parchment Bottom-Sheet Container */}
+      {/* Stark Parchment Bottom-Sheet Container with responsive scroll classes */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Shastra Lens Exegesis"
-        className="relative z-10 w-full max-w-md bg-parchment rounded-t-[28px] border-t border-x border-[#E2E8F0] shadow-2xl p-6 max-h-[88vh] overflow-y-auto animate-in slide-in-from-bottom duration-300"
+        className="relative z-10 w-full max-w-md bg-parchment rounded-t-[28px] border-t border-x border-[#E2E8F0] shadow-2xl p-6 max-h-[80vh] overflow-y-auto overscroll-contain pb-12 animate-in slide-in-from-bottom duration-300"
       >
         {/* Pull handle indicator */}
         <div className="w-10 h-1 bg-charcoal/20 rounded-full mx-auto mb-3" />
@@ -104,17 +110,31 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
           )}
         </div>
 
-        {/* Commentary Section */}
-        <div className="space-y-2 mb-4">
-          <span className="text-[11px] uppercase tracking-wider font-semibold text-charcoal/60 block">
-            Commentary & Philosophical Rationale
-          </span>
-          <div className="p-4 rounded-xl bg-white/80 border border-[#E2E8F0] text-sm text-charcoal/85 leading-relaxed font-normal">
-            {commentary}
+        {/* Commentary & English Meaning Section */}
+        {meaningText && (
+          <div className="space-y-2 mb-4">
+            <span className="text-[11px] uppercase tracking-wider font-semibold text-charcoal/60 block">
+              English Meaning & Rationale
+            </span>
+            <div className="p-4 rounded-xl bg-white/80 border border-[#E2E8F0] text-sm text-charcoal/85 leading-relaxed font-normal">
+              {meaningText}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Practical Application if provided */}
+        {/* Commentary Citation Reference if provided separately */}
+        {commentaryReference && commentaryReference !== meaningText && (
+          <div className="space-y-1 mb-4">
+            <span className="text-[10px] uppercase tracking-wider font-semibold text-charcoal/50 block">
+              Canonical Reference
+            </span>
+            <p className="text-xs text-charcoal/70 italic bg-white/50 p-2.5 rounded-lg border border-[#E2E8F0]/70 font-mono">
+              {commentaryReference}
+            </p>
+          </div>
+        )}
+
+        {/* Applied UX Alignment */}
         {practicalApplication && (
           <div className="space-y-1.5 mb-2">
             <span className="text-[11px] uppercase tracking-wider font-semibold text-sage block">

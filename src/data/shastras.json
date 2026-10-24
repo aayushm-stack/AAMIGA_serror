@@ -1,30 +1,52 @@
 [
   {
+    "id": "shastra-trayopastambha",
     "featureKey": "trayopastambha",
     "verse": "त्रय उपस्तम्भा इति—आहारः, स्वप्नो, ब्रह्मचर्यमिति।",
+    "sanskritVerse": "त्रय उपस्तम्भा इति—आहारः, स्वप्नो, ब्रह्मचर्यमिति।",
+    "transliteration": "traya upastambhā iti—āhāraḥ, svapno, brahmacaryaṁ ca |",
     "source": "Charaka Samhita, Sutrasthana 11.35",
-    "commentary": "Charaka explains that the human constitution is upheld by three supportive pillars: proper nourishment (Ahara), restorative sleep (Swapna/Nidra), and disciplined conservation of vital energy (Brahmacharya). When maintained in equilibrium, they endow the individual with strength (Bala), clarity, and longevity without systemic decay.",
-    "application": "In the Sadhana Hub, modern sensory and digital consumption is treated as mental Ahara, circadian sleep consistency is logged as Nidra, and focused deep work blocks represent Brahmacharya, transforming habit tracking into holistic energy conservation."
+    "sourceText": "Charaka Samhita, Sutrasthana 11.35",
+    "commentaryReference": "Chakrapani Datta, Ayurveda Dipika on Charaka Sutrasthana 11.35",
+    "commentary": "There are three foundational subsidiary pillars (Trayopastambha) of life: Ahara (intake), Nidra (sleep), and Brahmacharya (restraint/energy conservation). Just as a building is supported by its pillars, physical and mental stability is sustained by what we consume, how deeply we rest, and how effectively we conserve our vital energy.",
+    "literalMeaning": "There are three foundational subsidiary pillars (Trayopastambha) of life: Ahara (intake), Nidra (sleep), and Brahmacharya (restraint/energy conservation). Just as a building is supported by its pillars, physical and mental stability is sustained by what we consume, how deeply we rest, and how effectively we conserve our vital energy.",
+    "application": "This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet.",
+    "practicalModernApplication": "This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet."
   },
   {
+    "id": "shastra-interceptor",
     "featureKey": "interceptor",
     "verse": "वितर्कबाधने प्रतिपक्षभावनम्॥",
+    "sanskritVerse": "वितर्कबाधने प्रतिपक्षभावनम्॥",
     "source": "Patanjali Yoga Sutras 2.33",
+    "sourceText": "Patanjali Yoga Sutras 2.33",
     "commentary": "The Vyasa Bhashya expounds that vitarkas are unwholesome mental impulses rooted in greed, anger, or delusion that lead to unending distress. Pratipaksha Bhavana is the deliberate mental cultivation of the exact opposite, wholesome thought wave, thereby neutralizing cognitive degradation at its root.",
-    "application": "Powers the Distraction Interceptor modal, interrupting compulsive doomscrolling or impulsive loops by prompting the user to name the vitarka, trace the Gita 2.62-63 cascade, and compose an opposing Sattvic cognitive reframe."
+    "literalMeaning": "The Vyasa Bhashya expounds that vitarkas are unwholesome mental impulses rooted in greed, anger, or delusion that lead to unending distress. Pratipaksha Bhavana is the deliberate mental cultivation of the exact opposite, wholesome thought wave, thereby neutralizing cognitive degradation at its root.",
+    "application": "Powers the Distraction Interceptor modal, interrupting compulsive doomscrolling or impulsive loops by prompting the user to name the vitarka, trace the Gita 2.62-63 cascade, and compose an opposing Sattvic cognitive reframe.",
+    "practicalModernApplication": "Powers the Distraction Interceptor modal, interrupting compulsive doomscrolling or impulsive loops by prompting the user to name the vitarka, trace the Gita 2.62-63 cascade, and compose an opposing Sattvic cognitive reframe."
   },
   {
+    "id": "shastra-breathing",
     "featureKey": "breathing",
     "verse": "प्राणो हि भूतानामायुः। तस्मात् सर्वायुषमुच्यते॥",
+    "sanskritVerse": "प्राणो हि भूतानामायुः। तस्मात् सर्वायुषमुच्यते॥",
     "source": "Taittiriya Upanishad 2.3 (Pranamaya Kosha)",
+    "sourceText": "Taittiriya Upanishad 2.3 (Pranamaya Kosha)",
     "commentary": "Shankara Bhashya elucidates that Prana is the vital breath sheath bridging gross physical matter (Annamaya) and cognitive fluctuations (Manomaya). Conscious regulation of respiratory rhythms harmonizes inward Prana and downward Apana, pacifying Rajasic restlessness and inducing mental stillness.",
-    "application": "Drives the visual Breathing Sanctum, utilizing guided Sama Vritti (4-4-4-4) and Pranayama Restoration (4-7-8) concentric animations to rapidly reset autonomic nervous system arousal during moments of distraction."
+    "literalMeaning": "Shankara Bhashya elucidates that Prana is the vital breath sheath bridging gross physical matter (Annamaya) and cognitive fluctuations (Manomaya). Conscious regulation of respiratory rhythms harmonizes inward Prana and downward Apana, pacifying Rajasic restlessness and inducing mental stillness.",
+    "application": "Drives the visual Breathing Sanctum, utilizing guided Sama Vritti (4-4-4-4) and Pranayama Restoration (4-7-8) concentric animations to rapidly reset autonomic nervous system arousal during moments of distraction.",
+    "practicalModernApplication": "Drives the visual Breathing Sanctum, utilizing guided Sama Vritti (4-4-4-4) and Pranayama Restoration (4-7-8) concentric animations to rapidly reset autonomic nervous system arousal during moments of distraction."
   },
   {
+    "id": "shastra-chitta_prasadanam",
     "featureKey": "chitta_prasadanam",
     "verse": "मैत्रीकरुणामुदितोपेक्षाणां सुखदुःखपुण्यापुण्यविषयाणां भावनातश्चित्तप्रसादनम्॥",
+    "sanskritVerse": "मैत्रीकरुणामुदितोपेक्षाणां सुखदुःखपुण्यापुण्यविषयाणां भावनातश्चित्तप्रसादनम्॥",
     "source": "Patanjali Yoga Sutras 1.33",
+    "sourceText": "Patanjali Yoga Sutras 1.33",
     "commentary": "Vyasa asserts that serene mental clarity (Chitta Prasadanam) is attained by systematically cultivating friendliness (Maitri) toward the joyful, compassion (Karuna) toward the distressed, benevolent joy (Mudita) toward the virtuous, and objective detachment (Upeksha) toward the negative, neutralizing jealousy and resentment.",
-    "application": "Directly guides the Social Relational Engine, providing interactive cognitive reflection prompts for countering modern peer comparison, academic rivalry, and toxic social media feeds."
+    "literalMeaning": "Vyasa asserts that serene mental clarity (Chitta Prasadanam) is attained by systematically cultivating friendliness (Maitri) toward the joyful, compassion (Karuna) toward the distressed, benevolent joy (Mudita) toward the virtuous, and objective detachment (Upeksha) toward the negative, neutralizing jealousy and resentment.",
+    "application": "Directly guides the Social Relational Engine, providing interactive cognitive reflection prompts for countering modern peer comparison, academic rivalry, and toxic social media feeds.",
+    "practicalModernApplication": "Directly guides the Social Relational Engine, providing interactive cognitive reflection prompts for countering modern peer comparison, academic rivalry, and toxic social media feeds."
   }
 ]

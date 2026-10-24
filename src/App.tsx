@@ -150,7 +150,9 @@ function MainContent() {
         verse={activeLensData?.sanskritVerse ?? ''}
         transliteration={activeLensData?.transliteration}
         source={activeLensData?.sourceText}
-        commentary={activeLensData?.commentaryReference ?? ''}
+        literalMeaning={activeLensData?.literalMeaning}
+        commentary={activeLensData?.literalMeaning || activeLensData?.commentaryReference || ''}
+        commentaryReference={activeLensData?.commentaryReference}
         practicalApplication={activeLensData?.practicalModernApplication}
       />
     </div>
