@@ -9,7 +9,7 @@ import {
   validatePratipakshaReframe,
 } from '../../engine/pratipakshaEngine';
 import { TriggerCategory } from '../../types/iks';
-import { ShieldCheck, Sparkles, CheckCircle2, AlertTriangle, Heart, Eye } from 'lucide-react';
+import { ShieldCheck, Sparkles, CheckCircle2, AlertTriangle, Heart } from 'lucide-react';
 
 export interface InterceptorMobileProps {
   className?: string;
@@ -25,7 +25,7 @@ const TRIGGER_CATEGORIES: TriggerCategory[] = [
 
 /**
  * Supportive mobile Pause Gate (Distraction Interceptor) component.
- * Designed with a compassionate, trauma-informed tone to comfort the user during
+ * Designed with a compassionate, reassuring tone to comfort the user during
  * acute overwhelm, tracing the Gita 2.62-63 cascade and guiding YS 2.33 Pratipaksha Bhavana.
  */
 export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
@@ -99,17 +99,17 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
     >
       {/* Supportive Header with Opening Text */}
       <div className="flex items-center justify-between border-b border-slate-200/90 pb-4">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-600 animate-pulse" />
-            <h2 className="text-base sm:text-lg font-bold text-slate-900">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
               The Pause Gate
-            </h2>
+            </span>
           </div>
-          <p className="text-sm font-semibold text-slate-700">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
             What heavy thought is pulling at you right now?
-          </p>
-          <p className="text-xs text-slate-500">
+          </h2>
+          <p className="text-xs text-slate-500 leading-relaxed">
             Take a slow, deep breath. You are safe here, and this urge is only temporary.
           </p>
         </div>
@@ -155,7 +155,7 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
       </div>
 
       {/* 2. Urge Intensity Slider */}
-      <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200/80 space-y-2.5">
+      <div className="p-5 bg-amber-50/70 rounded-2xl border border-amber-200/80 space-y-2.5">
         <div className="flex justify-between items-center text-xs">
           <span className="font-bold text-amber-900">
             How intense is this urge right now? ({urgeIntensity} / 5)
@@ -190,15 +190,7 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
           <span className="text-[10px] text-slate-400 font-medium">7-Step Insight</span>
         </div>
 
-        {/* Reassuring Banner Highlighting Step 3 (Kama) */}
-        <div className="p-4 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl flex items-start gap-3 shadow-2xs animate-fadeIn">
-          <Heart className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-emerald-950 font-medium leading-relaxed">
-            You are currently experiencing Kama (a craving). You have caught this early. Your discriminative intellect (Buddhi) is still awake and in control.
-          </p>
-        </div>
-
-        {/* 7-Step Cascade Grid Highlighting Step 3 (Kama) */}
+        {/* 7-Step Cascade Grid Highlighting Step 3 (Kama / Craving) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
           {GITA_CASCADE_STEPS.map((step) => {
             const isStep3Kama = step.stepNumber === 3;
@@ -259,20 +251,28 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
             );
           })}
         </div>
+
+        {/* Reassuring Text Rendered Below Step 3 Kama */}
+        <div className="p-4 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl flex items-start gap-3 shadow-xs animate-fadeIn">
+          <Heart className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
+          <p className="text-xs sm:text-sm text-emerald-950 font-medium leading-relaxed">
+            You are currently experiencing Kama. You have caught this early. Your discriminative intellect (Buddhi) is still awake and in control.
+          </p>
+        </div>
       </div>
 
       {/* 4. Pratipaksha Bhavana Form with Guided Prompt */}
       <div className="space-y-4 pt-2 border-t border-slate-200/90">
         {/* Guided Pratipaksha Prompt Header */}
-        <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-1">
+        <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-1.5">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-600" />
-            <h4 className="text-xs font-bold text-slate-800">
+            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
               Patanjali Yoga Sutra 2.33 (Pratipaksha Bhāvana)
             </h4>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed italic">
-            &ldquo;Let&apos;s apply Pratipaksha. Write down the heavy thought... Now, let&apos;s find the lighter, opposite truth to redirect this energy.&rdquo;
+          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+            Let&apos;s apply Pratipaksha. Write down the heavy thought... Now, let&apos;s find the lighter, opposite truth to redirect this energy.
           </p>
         </div>
 
