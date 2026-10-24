@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { SadhanaMobile } from './SadhanaMobile';
+import { SadhanaMobile, SadhanaDropdown } from './SadhanaMobile';
 import { InterceptorMobile } from './InterceptorMobile';
 import { CompassMobile } from './CompassMobile';
-export { SadhanaMobile, InterceptorMobile, CompassMobile };
+export { SadhanaMobile, SadhanaDropdown, InterceptorMobile, CompassMobile };
 
 export type FeatureTab = 'sadhana' | 'interceptor' | 'compass';
 

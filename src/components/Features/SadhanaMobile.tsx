@@ -83,10 +83,10 @@ function SadhanaDropdown<T extends string>({
           role="listbox"
           style={{
             borderRadius: '12px',
-            padding: '6px',
+            padding: '8px',
             boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04)',
           }}
-          className="absolute left-0 right-0 z-50 mt-1.5 bg-white border border-slate-200/90 rounded-xl shadow-lg p-1.5 space-y-1 max-h-64 overflow-y-auto"
+          className="sadhana-dropdown-menu absolute left-0 right-0 z-50 mt-1.5 bg-white border border-slate-200/90 rounded-xl shadow-lg p-2 space-y-1 max-h-64 overflow-y-auto"
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -100,7 +100,7 @@ function SadhanaDropdown<T extends string>({
                   setIsOpen(false);
                 }}
                 style={{ borderRadius: '8px' }}
-                className={`w-full px-3 py-2 text-xs rounded-lg cursor-pointer transition-all duration-150 flex items-center justify-between gap-2 select-none hover:bg-emerald-50/90 hover:text-emerald-950 ${
+                className={`sadhana-dropdown-item w-full px-3 py-2 text-xs rounded-lg cursor-pointer transition-all duration-150 flex items-center justify-between gap-2 select-none hover:bg-emerald-50/90 hover:text-emerald-950 ${
                   isSelected
                     ? 'bg-emerald-50 text-emerald-900 font-semibold'
                     : 'text-slate-700'
@@ -525,4 +525,5 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
   );
 };
 
+export { SadhanaDropdown, type DropdownOption, type SadhanaDropdownProps };
 export default SadhanaMobile;

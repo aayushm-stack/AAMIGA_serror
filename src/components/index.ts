@@ -63,4 +63,4 @@ export { SankalpaHub, ShortTermListContainer, LongTermListContainer, GoalConfirm
 export type { Goal, SankalpaItem, SankalpaTimeline, SankalpaCategory } from './Sankalpa';
 
 // Features Shell Components
-export { FeaturesPage, SadhanaMobile, InterceptorMobile, CompassMobile } from './Features/FeaturesPage';
+export { FeaturesPage, SadhanaMobile, SadhanaDropdown, InterceptorMobile, CompassMobile } from './Features/FeaturesPage';

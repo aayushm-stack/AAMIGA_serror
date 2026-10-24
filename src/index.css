@@ -15,3 +15,21 @@
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
+
+@layer components {
+  /* Sadhana Dropdown Menu Component Styles */
+  .sadhana-dropdown-menu {
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  }
+
+  .sadhana-dropdown-item {
+    border-radius: 8px;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+
+  .sadhana-dropdown-item:hover {
+    background-color: rgba(236, 253, 245, 0.95);
+  }
+}
