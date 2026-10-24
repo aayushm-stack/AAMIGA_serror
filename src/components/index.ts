@@ -22,6 +22,7 @@ export {
   BreathingControls,
   type BreathPhaseText,
 } from './Breathing/BreathingControls';
+export { BreathePage } from './Breathing/BreathePage';
 
 // Chitta Prasadanam / Bhava Compass Components
 export {

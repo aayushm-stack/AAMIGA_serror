@@ -10,6 +10,7 @@ import {
   DailyVerseCard,
   TrayopastambhaCard,
   BreathingCircle,
+  BreathePage,
   BhavaCompassGrid,
   BhavaResultCard,
   type BhavaKey,
@@ -274,17 +275,7 @@ function MainContent() {
             {/* 4. BREATHE TAB (Prāṇamaya Kosha Regulation) */}
             {activeTab === 'breathe' && (
               <div className="space-y-4">
-                <div className="border-b border-slate-200 pb-2">
-                  <h2 className="font-serif text-lg font-bold text-charcoal">
-                    Breathing Sanctum
-                  </h2>
-                  <p className="text-xs text-charcoal/60">
-                    Prāṇamaya Kosha autonomic vagal regulation
-                  </p>
-                </div>
-
-                {/* Milan's Concentric Rings Breathing Circle */}
-                <BreathingCircle />
+                <BreathePage />
               </div>
             )}
           </main>
