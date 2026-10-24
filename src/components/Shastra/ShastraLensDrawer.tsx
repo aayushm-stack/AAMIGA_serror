@@ -51,11 +51,12 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
         aria-hidden="true"
       />
 
-      {/* Stark Parchment Bottom-Sheet Container: max-h-[85vh], overflow-y-auto, flex-col with gap-4 */}
+      {/* Stark Parchment Bottom-Sheet Container: max-h-[85vh], smooth momentum scrolling, flex-col with gap-4 */}
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Shastra Lens Exegesis"
+        style={{ WebkitOverflowScrolling: 'touch' }}
         className="relative z-10 w-full max-w-md bg-parchment rounded-t-[28px] border-t border-x border-[#E2E8F0] shadow-2xl p-6 max-h-[85vh] overflow-y-auto overscroll-contain pb-12 flex flex-col gap-4 animate-in slide-in-from-bottom duration-300"
       >
         {/* Pull handle indicator */}

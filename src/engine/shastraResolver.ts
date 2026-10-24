@@ -94,9 +94,9 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Yoga Sutra 1.33',
     commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 1.33',
     literalMeaning:
-      'By cultivating friendliness (Maitri) toward the happy, compassion (Karuna) toward the suffering, sympathetic joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the unvirtuous/toxic, the consciousness attains profound serenity.',
+      'The mind is purified and pacified (Chitta Prasadanam) by cultivating friendliness (Maitri) toward the happy, compassion (Karuna) for the suffering, joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the wicked or toxic. Practicing these specific attitudes acts as a social shield, actively dissolving modern interpersonal frictions.',
     practicalModernApplication:
-      'The Bhava Compass engine: transforms peer comparison into Mudita, converts resentment into serene detachment (Upeksha), and safeguards students from reactive online outrage.',
+      'Social media FOMO and peer comparison can easily ruin a good day. The Bhava Compass acts as your emotional reset button. When you feel triggered or stressed by others, it gives you quick journaling prompts to drop the negativity and get your peace back.',
   },
   gunas: {
     id: 'shastra-gunas',
