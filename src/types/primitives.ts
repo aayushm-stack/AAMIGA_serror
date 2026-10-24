@@ -40,7 +40,7 @@ export type KoshaType = 'Annamaya' | 'Pranamaya' | 'Manomaya' | 'Vijnanamaya' | 
  * - `Brisk`: Active forward engagement under conscious control.
  * - `Gallop`: Agitated state; horses straining against the reins requiring mindful pause.
  */
-export type ChariotState = 'Calm' | 'Brisk' | 'Gallop';
+export type ChariotState = 'Calm' | 'Brisk' | 'Gallop' | 'Galloping';
 
 /**
  * Pranayama Regimens / Breathing Modes:
