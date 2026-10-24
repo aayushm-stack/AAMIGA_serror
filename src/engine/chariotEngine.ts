@@ -5,6 +5,8 @@ import {
   BhavaLog,
   BhavaCardData,
 } from '../types/iks';
+import { calculateGateScore, isInterceptionSuccessful } from './interceptorEngine';
+export { calculateGateScore, isInterceptionSuccessful } from './interceptorEngine';
 
 /**
  * Diagnostic report matching the Katha Upanishad 1.3.3-4 Chariot Allegory:
@@ -28,19 +30,7 @@ export interface ChariotStatusReport {
   yuktaScore: number;
 }
 
-/**
- * Helper to determine if an interception record represents a successful Pause Gate reframe.
- */
-function isInterceptionSuccessful(item: InterceptionRecord | any): boolean {
-  if (!item) return false;
-  if (typeof item.isSuccessful === 'boolean') return item.isSuccessful;
-  if (typeof item.success === 'boolean') return item.success;
-  if (typeof item.resolved === 'boolean') return item.resolved;
-  if (item.resolvedGunaState) {
-    return item.resolvedGunaState === 'Sattva';
-  }
-  return Boolean(item.pratipakshaText && item.pratipakshaText.trim().length > 0);
-}
+// isInterceptionSuccessful imported from ./interceptorEngine
 
 /**
  * Helper to determine if a Bhava Compass interaction represents a positive emotional buffer.
@@ -211,12 +201,8 @@ export function calculateChariotStatus(
   }
   const todayYuktaScore = Math.max(0, Math.min(100, Math.round(rawYuktaScore)));
 
-  // GateScore: Percentage of successfully intercepted urges today (default 100 if 0 triggers)
-  let GateScore = 100;
-  if (todayInterceptions && todayInterceptions.length > 0) {
-    const successfulCount = todayInterceptions.filter(isInterceptionSuccessful).length;
-    GateScore = Math.round((successfulCount / todayInterceptions.length) * 100);
-  }
+  // GateScore: Pratipaksha Resilience Quotient (PRQ)
+  const GateScore = calculateGateScore(todayInterceptions || []);
 
   // BhavaScore: Emotional Surplus (Buffer) algorithm
   const BhavaScore = calculateBhavaScore(todayBhavaLogs);
