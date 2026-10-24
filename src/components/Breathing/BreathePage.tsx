@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBreathingEngine } from '../../hooks/useBreathingEngine';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 
@@ -34,14 +35,9 @@ export const BreathePage: React.FC<BreathePageProps> = ({ className = '' }) => {
               Autonomic vagal brake via cyclic exhalations and kumbhaka.
             </p>
           </div>
-          <button
-            type="button"
+          <ShastraLensButton
             onClick={() => openShastraLens('breathing')}
-            style={{ color: '#065F46' }}
-            className="text-xs font-semibold hover:underline cursor-pointer"
-          >
-            [Inspect Shastra Lens]
-          </button>
+          />
         </div>
 
         {/* Mode Selection Pills */}

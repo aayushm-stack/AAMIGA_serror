@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { computeYuktaScore } from '../../engine/yuktaEngine';
 import { GunaType } from '../../types/iks';
@@ -114,14 +115,10 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             Charaka Samhita 11.35 • A gentle check-in with your body, mind, and rhythm
           </p>
         </div>
-        <button
-          type="button"
+        <ShastraLensButton
           onClick={() => openShastraLens('trayopastambha')}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+          className="ml-2"
+        />
       </div>
 
       {/* Feedback Alert Banner */}

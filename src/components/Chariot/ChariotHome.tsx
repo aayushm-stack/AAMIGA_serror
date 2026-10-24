@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { ChariotState } from '../../types/iks';
 import { ChariotStatusReport } from '../../engine/chariotEngine';
@@ -11,6 +12,84 @@ export interface ChariotHomeProps {
   onInspectShastra?: () => void;
   className?: string;
 }
+
+export interface ChariotStatusBadgeProps {
+  state?: 'Calm' | 'Brisk' | 'Galloping' | 'Gallop';
+  text?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Dynamic Status Badge Component for the Chariot UI.
+ * Replaces fixed-width SVG rectangles with a dynamic width setting (`width: fit-content` / `w-fit`),
+ * generous horizontal padding (`px-4`/`px-5` with `rounded-full`) to maintain the pill shape,
+ * and `white-space: nowrap` (`whitespace-nowrap`) so strings of any length scale perfectly without spilling.
+ */
+export const ChariotStatusBadge: React.FC<ChariotStatusBadgeProps> = ({
+  state = 'Calm',
+  text,
+  className = '',
+  style,
+}) => {
+  const normalized: 'Calm' | 'Brisk' | 'Galloping' =
+    state === 'Gallop' || state === 'Galloping'
+      ? 'Galloping'
+      : state === 'Brisk'
+      ? 'Brisk'
+      : 'Calm';
+
+  const badgeConfig = {
+    Calm: {
+      defaultText: 'CALM • SATTVIC POISE',
+      bgClass: 'bg-[#DEF7EC]',
+      textClass: 'text-[#065F46]',
+      borderClass: 'border-[#065F46]/40',
+      inlineBg: '#DEF7EC',
+      inlineColor: '#065F46',
+      inlineBorder: 'rgba(6, 95, 70, 0.4)',
+    },
+    Brisk: {
+      defaultText: 'BRISK • ACTIVE GAIT',
+      bgClass: 'bg-[#FEF3C7]',
+      textClass: 'text-[#92400E]',
+      borderClass: 'border-[#D97706]/40',
+      inlineBg: '#FEF3C7',
+      inlineColor: '#92400E',
+      inlineBorder: 'rgba(217, 119, 6, 0.4)',
+    },
+    Galloping: {
+      defaultText: 'GALLOPING • UNCHECKED IMPULSE',
+      bgClass: 'bg-[#FEE2E2]',
+      textClass: 'text-[#991B1B]',
+      borderClass: 'border-[#DC2626]/40',
+      inlineBg: '#FEE2E2',
+      inlineColor: '#991B1B',
+      inlineBorder: 'rgba(220, 38, 38, 0.4)',
+    },
+  }[normalized];
+
+  const displayText = text ?? badgeConfig.defaultText;
+
+  return (
+    <div
+      role="status"
+      aria-label={`Chariot gait state: ${displayText}`}
+      style={{
+        width: 'fit-content',
+        whiteSpace: 'nowrap',
+        backgroundColor: badgeConfig.inlineBg,
+        color: badgeConfig.inlineColor,
+        borderColor: badgeConfig.inlineBorder,
+        ...style,
+      }}
+      className={`w-fit whitespace-nowrap px-4 py-1 sm:px-5 sm:py-1.5 rounded-full text-[10.5px] sm:text-xs font-bold tracking-wider uppercase border shadow-2xs transition-colors duration-300 pointer-events-auto ${badgeConfig.bgClass} ${badgeConfig.textClass} ${badgeConfig.borderClass} ${className}`}
+    >
+      {displayText}
+    </div>
+  );
+};
+
 
 /**
  * 1. Calm Chariot SVG Placeholder (> 75 Score):
@@ -98,19 +177,7 @@ const CalmChariotSVG: React.FC = () => (
     <line x1="238" y1="122" x2="242" y2="150" stroke="#065F46" strokeWidth="3" strokeLinecap="round" />
     <line x1="250" y1="120" x2="256" y2="150" stroke="#065F46" strokeWidth="3" strokeLinecap="round" />
 
-    {/* State Badge */}
-    <rect x="110" y="16" width="100" height="22" rx="11" fill="#DEF7EC" stroke="#065F46" strokeWidth="1" />
-    <text
-      x="160"
-      y="31"
-      textAnchor="middle"
-      fill="#065F46"
-      fontSize="9.5"
-      fontWeight="700"
-      letterSpacing="0.08em"
-    >
-      CALM • SATTVIC POISE
-    </text>
+
   </svg>
 );
 
@@ -202,19 +269,7 @@ const BriskChariotSVG: React.FC = () => (
     <line x1="250" y1="116" x2="265" y2="148" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
     <line x1="262" y1="114" x2="278" y2="140" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
 
-    {/* State Badge */}
-    <rect x="105" y="16" width="110" height="22" rx="11" fill="#FEF3C7" stroke="#D97706" strokeWidth="1" />
-    <text
-      x="160"
-      y="31"
-      textAnchor="middle"
-      fill="#92400E"
-      fontSize="9.5"
-      fontWeight="700"
-      letterSpacing="0.08em"
-    >
-      BRISK • ACTIVE GAIT
-    </text>
+
   </svg>
 );
 
@@ -310,19 +365,7 @@ const GallopingChariotSVG: React.FC = () => (
       <line x1="218" y1="110" x2="208" y2="148" stroke="#DC2626" strokeWidth="3" strokeLinecap="round" />
     </g>
 
-    {/* State Badge */}
-    <rect x="95" y="16" width="130" height="22" rx="11" fill="#FEE2E2" stroke="#DC2626" strokeWidth="1" />
-    <text
-      x="160"
-      y="31"
-      textAnchor="middle"
-      fill="#991B1B"
-      fontSize="9.5"
-      fontWeight="700"
-      letterSpacing="0.08em"
-    >
-      GALLOPING • UNCHECKED IMPULSE
-    </text>
+
   </svg>
 );
 
@@ -377,18 +420,18 @@ export const ChariotHome: React.FC<ChariotHomeProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <ShastraLensButton
           onClick={handleInspect}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+          className="ml-2"
+        />
       </div>
 
       {/* State-Based SVG Swapping Container with smooth 1000ms crossfade */}
       <div className="relative w-full h-56 sm:h-64 rounded-xl bg-slate-50/70 border border-slate-200/80 overflow-hidden flex items-center justify-center">
+        {/* Dynamic Status Badge Overlay (Dynamic width, pill padding, whitespace-nowrap) */}
+        <div className="absolute top-3.5 z-20 flex justify-center w-full px-4 pointer-events-none">
+          <ChariotStatusBadge state={normalizedState} />
+        </div>
         {/* Calm Gait SVG Container */}
         <div
           className={`absolute inset-0 flex flex-col items-center justify-center p-3 transition-opacity duration-1000 ease-in-out ${

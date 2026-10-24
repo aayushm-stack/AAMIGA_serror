@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import {
   Target,
   Flame,
@@ -261,14 +262,9 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
             </span>
 
             {onOpenShastraLens && (
-              <button
-                type="button"
+              <ShastraLensButton
                 onClick={() => onOpenShastraLens('brahmacharya')}
-                className="text-[11px] text-sage hover:underline flex items-center gap-1 font-medium cursor-pointer"
-              >
-                <HelpCircle className="w-3 h-3" />
-                <span>Shastra Insight</span>
-              </button>
+              />
             )}
           </div>
 

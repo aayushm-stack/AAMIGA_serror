@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { Flame, Moon, Sparkles } from 'lucide-react';
 
 export type GunaType = 'Rajas' | 'Tamas' | 'Sattva';
@@ -127,14 +128,7 @@ export const DoshaBalancingCard: React.FC<DoshaBalancingCardProps> = ({
         {/* Shastra Lens Link */}
         {onInspectShastra && (
           <div className="pt-2 flex justify-end">
-            <button
-              type="button"
-              onClick={onInspectShastra}
-              className="text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors inline-flex items-center gap-1 focus:outline-none"
-            >
-              <span>Shastra Lens: Bhagavad Gita 14 & Charaka</span>
-              <span aria-hidden="true">&rarr;</span>
-            </button>
+            <ShastraLensButton onClick={onInspectShastra} />
           </div>
         )}
       </div>

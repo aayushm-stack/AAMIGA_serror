@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { DoshaType } from '../../types/iks';
 import { Sparkles, HeartHandshake, ShieldCheck } from 'lucide-react';
@@ -96,14 +97,10 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <ShastraLensButton
           onClick={handleInspect}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+          className="ml-2"
+        />
       </div>
 
       {/* Numerical Proportional Badges */}

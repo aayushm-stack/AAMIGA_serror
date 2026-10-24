@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import {
   getFourteenDayTrend,
@@ -149,14 +150,10 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
               Zero cloud telemetry. Client-side PBKDF2/AES-GCM encrypted persistence.
             </p>
           </div>
-          <button
-            type="button"
+          <ShastraLensButton
             onClick={() => openShastraLens('gunas')}
-            style={{ color: '#065F46' }}
-            className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition"
-          >
-            [Inspect Shastra Lens]
-          </button>
+            className="ml-2"
+          />
         </div>
 
         {/* 1. Dynamic 14-Day Recharts LineChart (Dynamically Scaled to Account Age) */}

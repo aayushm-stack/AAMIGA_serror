@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 
 export type BhavaKey = 'maitri' | 'karuna' | 'mudita' | 'upeksha';
 
@@ -123,14 +124,7 @@ export const BhavaCompassGrid: React.FC<BhavaCompassGridProps> = ({
       {/* Optional Shastra Lens toggle button */}
       {onInspectShastra && (
         <div className="mt-4 flex justify-end">
-          <button
-            type="button"
-            onClick={onInspectShastra}
-            className="text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors inline-flex items-center gap-1 focus:outline-none"
-          >
-            <span>Shastra Lens: Sutra 1.33 Exegesis</span>
-            <span aria-hidden="true">&rarr;</span>
-          </button>
+          <ShastraLensButton onClick={onInspectShastra} />
         </div>
       )}
     </section>
