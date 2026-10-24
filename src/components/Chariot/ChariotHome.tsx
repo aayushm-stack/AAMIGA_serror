@@ -15,6 +15,7 @@ export interface ChariotHomeProps {
 
 export interface ChariotStatusBadgeProps {
   state?: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' | 'Gallop';
+  state?: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' | 'Gallop';
   text?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -34,6 +35,10 @@ export const ChariotStatusBadge: React.FC<ChariotStatusBadgeProps> = ({
 }) => {
   const normalized: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' =
     state === 'Gallop' || state === 'Galloping'
+  const normalized: 'Resting' | 'Calm' | 'Brisk' | 'Galloping' =
+    state === 'Resting'
+      ? 'Resting'
+      : state === 'Gallop' || state === 'Galloping'
       ? 'Galloping'
       : state === 'Brisk'
       ? 'Brisk'

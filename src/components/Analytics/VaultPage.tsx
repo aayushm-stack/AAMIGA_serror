@@ -316,7 +316,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
               </h2>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Zero cloud telemetry. Client-side PBKDF2/AES-GCM encrypted persistence.
+              Your data is completely private. It stays securely encrypted directly on your device and is never sent to the cloud.
             </p>
           </div>
           <ShastraLensButton

@@ -1056,7 +1056,7 @@ export function DevHarness() {
                   Vault, Analytics &amp; Local-First Backup
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Zero cloud telemetry. Client-side PBKDF2/AES-GCM encrypted persistence.
+                  Your data is completely private. It stays securely encrypted directly on your device and is never sent to the cloud.
                 </p>
               </div>
               <ShastraLensButton onClick={() => openShastraLens('gunas')} />
