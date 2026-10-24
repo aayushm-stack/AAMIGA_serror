@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ShastraLensButton } from './Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../context/BrahmaPathContext';
 import { useBreathingEngine } from '../hooks/useBreathingEngine';
 import {
@@ -404,13 +405,7 @@ export function DevHarness() {
                   Assess nourishment, sleep rhythm, and cognitive energy conservation.
                 </p>
               </div>
-              <button
-                onClick={() => openShastraLens('trayopastambha')}
-                style={{ color: '#065F46' }}
-                className="text-xs font-semibold hover:underline"
-              >
-                [Inspect Shastra Lens]
-              </button>
+              <ShastraLensButton onClick={() => openShastraLens('trayopastambha')} />
             </div>
 
             {sadhanaMessage && (
@@ -633,13 +628,7 @@ export function DevHarness() {
                   Intercept sensory craving (Kāma) and cognitive loss using Pratipaksha Bhavana (YS 2.33).
                 </p>
               </div>
-              <button
-                onClick={() => openShastraLens('interceptor')}
-                style={{ color: '#065F46' }}
-                className="text-xs font-semibold hover:underline"
-              >
-                [Inspect Shastra Lens]
-              </button>
+              <ShastraLensButton onClick={() => openShastraLens('interceptor')} />
             </div>
 
             {/* Trigger Selector */}
@@ -834,13 +823,7 @@ export function DevHarness() {
                   Autonomic vagal brake via cyclic exhalations and kumbhaka.
                 </p>
               </div>
-              <button
-                onClick={() => openShastraLens('breathing')}
-                style={{ color: '#065F46' }}
-                className="text-xs font-semibold hover:underline"
-              >
-                [Inspect Shastra Lens]
-              </button>
+              <ShastraLensButton onClick={() => openShastraLens('breathing')} />
             </div>
 
             {/* Mode selection buttons */}
@@ -973,13 +956,7 @@ export function DevHarness() {
                   Neutralize mental turbulences through the four classical counter-attitudes.
                 </p>
               </div>
-              <button
-                onClick={() => openShastraLens('chitta_prasadanam')}
-                style={{ color: '#065F46' }}
-                className="text-xs font-semibold hover:underline"
-              >
-                [Inspect Shastra Lens]
-              </button>
+              <ShastraLensButton onClick={() => openShastraLens('chitta_prasadanam')} />
             </div>
 
             {/* 4 Emotion Buttons */}
@@ -1065,13 +1042,7 @@ export function DevHarness() {
                   Zero cloud telemetry. Client-side PBKDF2/AES-GCM encrypted persistence.
                 </p>
               </div>
-              <button
-                onClick={() => openShastraLens('gunas')}
-                style={{ color: '#065F46' }}
-                className="text-xs font-semibold hover:underline"
-              >
-                [Inspect Shastra Lens]
-              </button>
+              <ShastraLensButton onClick={() => openShastraLens('gunas')} />
             </div>
 
             {/* Weekly Trend Table */}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 
 export interface DailyVerse {
   id?: string;
@@ -43,14 +44,9 @@ export const DailyVerseCard: React.FC<DailyVerseCardProps> = ({
 
       {/* Shastra Lens action trigger */}
       {onOpenShastraLens && (
-        <button
-          type="button"
-          onClick={onOpenShastraLens}
-          className="mt-4 text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors inline-flex items-center gap-1 focus:outline-none"
-        >
-          <span>Inspect Shastra Lens</span>
-          <span aria-hidden="true">&rarr;</span>
-        </button>
+        <div className="mt-4">
+          <ShastraLensButton onClick={onOpenShastraLens} />
+        </div>
       )}
     </article>
   );

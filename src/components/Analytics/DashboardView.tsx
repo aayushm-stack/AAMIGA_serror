@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import GunaProgressBar, { GunaDistribution } from './GunaProgressBar';
 import { Flame, Brain, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react';
 
@@ -174,14 +175,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Shastra Lens Action */}
         {onInspectShastra && (
           <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex justify-end">
-            <button
-              type="button"
-              onClick={onInspectShastra}
-              className="text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors inline-flex items-center gap-1 focus:outline-none"
-            >
-              <span>Inspect Shastra Lens: Mysore Triguna Framework</span>
-              <span aria-hidden="true">&rarr;</span>
-            </button>
+            <ShastraLensButton onClick={onInspectShastra} />
           </div>
         )}
       </section>

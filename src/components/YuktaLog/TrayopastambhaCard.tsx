@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 
 interface TrayopastambhaCardProps {
   value?: number;
@@ -56,14 +57,7 @@ export const TrayopastambhaCard: React.FC<TrayopastambhaCardProps> = ({
       {/* Optional Shastra Lens trigger */}
       {onInspectShastra && (
         <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
-          <button
-            type="button"
-            onClick={onInspectShastra}
-            className="text-xs font-medium text-terracotta hover:text-terracotta-dark transition-colors inline-flex items-center gap-1"
-          >
-            <span>Shastra Lens: Charaka 11.35</span>
-            <span aria-hidden="true">&rarr;</span>
-          </button>
+          <ShastraLensButton onClick={onInspectShastra} />
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { ChariotState } from '../../types/iks';
 import { ChariotStatusReport } from '../../engine/chariotEngine';
@@ -419,14 +420,10 @@ export const ChariotHome: React.FC<ChariotHomeProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <ShastraLensButton
           onClick={handleInspect}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+          className="ml-2"
+        />
       </div>
 
       {/* State-Based SVG Swapping Container with smooth 1000ms crossfade */}

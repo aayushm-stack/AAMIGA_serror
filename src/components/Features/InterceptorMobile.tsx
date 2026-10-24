@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import {
   estimateCascadeStage,
@@ -114,14 +115,10 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
           </p>
         </div>
 
-        <button
-          type="button"
+        <ShastraLensButton
           onClick={() => openShastraLens('interceptor')}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
-        >
-          [Inspect Shastra Lens]
-        </button>
+          className="ml-2"
+        />
       </div>
 
       {/* 1. Mobile-Optimized Trigger Category Selector */}
