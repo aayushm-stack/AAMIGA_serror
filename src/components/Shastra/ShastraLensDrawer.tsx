@@ -117,21 +117,9 @@ export const ShastraLensDrawer: React.FC<ShastraLensDrawerProps> = ({
             <span className="text-[11px] uppercase tracking-wider font-semibold text-charcoal/60 block">
               English Meaning & Rationale
             </span>
-            <div className="p-4 rounded-xl bg-white/80 border border-[#E2E8F0] text-sm text-charcoal/85 leading-relaxed font-normal">
+            <div className="p-4 rounded-xl bg-white/80 border border-[#E2E8F0] text-sm text-charcoal/85 leading-relaxed">
               {meaningText}
             </div>
-          </div>
-        )}
-
-        {/* Canonical Reference citation if provided */}
-        {commentaryReference && commentaryReference !== meaningText && (
-          <div className="flex flex-col gap-1">
-            <span className="text-[10px] uppercase tracking-wider font-semibold text-charcoal/50 block">
-              Canonical Reference
-            </span>
-            <p className="text-xs text-charcoal/70 italic bg-white/50 p-2.5 rounded-lg border border-[#E2E8F0]/70 font-mono">
-              {commentaryReference}
-            </p>
           </div>
         )}
 

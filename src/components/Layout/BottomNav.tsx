@@ -4,7 +4,7 @@ import { Home, LayoutGrid, Database, Wind } from 'lucide-react';
 export type NavTab = 'home' | 'features' | 'vault' | 'breathe';
 
 interface BottomNavProps {
-  activeTab: NavTab | 'harness';
+  activeTab: NavTab | 'harness' | 'sankalpa';
   onTabChange: (tab: NavTab) => void;
 }
 
