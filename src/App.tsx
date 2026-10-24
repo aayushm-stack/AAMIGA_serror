@@ -19,6 +19,7 @@ import {
   GunaProgressBar,
   DashboardView,
   VaultPage,
+  FeaturesPage,
   ShastraLensDrawer,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
@@ -118,113 +119,7 @@ function MainContent() {
 
             {/* 2. FEATURES TAB (Sadhana Hub & Bhava Compass) */}
             {activeTab === 'features' && (
-              <div className="space-y-4">
-                <div className="border-b border-slate-200 pb-2">
-                  <h2 className="font-serif text-lg font-bold text-charcoal">
-                    Features &amp; Practices
-                  </h2>
-                  <p className="text-xs text-charcoal/60">
-                    Trayopastambha logging, YS 1.33 Bhāva Compass &amp; Interceptor
-                  </p>
-                </div>
-
-                {/* Trayopastambha Logging Card */}
-                <TrayopastambhaCard
-                  value={todayLog?.ahara.sensoryMindfulnessScore ?? 4}
-                  onValueChange={(val) => {
-                    const today = new Date().toISOString().split('T')[0];
-                    const existingAhara = todayLog?.ahara ?? {
-                      nutritionQuality: 'Sattvic',
-                      digitalConsumptionMinutes: 90,
-                      sensoryMindfulnessScore: 4,
-                    };
-                    const existingNidra = todayLog?.nidra ?? {
-                      hoursSlept: 7.5,
-                      bedtimeConsistency: true,
-                      restQuality: 'Restorative',
-                    };
-                    const existingBrahmacharya = todayLog?.brahmacharya ?? {
-                      energyConservationRating: 4,
-                      focusedStudyBlocks: 4,
-                      dominantGuna: 'Sattva',
-                    };
-
-                    addOrUpdateDailyLog(
-                      {
-                        date: today,
-                        ahara: {
-                          ...existingAhara,
-                          sensoryMindfulnessScore: val,
-                        },
-                        nidra: existingNidra,
-                        brahmacharya: existingBrahmacharya,
-                      },
-                      82
-                    );
-                  }}
-                  onInspectShastra={() => openShastraLens('trayopastambha')}
-                />
-
-                {/* Bhāva Compass (Chitta Prasādanam - YS 1.33) */}
-                <div className="pt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-serif text-sm font-bold text-charcoal">
-                      Bhāva Compass (YS 1.33)
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => openShastraLens('chitta_prasadanam')}
-                      className="text-xs font-semibold text-[#065F46] hover:underline"
-                    >
-                      [Shastra Lens]
-                    </button>
-                  </div>
-
-                  {!selectedBhavaKey ? (
-                    <BhavaCompassGrid
-                      onSelect={(item: BhavaItem) => setSelectedBhavaKey(item.key)}
-                      selectedKey={selectedBhavaKey}
-                      onInspectShastra={() => openShastraLens('chitta_prasadanam')}
-                    />
-                  ) : (
-                    <BhavaResultCard
-                      attitude={
-                        selectedBhavaKey === 'mudita'
-                          ? 'Mudita'
-                          : selectedBhavaKey === 'maitri'
-                          ? 'Maitri'
-                          : selectedBhavaKey === 'karuna'
-                          ? 'Karuna'
-                          : 'Upeksha'
-                      }
-                      onBack={() => setSelectedBhavaKey(null)}
-                      onSubmit={(reflection) => {
-                        alert(`Reflection saved to sadhana memory: "${reflection}"`);
-                        setSelectedBhavaKey(null);
-                      }}
-                    />
-                  )}
-                </div>
-
-                {/* Pause Gate Shortcut */}
-                <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between shadow-xs">
-                  <div>
-                    <h4 className="text-xs font-bold text-[#D97706] uppercase tracking-wider">
-                      Pause Gate (Loop Breaker)
-                    </h4>
-                    <p className="text-xs text-charcoal/70 mt-0.5">
-                      Gita 2.62-63 urge interceptor and cognitive reframe.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('harness')}
-                    className="px-3 py-1.5 bg-[#D97706] text-white text-xs font-semibold rounded-xl hover:bg-amber-700 transition shadow-xs"
-                  >
-                    Launch Gate
-                  </button>
-                </div>
-              </div>
+              <FeaturesPage />
             )}
 
             {/* 3. VAULT TAB (Analytics & Offline Backup) */}

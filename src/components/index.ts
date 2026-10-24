@@ -54,3 +54,6 @@ export { ShastraLensButton } from './Shastra/ShastraLensButton';
 export { ShastraLensDrawer } from './Shastra/ShastraLensDrawer';
 
 export { VaultPage } from './Analytics/VaultPage';
+
+// Features Shell Components
+export { FeaturesPage, SadhanaMobile, InterceptorMobile, CompassMobile } from './Features/FeaturesPage';
