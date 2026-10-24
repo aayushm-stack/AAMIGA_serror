@@ -1,42 +1,27 @@
 import React from 'react';
-import { Compass, ShieldCheck, Target, ArrowUpRight } from 'lucide-react';
-import { SankalpaItem } from './types';
+import { Compass, Target, Trash2, Plus, GripVertical, ShieldCheck } from 'lucide-react';
+import { Goal } from './types';
 
 export interface LongTermListContainerProps {
-  items?: SankalpaItem[];
+  goals: Goal[];
+  isEditing?: boolean;
+  onUpdateGoalText?: (id: string, text: string) => void;
+  onDeleteGoal?: (id: string) => void;
+  onAddGoal?: () => void;
   className?: string;
 }
-
-const DEFAULT_LONG_TERM_SANKALPAS: SankalpaItem[] = [
-  {
-    id: 'lt-1',
-    statement: 'I embody calm mental equanimity (Samatvam) under academic exam pressures.',
-    timeline: 'long_term',
-    category: 'equanimity',
-    timeframeTag: 'Semester Vision • YS 1.33',
-  },
-  {
-    id: 'lt-2',
-    statement: 'I master vital energy conservation (Virya) to achieve peak creative flow.',
-    timeline: 'long_term',
-    category: 'restraint',
-    timeframeTag: 'Annual Dharma • Brahmacharya',
-  },
-  {
-    id: 'lt-3',
-    statement: 'I sustain full charioteer mastery with sensory horses aligned to my Buddhi.',
-    timeline: 'long_term',
-    category: 'dharma',
-    timeframeTag: 'Lifelong Path • Katha Upanishad',
-  },
-];
 
 /**
  * LongTermListContainer: Displays enduring, strategic Vedic horizon resolves
  * that guide the user's overarching life direction and sustained Dharmic focus.
+ * Supports clean read-only mode and inline batch-editing mode without modals.
  */
 export const LongTermListContainer: React.FC<LongTermListContainerProps> = ({
-  items = DEFAULT_LONG_TERM_SANKALPAS,
+  goals,
+  isEditing = false,
+  onUpdateGoalText,
+  onDeleteGoal,
+  onAddGoal,
   className = '',
 }) => {
   return (
@@ -45,7 +30,7 @@ export const LongTermListContainer: React.FC<LongTermListContainerProps> = ({
       className={`space-y-3 pt-2 ${className}`}
     >
       {/* Distinct Typography Heading: Horizon Goals */}
-      <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0]">
+      <div className="flex items-center justify-between pb-1.5 border-b border-[#E2E8F0]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-sage" />
           <div>
@@ -64,39 +49,93 @@ export const LongTermListContainer: React.FC<LongTermListContainerProps> = ({
         </span>
       </div>
 
-      {/* Vertical List of Strategic Horizon Resolves */}
+      {/* List Container */}
       <div className="space-y-3">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="p-4 rounded-xl border border-sage/20 bg-gradient-to-br from-white/95 to-emerald-50/20 shadow-2xs hover:shadow-xs transition-all space-y-2.5"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-sage/10 text-sage flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Target className="w-4 h-4" />
+        {goals.length === 0 ? (
+          <div className="p-4 text-center rounded-xl border border-dashed border-[#E2E8F0] text-xs text-charcoal/50">
+            No horizon goals defined yet.
+          </div>
+        ) : (
+          goals.map((goal, index) => (
+            <div
+              key={goal.id}
+              className={`p-4 rounded-xl border transition-all duration-150 space-y-2 bg-gradient-to-br from-white/95 to-emerald-50/20 shadow-2xs ${
+                isEditing
+                  ? 'border-sage/40 ring-1 ring-sage/20'
+                  : 'border-sage/20'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                {/* Left Grip or Icon */}
+                {isEditing ? (
+                  <div className="mt-2 text-charcoal/30 flex-shrink-0">
+                    <GripVertical className="w-4 h-4" />
+                  </div>
+                ) : (
+                  <div className="w-7 h-7 rounded-lg bg-sage/10 text-sage flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Target className="w-4 h-4" />
+                  </div>
+                )}
+
+                {/* Goal Text: Read-Only vs Inline Input */}
+                <div className="flex-1 min-w-0">
+                  {isEditing ? (
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-semibold text-charcoal/50 uppercase tracking-wider block">
+                        Horizon Vision #{index + 1}
+                      </label>
+                      <input
+                        type="text"
+                        value={goal.text}
+                        onChange={(e) => onUpdateGoalText?.(goal.id, e.target.value)}
+                        placeholder="e.g. I embody calm mental equanimity..."
+                        className="w-full px-3 py-1.5 text-sm font-medium text-charcoal bg-white rounded-lg border border-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-sage/40 transition shadow-2xs"
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-sm font-serif italic text-charcoal/90 leading-relaxed font-medium">
+                      “{goal.text}”
+                    </p>
+                  )}
                 </div>
-                <p className="text-sm font-serif italic text-charcoal/90 leading-relaxed font-medium">
-                  “{item.statement}”
-                </p>
+
+                {/* Delete button in edit mode */}
+                {isEditing && (
+                  <button
+                    type="button"
+                    onClick={() => onDeleteGoal?.(goal.id)}
+                    aria-label="Delete horizon goal"
+                    className="p-1.5 mt-4 text-charcoal/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
               </div>
 
-              <ArrowUpRight className="w-4 h-4 text-charcoal/30 flex-shrink-0 mt-1" />
+              {/* Read-only metadata pill */}
+              {!isEditing && (
+                <div className="flex items-center justify-between pt-1 border-t border-[#E2E8F0]/50 text-[10px]">
+                  <span className="inline-flex items-center gap-1 font-semibold text-sage bg-sage/10 px-2 py-0.5 rounded">
+                    <ShieldCheck className="w-3 h-3" />
+                    Long-Term Sankalpa
+                  </span>
+                </div>
+              )}
             </div>
+          ))
+        )}
 
-            {/* Metadata Footer */}
-            <div className="flex items-center justify-between pt-2 border-t border-[#E2E8F0]/70 text-[10px]">
-              <span className="inline-flex items-center gap-1 font-semibold text-sage bg-sage/10 px-2 py-0.5 rounded">
-                <ShieldCheck className="w-3 h-3" />
-                {item.timeframeTag}
-              </span>
-
-              <span className="text-charcoal/50 uppercase tracking-widest font-mono text-[9px]">
-                {item.category}
-              </span>
-            </div>
-          </div>
-        ))}
+        {/* Inline Add Button when editing */}
+        {isEditing && (
+          <button
+            type="button"
+            onClick={onAddGoal}
+            className="w-full py-2.5 px-3 rounded-xl border border-dashed border-sage/50 bg-emerald-50/40 hover:bg-emerald-50 text-sage text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Horizon Goal</span>
+          </button>
+        )}
       </div>
     </section>
   );

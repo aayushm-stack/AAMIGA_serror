@@ -2,6 +2,16 @@
  * Type definitions for the Vedic Sankalpa (Goal Manager) module.
  * Grounded in the concept of Sankalpa: specific, present-tense resolve.
  */
+
+/**
+ * Strict schema for a Sankalpa Goal.
+ */
+export interface Goal {
+  id: string;
+  text: string;
+  type: 'SHORT_TERM' | 'LONG_TERM';
+}
+
 export type SankalpaTimeline = 'short_term' | 'long_term';
 
 export type SankalpaCategory =

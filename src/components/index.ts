@@ -59,7 +59,7 @@ export { SettingsModal } from './Settings/SettingsModal';
 
 // Sankalpa (Goal Manager) Components
 export { SankalpaHub, ShortTermListContainer, LongTermListContainer } from './Sankalpa';
-export type { SankalpaItem, SankalpaTimeline, SankalpaCategory } from './Sankalpa';
+export type { Goal, SankalpaItem, SankalpaTimeline, SankalpaCategory } from './Sankalpa';
 
 // Features Shell Components
 export { FeaturesPage, SadhanaMobile, InterceptorMobile, CompassMobile } from './Features/FeaturesPage';

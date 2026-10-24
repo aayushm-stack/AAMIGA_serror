@@ -1,47 +1,27 @@
 import React from 'react';
-import { CheckCircle2, Circle, Zap, Clock, Sparkles } from 'lucide-react';
-import { SankalpaItem } from './types';
+import { Circle, Sparkles, Trash2, Plus, Zap, GripVertical } from 'lucide-react';
+import { Goal } from './types';
 
 export interface ShortTermListContainerProps {
-  items?: SankalpaItem[];
-  onToggleItem?: (id: string) => void;
+  goals: Goal[];
+  isEditing?: boolean;
+  onUpdateGoalText?: (id: string, text: string) => void;
+  onDeleteGoal?: (id: string) => void;
+  onAddGoal?: () => void;
   className?: string;
 }
-
-const DEFAULT_SHORT_TERM_SANKALPAS: SankalpaItem[] = [
-  {
-    id: 'st-1',
-    statement: 'I study for 90 uninterrupted minutes before checking notifications.',
-    timeline: 'short_term',
-    category: 'focus',
-    timeframeTag: 'Today • Ahara',
-    completed: true,
-  },
-  {
-    id: 'st-2',
-    statement: 'I pause and breathe for 3 cycles whenever I reach for digital distraction.',
-    timeline: 'short_term',
-    category: 'restraint',
-    timeframeTag: 'Active • Brahmacharya',
-    completed: false,
-  },
-  {
-    id: 'st-3',
-    statement: 'I power down all screens by 10:30 PM to honor restorative sleep.',
-    timeline: 'short_term',
-    category: 'sleep',
-    timeframeTag: 'Daily • Nidra',
-    completed: false,
-  },
-];
 
 /**
  * ShortTermListContainer: Prioritizes primary indicators for F-pattern scanning,
  * ensuring high-frequency daily tasks are visible within the first 3 seconds of viewing.
+ * Supports clean read-only mode and inline batch-editing mode without modals.
  */
 export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
-  items = DEFAULT_SHORT_TERM_SANKALPAS,
-  onToggleItem,
+  goals,
+  isEditing = false,
+  onUpdateGoalText,
+  onDeleteGoal,
+  onAddGoal,
   className = '',
 }) => {
   return (
@@ -50,7 +30,7 @@ export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
       className={`space-y-3 ${className}`}
     >
       {/* Distinct Typography Heading: Immediate Intentions */}
-      <div className="flex items-center justify-between pb-1 border-b border-[#E2E8F0]">
+      <div className="flex items-center justify-between pb-1.5 border-b border-[#E2E8F0]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-terracotta animate-pulse" />
           <div>
@@ -69,69 +49,89 @@ export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
         </span>
       </div>
 
-      {/* Vertical List optimized for F-pattern left-to-right eye tracking */}
+      {/* List Container */}
       <div className="space-y-2.5">
-        {items.map((item) => {
-          const isDone = Boolean(item.completed);
-
-          return (
+        {goals.length === 0 ? (
+          <div className="p-4 text-center rounded-xl border border-dashed border-[#E2E8F0] text-xs text-charcoal/50">
+            No immediate intentions defined yet.
+          </div>
+        ) : (
+          goals.map((goal, index) => (
             <div
-              key={item.id}
-              onClick={() => onToggleItem?.(item.id)}
-              className={`p-3.5 rounded-xl border transition-all duration-150 flex items-start gap-3 bg-white/90 shadow-2xs hover:shadow-xs cursor-pointer ${
-                isDone
-                  ? 'border-sage/40 bg-sage/[0.03]'
-                  : 'border-[#E2E8F0] hover:border-terracotta/40'
+              key={goal.id}
+              className={`p-3.5 rounded-xl border transition-all duration-150 flex items-start gap-3 bg-white/90 shadow-2xs ${
+                isEditing
+                  ? 'border-terracotta/40 ring-1 ring-terracotta/20 bg-orange-50/20'
+                  : 'border-[#E2E8F0]'
               }`}
             >
-              {/* Primary Visual Indicator: Left Anchor for F-Pattern eye-fixation */}
-              <button
-                type="button"
-                aria-label={isDone ? 'Mark intention incomplete' : 'Mark intention complete'}
-                className="mt-0.5 flex-shrink-0 text-charcoal/60 hover:text-terracotta transition-colors focus:outline-none"
-              >
-                {isDone ? (
-                  <CheckCircle2 className="w-5 h-5 text-sage fill-sage/10" />
-                ) : (
-                  <Circle className="w-5 h-5 text-charcoal/40 hover:text-terracotta" />
-                )}
-              </button>
-
-              {/* Statement & Tag */}
-              <div className="flex-1 min-w-0 space-y-1">
-                <p
-                  className={`text-sm leading-snug font-medium transition-all ${
-                    isDone
-                      ? 'text-charcoal/50 line-through decoration-charcoal/30'
-                      : 'text-charcoal'
-                  }`}
-                >
-                  {item.statement}
-                </p>
-
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-terracotta bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/50">
-                    <Clock className="w-2.5 h-2.5" />
-                    {item.timeframeTag}
-                  </span>
-
-                  <span className="text-[10px] text-charcoal/40 uppercase tracking-wider">
-                    {item.category}
-                  </span>
+              {/* Left Indicator for F-Pattern eye-fixation */}
+              {isEditing ? (
+                <div className="mt-2 text-charcoal/30 flex-shrink-0">
+                  <GripVertical className="w-4 h-4" />
                 </div>
+              ) : (
+                <div className="mt-0.5 flex-shrink-0 text-terracotta">
+                  <Circle className="w-5 h-5 text-terracotta/60" />
+                </div>
+              )}
+
+              {/* Goal Text: Read-Only vs Inline Input */}
+              <div className="flex-1 min-w-0 space-y-1">
+                {isEditing ? (
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-semibold text-charcoal/50 uppercase tracking-wider block">
+                      Intention #{index + 1}
+                    </label>
+                    <input
+                      type="text"
+                      value={goal.text}
+                      onChange={(e) => onUpdateGoalText?.(goal.id, e.target.value)}
+                      placeholder="e.g. I focus my attention for 90 minutes..."
+                      className="w-full px-3 py-1.5 text-sm font-medium text-charcoal bg-white rounded-lg border border-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-terracotta/40 transition shadow-2xs"
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm leading-snug font-medium text-charcoal">
+                      {goal.text}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-terracotta bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/50">
+                        <Zap className="w-2.5 h-2.5" />
+                        Short-Term Sankalpa
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
-              {/* Action pulse indicator */}
-              <div className="flex-shrink-0 mt-1">
-                <Zap
-                  className={`w-3.5 h-3.5 ${
-                    isDone ? 'text-sage/60' : 'text-amber-500'
-                  }`}
-                />
-              </div>
+              {/* Action: Delete button in edit mode */}
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteGoal?.(goal.id)}
+                  aria-label="Delete intention"
+                  className="p-1.5 mt-4 text-charcoal/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
-          );
-        })}
+          ))
+        )}
+
+        {/* Inline Add Button when editing */}
+        {isEditing && (
+          <button
+            type="button"
+            onClick={onAddGoal}
+            className="w-full py-2.5 px-3 rounded-xl border border-dashed border-terracotta/50 bg-orange-50/40 hover:bg-orange-50 text-terracotta text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Immediate Intention</span>
+          </button>
+        )}
       </div>
     </section>
   );
