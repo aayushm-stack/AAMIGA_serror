@@ -211,7 +211,6 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
     logs,
     todayLog,
     preferences,
-    triggerBreakdown,
     openShastraLens,
     exportPlainJsonBackup,
     importPlainJsonBackup,
@@ -674,30 +673,8 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* 4. Trigger Loop Breakdown */}
-        <div className="space-y-2.5 pt-2">
-          <h3 className="text-sm font-bold text-slate-800">
-            Trigger Loop Breakdown
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {triggerBreakdown.map((item) => (
-              <div
-                key={item.category}
-                className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center shadow-2xs"
-              >
-                <span className="text-xs text-slate-700 font-medium">
-                  {item.label}
-                </span>
-                <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  {item.count}x
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 5. Backup & Encryption Management */}
-        <div className="pt-4 border-t border-slate-200 space-y-4">
+        {/* 4. Backup & Encryption Management */}
+        <div className="mt-8 pt-6 border-t border-slate-200 space-y-4">
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-emerald-800" />
             <h3 className="text-sm font-bold text-slate-800">
