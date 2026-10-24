@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
-import { calculateDailyEquilibrium } from '../../engine/analyticsEngine';
-import { TrayopastambhaLog } from '../../types/iks';
 import {
   ShieldCheck,
   Download,
@@ -11,9 +9,9 @@ import {
   RefreshCw,
   KeyRound,
   TrendingUp,
-  Activity,
   Award,
   Zap,
+  Sparkles,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -31,73 +29,42 @@ export interface VaultPageProps {
 }
 
 /**
- * Data point structure for the 8-point (or account-age scaled) Yukta trajectory.
+ * Trajectory point structure for dynamic Recharts rendering.
  */
 interface TrajectoryPoint {
-  date: string; // ISO 'YYYY-MM-DD'
+  id?: string;
+  date: string;
   displayDate: string; // Strict 'DD/MM' format
   yuktaScore: number;
   sleepHours: number;
-  dominantGuna: 'Sattva' | 'Rajas' | 'Tamas';
-  hasLogs: boolean;
+  dominantGuna: string;
   isToday: boolean;
-  penaltyApplied: boolean;
 }
 
 /**
- * Calculates user account age in calendar days.
+ * Formats an ISO date string (YYYY-MM-DD or full timestamp) into DD/MM.
  */
-function getAccountAgeDays(
-  accountCreationDate?: string | Date | number,
-  logs: TrayopastambhaLog[] = []
-): number {
+function formatDisplayDate(dateStr?: string): string {
+  if (!dateStr) return '--/--';
+  const clean = dateStr.slice(0, 10);
+  const parts = clean.split('-');
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}`;
+  }
+  return clean;
+}
+
+/**
+ * Checks if a given date string matches today's local date.
+ */
+function checkIsToday(dateStr?: string): boolean {
+  if (!dateStr) return false;
   const now = new Date();
-  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  if (typeof accountCreationDate === 'number' && !isNaN(accountCreationDate)) {
-    return Math.max(1, Math.round(accountCreationDate));
-  }
-
-  if (accountCreationDate) {
-    let creationDate: Date;
-    if (typeof accountCreationDate === 'string') {
-      const parts = accountCreationDate.slice(0, 10).split('-').map(Number);
-      if (parts.length === 3 && !parts.some(isNaN)) {
-        creationDate = new Date(parts[0], parts[1] - 1, parts[2]);
-      } else {
-        creationDate = new Date(accountCreationDate);
-      }
-    } else {
-      creationDate = new Date(accountCreationDate);
-    }
-
-    if (!isNaN(creationDate.getTime())) {
-      const creationMidnight = new Date(
-        creationDate.getFullYear(),
-        creationDate.getMonth(),
-        creationDate.getDate()
-      );
-      const diffMs = todayMidnight.getTime() - creationMidnight.getTime();
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      return Math.max(1, diffDays + 1); // Day 0 counts as Day 1
-    }
-  }
-
-  if (logs.length > 0) {
-    const dates = logs
-      .map((l) => l.date?.slice(0, 10))
-      .filter(Boolean)
-      .sort();
-    if (dates.length > 0) {
-      const [y, m, d] = dates[0].split('-').map(Number);
-      const earliestMidnight = new Date(y, m - 1, d);
-      const diffMs = todayMidnight.getTime() - earliestMidnight.getTime();
-      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      return Math.max(1, diffDays + 1);
-    }
-  }
-
-  return 8; // Default max horizon (7 previous days + today)
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  return dateStr.startsWith(todayStr);
 }
 
 /**
@@ -123,12 +90,10 @@ const ChartCustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) =
             className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
               data.isToday
                 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                : data.hasLogs
-                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                : 'bg-amber-50 text-amber-800 border border-amber-200'
+                : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
             }`}
           >
-            {data.isToday ? 'Live Today' : data.hasLogs ? 'Logged' : 'Decay (-5%)'}
+            {data.isToday ? 'Live Today' : 'Recorded'}
           </span>
         </div>
 
@@ -148,12 +113,6 @@ const ChartCustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) =
           <span>Sleep Rest:</span>
           <span>{data.sleepHours > 0 ? `${data.sleepHours} hrs` : '--'}</span>
         </div>
-
-        {data.penaltyApplied && (
-          <div className="text-[10px] text-amber-700 italic pt-0.5 border-t border-slate-100">
-            Discipline requires daily practice; -5% penalty applied.
-          </div>
-        )}
       </div>
     );
   }
@@ -198,20 +157,18 @@ export const GunaBadge: React.FC<{ guna: string }> = ({ guna }) => {
 /**
  * Standalone Vault & Analytics Page.
  *
- * Features:
- * 1. 8-Point Trajectory Graph (previous 7 days + today's live varying score).
- *    Strict DD/MM X-axis. Dynamically scaled to account age (<8 days) to eliminate empty flatlines.
- *    -5% natural decay for missed days after account creation.
- * 2. 7-Day Sadhana Momentum Card with recency-weighted average and letter grade.
- * 3. Minimalist 4-Column Table: Date (DD/MM) | Yukta Score | Sleep (hrs) | Dominant Guna.
- * 4. Minimalist color-coded Guna pills (Green / Terracotta / Slate).
- * 5. Local-first encrypted PBKDF2/AES-GCM backup controls.
+ * Implements:
+ * 1. New User Edge Case handling without artificial padding or flatlines.
+ * 2. Account Age calculated as `const activeDays = sadhanaLogs.length`.
+ * 3. Dynamic Graph Scaling: Passes ONLY existing logs into Recharts <LineChart>.
+ * 4. Dynamic Header: `{activeDays > 0 ? activeDays : 1}-Day Sadhana Momentum`.
+ * 5. Dynamic Table: Maps sadhanaLogs directly into table rows; displays
+ *    "No Sadhana data yet. Your journey begins today." empty state when activeDays === 0.
+ * 6. Local-first encrypted PBKDF2/AES-GCM backup controls.
  */
 export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
   const {
-    logs,
-    todayLog,
-    preferences,
+    logs: sadhanaLogs,
     openShastraLens,
     exportPlainJsonBackup,
     importPlainJsonBackup,
@@ -224,119 +181,40 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
   const [vaultPassword, setVaultPassword] = useState<string>('');
   const [vaultMessage, setVaultMessage] = useState<string>('');
 
-  // 1. Compute dynamic trajectory points (previous 7 days + today's live score, max 8 points)
-  const { trajectoryData, accountAgeDays, isNewUser } = useMemo(() => {
-    const ageDays = getAccountAgeDays(preferences?.accountCreationDate, logs);
-    const effectivePointsCount = Math.min(8, Math.max(1, ageDays));
-    const isNew = ageDays < 8;
+  // 1. Calculate Account Age: Determine the number of recorded days using activeDays
+  const activeDays = sadhanaLogs.length;
 
-    const now = new Date();
-    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  // 2. Dynamic Graph Scaling: ONLY existing logs sorted chronologically without padding or zero-fills
+  const chartData: TrajectoryPoint[] = useMemo(() => {
+    return [...sadhanaLogs]
+      .sort((a, b) => (a.date || '').localeCompare(b.date || ''))
+      .map((log) => {
+        const dateStr = log.date ? log.date.slice(0, 10) : '';
+        const displayDate = formatDisplayDate(dateStr);
+        const isToday = checkIsToday(dateStr);
+        const sleepHours = log.nidra?.hoursSlept ?? 0;
+        const dominantGuna = log.brahmacharya?.dominantGuna || 'Sattva';
 
-    // Generate date sequence in chronological order (oldest to today)
-    const targetDates: string[] = [];
-    for (let i = effectivePointsCount - 1; i >= 0; i--) {
-      const d = new Date(todayMidnight);
-      d.setDate(todayMidnight.getDate() - i);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      targetDates.push(`${y}-${m}-${day}`);
-    }
-
-    // Group logs by YYYY-MM-DD
-    const dateMap = new Map<string, TrayopastambhaLog[]>();
-    for (const log of logs) {
-      if (log && log.date) {
-        const d = log.date.slice(0, 10);
-        if (!dateMap.has(d)) {
-          dateMap.set(d, []);
-        }
-        dateMap.get(d)!.push(log);
-      }
-    }
-
-    const todayDateStr = targetDates[targetDates.length - 1];
-
-    // Anchor baseline discipline score
-    let lastDisciplineScore = 75;
-    const firstLoggedDate = targetDates.find(
-      (d) => (dateMap.get(d) || []).length > 0 || (d === todayDateStr && todayLog)
-    );
-    if (firstLoggedDate) {
-      const initialLogs = dateMap.get(firstLoggedDate) || (todayLog ? [todayLog] : []);
-      if (initialLogs.length > 0) {
-        lastDisciplineScore = calculateDailyEquilibrium(initialLogs, firstLoggedDate);
-      }
-    }
-
-    const points: TrajectoryPoint[] = [];
-
-    for (let idx = 0; idx < targetDates.length; idx++) {
-      const dateStr = targetDates[idx];
-      const isToday = idx === targetDates.length - 1;
-
-      // Format strictly to DD/MM (e.g. 24/10)
-      const parts = dateStr.split('-');
-      const displayDate = `${parts[2]}/${parts[1]}`;
-
-      // Collect logs for this date
-      const dayLogs = dateMap.get(dateStr) || [];
-      if (isToday && todayLog && !dayLogs.some((l) => l.id === todayLog.id)) {
-        dayLogs.push(todayLog);
-      }
-
-      const hasLogs = dayLogs.length > 0;
-      let yuktaScore: number;
-      let penaltyApplied = false;
-      let sleepHours = 0;
-      let dominantGuna: 'Sattva' | 'Rajas' | 'Tamas' = 'Sattva';
-
-      if (hasLogs) {
-        // Today or historical day with active entries: use weighted equilibrium
-        yuktaScore = calculateDailyEquilibrium(dayLogs, dateStr);
-        lastDisciplineScore = yuktaScore;
-        penaltyApplied = false;
-
-        const latest = dayLogs[dayLogs.length - 1];
-        sleepHours = latest.nidra?.hoursSlept ?? 7.5;
-        dominantGuna = (latest.brahmacharya?.dominantGuna as 'Sattva' | 'Rajas' | 'Tamas') ?? 'Sattva';
-      } else {
-        // Day after installation with no logs: apply -5% natural decay penalty
-        penaltyApplied = true;
-        yuktaScore = Math.max(0, Math.round(lastDisciplineScore * 0.95));
-        lastDisciplineScore = yuktaScore;
-        sleepHours = 0;
-        dominantGuna = 'Rajas';
-      }
-
-      points.push({
-        date: dateStr,
-        displayDate,
-        yuktaScore,
-        sleepHours,
-        dominantGuna,
-        hasLogs,
-        isToday,
-        penaltyApplied,
+        return {
+          id: log.id,
+          date: dateStr,
+          displayDate,
+          yuktaScore: log.yuktaScore,
+          sleepHours,
+          dominantGuna,
+          isToday,
+        };
       });
-    }
+  }, [sadhanaLogs]);
 
-    return {
-      trajectoryData: points,
-      accountAgeDays: ageDays,
-      isNewUser: isNew,
-    };
-  }, [logs, todayLog, preferences?.accountCreationDate]);
-
-  // 2. Compute "7-Day Sadhana Momentum" (recency-weighted average of graph data)
+  // 3. Dynamic Momentum Score based on recorded activeDays
   const { momentumScore, gradeInfo } = useMemo(() => {
-    if (trajectoryData.length === 0) {
+    if (activeDays === 0) {
       return {
-        momentumScore: 75,
+        momentumScore: 100,
         gradeInfo: {
-          grade: 'A',
-          label: 'Yukta Equilibrium',
+          grade: 'Initial',
+          label: 'Awaiting First Sadhana',
           color: '#047857',
           bg: '#ECFDF5',
           border: '#A7F3D0',
@@ -347,8 +225,8 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
     let weightedSum = 0;
     let totalWeight = 0;
 
-    trajectoryData.forEach((pt, i) => {
-      // Linear recency weight: today has highest weight, oldest day has weight 1
+    chartData.forEach((pt, i) => {
+      // Linear recency weight: recent days weighted higher
       const weight = i + 1;
       weightedSum += pt.yuktaScore * weight;
       totalWeight += weight;
@@ -408,12 +286,12 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
     }
 
     return { momentumScore: score, gradeInfo: info };
-  }, [trajectoryData]);
+  }, [activeDays, chartData]);
 
-  // 3. Prepare table rows in reverse chronological order (Today at top)
+  // 4. History Table Rows: reverse chronological order (newest on top)
   const tableRows = useMemo(() => {
-    return [...trajectoryData].reverse();
-  }, [trajectoryData]);
+    return [...chartData].reverse();
+  }, [chartData]);
 
   return (
     <div
@@ -447,100 +325,115 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
           />
         </div>
 
-        {/* 1. The Graph: 8-Point Trajectory (Previous 7 Days + Today's Live Score) */}
+        {/* 1. The Graph: Dynamic Scaling passing ONLY existing sadhanaLogs */}
         <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-slate-50/70 border border-slate-200/80">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-emerald-800" />
               <h3 className="text-sm font-bold text-slate-800">
-                {isNewUser
-                  ? `${trajectoryData.length}-Point Sadhana Progression (Account Day ${accountAgeDays})`
-                  : '8-Point Sadhana Trajectory (7 Days + Today Live)'}
+                {activeDays > 0 ? activeDays : 1}-Day Sadhana Trajectory
               </h3>
             </div>
 
             <div className="flex items-center gap-2 text-[11px]">
               <span
                 style={{
-                  backgroundColor: isNewUser ? '#DEF7EC' : '#F1F5F9',
-                  color: isNewUser ? '#03543F' : '#475569',
+                  backgroundColor: activeDays > 0 ? '#DEF7EC' : '#F1F5F9',
+                  color: activeDays > 0 ? '#03543F' : '#475569',
                 }}
                 className="px-2.5 py-0.5 rounded-full font-bold border border-slate-200"
               >
-                {trajectoryData.length} Points ({trajectoryData[0]?.displayDate} – {trajectoryData[trajectoryData.length - 1]?.displayDate})
+                {activeDays} {activeDays === 1 ? 'Point' : 'Points'}
+                {activeDays > 0 &&
+                  chartData.length > 0 &&
+                  ` (${chartData[0]?.displayDate} – ${chartData[chartData.length - 1]?.displayDate})`}
               </span>
             </div>
           </div>
 
           <p className="text-[11px] text-slate-500 leading-relaxed">
-            {isNewUser
-              ? `X-axis dynamically scaled strictly to your ${trajectoryData.length} active days since joining. Unrecorded days apply a -5% decay penalty to model habit entropy.`
-              : 'Rolling 8-point horizon: 7 previous days plus today’s live varying score. Unrecorded days apply a -5% decay penalty, simulating that discipline requires daily practice.'}
+            {activeDays > 0
+              ? `X-axis dynamically scaled to your ${activeDays} recorded days. Exactly ${activeDays} points plotted without artificial flatlining.`
+              : 'X-axis will automatically scale as you log your daily Trayopastambha habits. No flatlining or padded zeroes.'}
           </p>
 
-          {/* Responsive Recharts LineChart with strict DD/MM X-axis */}
-          <div className="w-full h-56 sm:h-64 pt-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={trajectoryData}
-                margin={{ top: 10, right: 14, left: -22, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="#E2E8F0"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="displayDate"
-                  interval={0}
-                  tick={{ fontSize: 11, fill: '#64748B', fontWeight: 600 }}
-                  stroke="#CBD5E1"
-                  tickLine={false}
-                  padding={{ left: 16, right: 16 }}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  ticks={[0, 25, 50, 75, 100]}
-                  tick={{ fontSize: 11, fill: '#64748B' }}
-                  stroke="#CBD5E1"
-                  tickLine={false}
-                />
-                <Tooltip content={<ChartCustomTooltip />} />
-                <ReferenceLine
-                  y={75}
-                  stroke="#065F46"
-                  strokeDasharray="4 4"
-                  label={{
-                    value: 'Yukta (75)',
-                    fill: '#065F46',
-                    fontSize: 10,
-                    position: 'insideTopRight',
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="yuktaScore"
-                  stroke="#065F46"
-                  strokeWidth={2.75}
-                  dot={{
-                    r: 4.5,
-                    fill: '#065F46',
-                    strokeWidth: 1.5,
-                    stroke: '#FFFFFF',
-                  }}
-                  activeDot={{
-                    r: 7,
-                    fill: '#D97706',
-                    stroke: '#FFFFFF',
-                    strokeWidth: 2,
-                  }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {/* Responsive Recharts LineChart with dynamic X-axis */}
+          {activeDays === 0 ? (
+            <div className="w-full h-56 sm:h-64 flex flex-col items-center justify-center p-6 text-center rounded-xl border border-dashed border-slate-300 bg-white/60 space-y-2">
+              <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <p className="text-sm font-bold text-slate-700">
+                Your trajectory line will appear with your first logged Sadhana
+              </p>
+              <p className="text-xs text-slate-400 max-w-xs">
+                Record your daily habits today to begin tracking your equilibrium progress.
+              </p>
+            </div>
+          ) : (
+            <div className="w-full h-56 sm:h-64 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={chartData}
+                  margin={{ top: 10, right: 14, left: -22, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#E2E8F0"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="displayDate"
+                    interval={0}
+                    tick={{ fontSize: 11, fill: '#64748B', fontWeight: 600 }}
+                    stroke="#CBD5E1"
+                    tickLine={false}
+                    padding={{ left: 16, right: 16 }}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    ticks={[0, 25, 50, 75, 100]}
+                    tick={{ fontSize: 11, fill: '#64748B' }}
+                    stroke="#CBD5E1"
+                    tickLine={false}
+                  />
+                  <Tooltip content={<ChartCustomTooltip />} />
+                  <ReferenceLine
+                    y={75}
+                    stroke="#065F46"
+                    strokeDasharray="4 4"
+                    label={{
+                      value: 'Yukta (75)',
+                      fill: '#065F46',
+                      fontSize: 10,
+                      position: 'insideTopRight',
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="yuktaScore"
+                    stroke="#065F46"
+                    strokeWidth={2.75}
+                    dot={{
+                      r: 4.5,
+                      fill: '#065F46',
+                      strokeWidth: 1.5,
+                      stroke: '#FFFFFF',
+                    }}
+                    activeDot={{
+                      r: 7,
+                      fill: '#D97706',
+                      stroke: '#FFFFFF',
+                      strokeWidth: 2,
+                    }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
-        {/* 2. Momentum Score Metric Card */}
+        {/* 2. Dynamic Momentum Score Metric Card */}
         <div
           style={{
             backgroundColor: '#FFFFFF',
@@ -553,11 +446,11 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
               <div className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-amber-700" />
                 <h3 className="text-sm sm:text-base font-bold text-slate-900">
-                  7-Day Sadhana Momentum
+                  {activeDays > 0 ? activeDays : 1}-Day Sadhana Momentum
                 </h3>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Recency-weighted trajectory average assessing weekly biological consistency
+                Recency-weighted trajectory average assessing biological consistency across {activeDays > 0 ? activeDays : 1} active {activeDays === 1 ? 'day' : 'days'}
               </p>
             </div>
 
@@ -572,7 +465,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
             >
               <Zap className="w-3.5 h-3.5" />
               <span className="text-xs font-bold uppercase tracking-wider">
-                Weekly Grade: {gradeInfo.grade} ({gradeInfo.label})
+                Momentum: {gradeInfo.grade} ({gradeInfo.label})
               </span>
             </div>
           </div>
@@ -583,7 +476,9 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
             </span>
             <span className="text-base font-bold text-slate-400">/ 100</span>
             <span className="ml-3 text-xs font-semibold text-slate-500">
-              {momentumScore >= 75
+              {activeDays === 0
+                ? 'Your baseline is set. Complete today’s Sadhana to establish your initial equilibrium.'
+                : momentumScore >= 75
                 ? 'Sustaining Sattvic poise and disciplined momentum.'
                 : 'Focus on evening recovery and circadian rest to rebuild momentum.'}
             </span>
@@ -601,7 +496,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* 3. The Table: Exactly 4 Columns (Date (DD/MM) | Yukta Score | Sleep (hrs) | Dominant Guna) */}
+        {/* 3. The Dynamic Table: 4 Columns or Empty State */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-800">
@@ -612,62 +507,76 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
             </span>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-100/90 text-slate-700 border-b border-slate-200">
-                  <th className="p-3 font-bold whitespace-nowrap">Date (DD/MM)</th>
-                  <th className="p-3 font-bold whitespace-nowrap">Yukta Score</th>
-                  <th className="p-3 font-bold whitespace-nowrap">Sleep (hrs)</th>
-                  <th className="p-3 font-bold whitespace-nowrap">Dominant Guna</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {tableRows.map((row) => (
-                  <tr
-                    key={row.date}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    {/* Column 1: Date (DD/MM) */}
-                    <td className="p-3 font-semibold text-slate-900 whitespace-nowrap">
-                      <span>{row.displayDate}</span>
-                      {row.isToday && (
-                        <span className="ml-2 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                          Live Today
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Column 2: Yukta Score */}
-                    <td className="p-3 font-bold text-slate-900 whitespace-nowrap">
-                      <span
-                        style={{
-                          color:
-                            row.yuktaScore >= 75
-                              ? '#047857'
-                              : row.yuktaScore >= 50
-                              ? '#D97706'
-                              : '#DC2626',
-                        }}
-                      >
-                        {row.yuktaScore} / 100
-                      </span>
-                    </td>
-
-                    {/* Column 3: Sleep (hrs) */}
-                    <td className="p-3 text-slate-700 whitespace-nowrap font-medium">
-                      {row.sleepHours > 0 ? `${row.sleepHours} hrs` : '--'}
-                    </td>
-
-                    {/* Column 4: Dominant Guna with Minimalist UI Badge */}
-                    <td className="p-3 whitespace-nowrap">
-                      <GunaBadge guna={row.dominantGuna} />
-                    </td>
+          {activeDays === 0 ? (
+            <div className="p-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 text-center space-y-2.5">
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-[#D97706]" />
+              </div>
+              <h4 className="text-sm font-bold text-slate-800">
+                No Sadhana data yet. Your journey begins today.
+              </h4>
+              <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                Complete your daily reflection in the Sadhana Hub to populate your personal ledger and track biological equilibrium.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-100/90 text-slate-700 border-b border-slate-200">
+                    <th className="p-3 font-bold whitespace-nowrap">Date (DD/MM)</th>
+                    <th className="p-3 font-bold whitespace-nowrap">Yukta Score</th>
+                    <th className="p-3 font-bold whitespace-nowrap">Sleep (hrs)</th>
+                    <th className="p-3 font-bold whitespace-nowrap">Dominant Guna</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {tableRows.map((row) => (
+                    <tr
+                      key={row.id || row.date}
+                      className="hover:bg-slate-50/80 transition-colors"
+                    >
+                      {/* Column 1: Date (DD/MM) */}
+                      <td className="p-3 font-semibold text-slate-900 whitespace-nowrap">
+                        <span>{row.displayDate}</span>
+                        {row.isToday && (
+                          <span className="ml-2 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                            Live Today
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Column 2: Yukta Score */}
+                      <td className="p-3 font-bold text-slate-900 whitespace-nowrap">
+                        <span
+                          style={{
+                            color:
+                              row.yuktaScore >= 75
+                                ? '#047857'
+                                : row.yuktaScore >= 50
+                                ? '#D97706'
+                                : '#DC2626',
+                          }}
+                        >
+                          {row.yuktaScore} / 100
+                        </span>
+                      </td>
+
+                      {/* Column 3: Sleep (hrs) */}
+                      <td className="p-3 text-slate-700 whitespace-nowrap font-medium">
+                        {row.sleepHours > 0 ? `${row.sleepHours} hrs` : '--'}
+                      </td>
+
+                      {/* Column 4: Dominant Guna with Minimalist UI Badge */}
+                      <td className="p-3 whitespace-nowrap">
+                        <GunaBadge guna={row.dominantGuna} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* 4. Backup & Encryption Management */}
@@ -785,7 +694,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
             </div>
           </div>
 
-          {/* Reset Data */}
+          {/* Purge & Reset Local Sadhana Data */}
           <div className="pt-2 flex justify-between items-center">
             <button
               type="button"
