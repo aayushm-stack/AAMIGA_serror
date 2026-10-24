@@ -1,58 +1,160 @@
-import React from 'react';
-import { BrahmaPathProvider } from './context/BrahmaPathContext';
+import React, { useState } from 'react';
+import { BrahmaPathProvider, useBrahmaPath } from './context/BrahmaPathContext';
 import { DevHarness } from './components/DevHarness';
+import {
+  AppLayout,
+  TopBar,
+  BottomNav,
+  type NavTab,
+  ChariotHome,
+  TridoshaBar,
+  DailyVerseCard,
+  BreathePage,
+  DoshaBalancingCard,
+  GunaProgressBar,
+  VaultPage,
+  FeaturesPage,
+  ShastraLensDrawer,
+} from './components';
+import dailyVersesData from './data/dailyVerses.json';
+
+type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness';
 
 /**
- * BrahmaPath Application Root (Phase 3 Integration Entrypoint):
- *
- * Provides global state and pure IKS logic engines to the UI hierarchy
- * via <BrahmaPathProvider>.
- *
- * DEV-2 (Milan) INTEGRATION MAP:
- * Once Dev-2 finishes styling the presentational components in `/src/components/*`,
- * they seamlessly replace the interactive sections inside DevHarness or mount
- * directly below using `useBrahmaPath()`:
- *
- * 1. Chariot Dashboard:
- *    -> `/src/components/Chariot/ChariotHome.tsx`
- *    -> `/src/components/Layout/TopBar.tsx`
- *
- * 2. Daily Sadhana Sliders:
- *    -> `/src/components/YuktaLog/TrayopastambhaCard.tsx`
- *
- * 3. Loop Interceptor & Pause Gate:
- *    -> `/src/components/Interceptor/CascadeVisualizer.tsx`
- *    -> `/src/components/Interceptor/InterceptorModal.tsx`
- *    -> `/src/components/Interceptor/PratipakshaForm.tsx`
- *
- * 4. Concentric Breathing Pacer:
- *    -> `/src/components/Breathing/BreathingCircle.tsx`
- *
- * 5. YS 1.33 Emotional Reappraisal:
- *    -> `/src/components/Compass/BhavaCompass.tsx`
- *
- * 6. Tri-Guna & Habit Analytics:
- *    -> `/src/components/Analytics/GunaPieChart.tsx`
- *    -> `/src/components/Analytics/HabitTrends.tsx`
- *
- * 7. Slide-out Shastra Lens Drawer:
- *    -> `/src/components/Shastra/ShastraLens.tsx`
- *
- * 8. Mobile Navigation:
- *    -> `/src/components/Layout/BottomNav.tsx`
+ * Main application content bound to the global IKS context and unified navigation.
+ */
+function MainContent() {
+  const {
+    gunaDistribution,
+    activeLensData,
+    openShastraLens,
+    closeShastraLens,
+  } = useBrahmaPath();
+
+  // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness'
+  const [activeTab, setActiveTab] = useState<AppViewTab>('home');
+
+  // Today's featured shastra verse
+  const todayVerse = dailyVersesData[1] || dailyVersesData[0];
+
+  // Derive dominant Guna
+  const dominantGunaType =
+    gunaDistribution.sattva >= 55
+      ? 'Sattva'
+      : gunaDistribution.rajas >= gunaDistribution.tamas
+      ? 'Rajas'
+      : 'Tamas';
+
+  return (
+    <div className="min-h-screen bg-[#FDFBF7] text-[#1E293B] font-sans antialiased">
+      {/* ================= VIEW 1: DEVELOPER / JUDGE TEST HARNESS ================= */}
+      {activeTab === 'harness' ? (
+        <div>
+          {/* Header to quickly navigate back to the Mobile UI */}
+          <div className="bg-[#1E293B] text-white text-xs px-4 py-2.5 flex items-center justify-between border-b border-slate-700 sticky top-0 z-50 shadow-md">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span className="font-semibold tracking-wide">
+                BrahmaPath Dev / Judge Harness Mode
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('home')}
+              className="px-3.5 py-1.5 bg-[#D97706] text-white rounded-lg text-xs font-bold hover:bg-amber-700 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+            >
+              📱 Back to Mobile UI
+            </button>
+          </div>
+
+          {/* DevHarness component kept 100% intact for developer/judge evaluation */}
+          <DevHarness />
+        </div>
+      ) : (
+        /* ================= VIEW 2: PRODUCTION MOBILE-FIRST UI ================= */
+        <AppLayout>
+          {/* Top Bar with Settings (⚙️) icon switching to DevHarness & invisible judge double-click */}
+          <TopBar
+            onProfileClick={() => openShastraLens('chariot')}
+            onSettingsClick={() => setActiveTab('harness')}
+          />
+
+          <main className="p-4 space-y-4">
+            {/* 1. HOME TAB */}
+            {activeTab === 'home' && (
+              <div className="space-y-4">
+                {/* Katha Upanishad Chariot Allegory with SVG crossfade */}
+                <ChariotHome onInspectShastra={() => openShastraLens('chariot')} />
+
+                {/* Live Normalized Tridosha Gradient Bar & Compassionate Remedy */}
+                <TridoshaBar />
+
+                {/* Daily Anchor Shloka */}
+                <DailyVerseCard
+                  verse={todayVerse}
+                  onOpenShastraLens={() => openShastraLens('trayopastambha')}
+                />
+
+                {/* Live Tri-Guna Balance Progress */}
+                <GunaProgressBar distribution={gunaDistribution} />
+
+                {/* Dosha & Circadian Balancing Recommendation */}
+                <DoshaBalancingCard
+                  currentGuna={dominantGunaType}
+                  onInspectShastra={() => openShastraLens('gunas')}
+                />
+              </div>
+            )}
+
+            {/* 2. FEATURES TAB (Sadhana Hub, Pause Gate, Bhava Compass) */}
+            {activeTab === 'features' && (
+              <FeaturesPage />
+            )}
+
+            {/* 3. VAULT TAB (Analytics, 14-Day Dynamic LineChart & Offline Backup) */}
+            {activeTab === 'vault' && (
+              <VaultPage />
+            )}
+
+            {/* 4. BREATHE TAB (Prāṇamaya Kosha Regulation) */}
+            {activeTab === 'breathe' && (
+              <div className="space-y-4">
+                <BreathePage />
+              </div>
+            )}
+          </main>
+
+          {/* 4-Icon Bottom Navigation */}
+          <BottomNav
+            activeTab={activeTab as NavTab}
+            onTabChange={(tab) => setActiveTab(tab)}
+          />
+        </AppLayout>
+      )}
+
+      {/* Slide-out Shastra Lens Drawer */}
+      <ShastraLensDrawer
+        isOpen={Boolean(activeLensData)}
+        onClose={closeShastraLens}
+        verse={activeLensData?.sanskritVerse ?? ''}
+        transliteration={activeLensData?.transliteration}
+        source={activeLensData?.sourceText}
+        literalMeaning={activeLensData?.literalMeaning}
+        commentary={activeLensData?.literalMeaning || activeLensData?.commentaryReference || ''}
+        commentaryReference={activeLensData?.commentaryReference}
+        practicalApplication={activeLensData?.practicalModernApplication}
+      />
+    </div>
+  );
+}
+
+/**
+ * Root Application Wrapper supplying global context.
  */
 export default function App() {
   return (
     <BrahmaPathProvider>
-      <div className="min-h-screen bg-[#FDFBF7] text-[#1E293B] antialiased selection:bg-amber-200 selection:text-amber-900">
-        <main className="w-full">
-          {/*
-            Interactive Dev Harness for Phase 1 & 2 verification.
-            Exposes complete end-to-end functionality across all 6 IKS modules.
-          */}
-          <DevHarness />
-        </main>
-      </div>
+      <MainContent />
     </BrahmaPathProvider>
   );
 }
