@@ -52,7 +52,8 @@ export type ShastraFeatureKey =
   | 'gunas'
   | 'chariot'
   | 'brahmacharya'
-  | 'cascade';
+  | 'cascade'
+  | 'pratipaksha';
 
 /**
  * Scriptural knowledge metadata linking application features directly to authoritative Indian Knowledge Systems texts.

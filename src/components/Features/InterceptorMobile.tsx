@@ -243,9 +243,18 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1.5">
-            2. Pratipaksha (Wholesome Reframe – YS 2.33)
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-bold text-slate-700">
+              2. Pratipaksha (Wholesome Reframe – YS 2.33)
+            </label>
+            <button
+              type="button"
+              onClick={() => openShastraLens('pratipaksha')}
+              className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 transition cursor-pointer"
+            >
+              Shastra Lens: YS 2.33
+            </button>
+          </div>
           <textarea
             rows={2}
             value={pratipakshaText}

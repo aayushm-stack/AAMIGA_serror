@@ -47,19 +47,29 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     practicalModernApplication:
       'Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.',
   },
+  pratipaksha: {
+    id: 'shastra-pratipaksha',
+    featureKey: 'pratipaksha',
+    sanskritVerse: 'वितर्कबाधने प्रतिपक्षभावनम् ॥',
+    transliteration: 'vitarka-bādhane pratipakṣa-bhāvanam ||',
+    sourceText: 'Patanjali Yoga Sutras 2.33',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.33',
+    literalMeaning:
+      'When the mind is afflicted by unwholesome thoughts or destructive impulses (vitarkas), one should deliberately cultivate the exact opposite, wholesome perspective (Pratipaksha Bhavana). This active cognitive reframing cuts the root of toxic loops by redirecting mental energy (Chitta Vritti) rather than merely suppressing it.',
+    practicalModernApplication:
+      'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
+  },
   interceptor: {
     id: 'shastra-interceptor',
     featureKey: 'interceptor',
-    sanskritVerse:
-      'वितर्कबाधने प्रतिपक्षभावनम् ॥\nध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते । सङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥',
-    transliteration:
-      'vitarka-bādhane pratipakṣa-bhāvanam ||\ndhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate | saṅgāt sañjāyate kāmaḥ kāmāt krodho \'bhijāyate ||',
-    sourceText: 'Yoga Sutra 2.33 & Bhagavad Gita 2.62-63',
-    commentaryReference: 'Vyasa Bhashya on YS 2.33 & Shankara Bhashya on Gita 2.62',
+    sanskritVerse: 'वितर्कबाधने प्रतिपक्षभावनम् ॥',
+    transliteration: 'vitarka-bādhane pratipakṣa-bhāvanam ||',
+    sourceText: 'Patanjali Yoga Sutras 2.33',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.33',
     literalMeaning:
-      'Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.',
+      'When the mind is afflicted by unwholesome thoughts or destructive impulses (vitarkas), one should deliberately cultivate the exact opposite, wholesome perspective (Pratipaksha Bhavana). This active cognitive reframing cuts the root of toxic loops by redirecting mental energy (Chitta Vritti) rather than merely suppressing it.',
     practicalModernApplication:
-      'Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.',
+      'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
   },
   breathing: {
     id: 'shastra-breathing',
