@@ -1,99 +1,120 @@
 import React, { useState } from 'react';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
-import { getBhavaPrescription } from '../../engine/bhavaEngine';
-import { BhavaEmotion } from '../../types/iks';
-import {
-  Compass,
-  Sparkles,
-  HeartHandshake,
-  Heart,
-  Smile,
-  ShieldCheck,
-  CheckCircle2,
-} from 'lucide-react';
+import { BhavaCardData } from '../../types/iks';
+import { Compass, ChevronDown } from 'lucide-react';
 
 export interface CompassMobileProps {
   className?: string;
 }
 
-interface EmotionItem {
-  key: BhavaEmotion;
-  label: string;
-  subtext: string;
-  category: 'Student Psychology' | 'Interpersonal Dynamics';
-  prescribedLabel: string;
-}
-
-const EMOTION_ITEMS: EmotionItem[] = [
-  // --- Modern Student Psychology Triggers ---
+/**
+ * 8 Bhava Compass cards covering student psychological friction and positive emotional buffers
+ * rooted in Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33).
+ */
+export const BHAVA_CARDS: BhavaCardData[] = [
   {
-    key: 'Academic Burnout seeing others succeed effortlessly',
-    label: 'Academic Burnout seeing others succeed effortlessly',
-    subtext: 'Exhaustion & comparison when peers make high scores and success look effortless',
-    category: 'Student Psychology',
-    prescribedLabel: 'Mudita (Sympathetic Joy)',
+    id: 'burnout-effortless',
+    title: 'Academic Burnout seeing others succeed effortlessly',
+    sanskritTrait: 'Muditā (मुदिता)',
+    isPositive: false,
+    explanationText:
+      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts. Cultivate Mudita.',
+    actionSteps: [
+      'Silently wish them well, and watch your own mental burden disappear.',
+      'Refocus attention onto your immediate Swadharma.',
+    ],
+    isResolved: false,
   },
   {
-    key: 'Imposter Syndrome / Feeling Left Out',
-    label: 'Imposter Syndrome / Feeling Left Out',
-    subtext: 'Feeling like a fraud, unworthy, or hopelessly left behind by everyone else',
-    category: 'Student Psychology',
-    prescribedLabel: 'Karuna (Self-Compassion)',
+    id: 'imposter-syndrome',
+    title: 'Imposter Syndrome / Feeling Left Out',
+    sanskritTrait: 'Karuṇā (करुणा)',
+    isPositive: false,
+    explanationText:
+      'Feeling fraudulent or isolated is a universal student experience; counter self-criticism with Karuna.',
+    actionSteps: [
+      'Recognize that peers experience identical self-doubt in silence.',
+      'Apply gentle, non-judgmental kindness to your current learning stage.',
+    ],
+    isResolved: false,
   },
   {
-    key: 'Dealing with a toxic project partner',
-    label: 'Dealing with a toxic project partner',
-    subtext: 'Blame-shifting, passive-aggression, slackers, or uncooperative team friction',
-    category: 'Student Psychology',
-    prescribedLabel: 'Upeksha (Equanimity)',
-  },
-
-  // --- Classical Chitta Prasadanam Dynamics ---
-  {
-    key: 'Peer_Envy',
-    label: 'Peer Envy / Placement Jealousy',
-    subtext: 'Resentment at peer accolades, offers, or milestones',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Mudita (Joy in Virtue)',
+    id: 'toxic-partner',
+    title: 'Dealing with a toxic project partner',
+    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    isPositive: false,
+    explanationText:
+      'Passive-aggressive friction or slackers drain mental bandwidth; practice serene Upeksha.',
+    actionSteps: [
+      'Establish firm, objective task boundaries without reactive hostility.',
+      'Conserve your cognitive virya by refusing to absorb their chaotic energy.',
+    ],
+    isResolved: false,
   },
   {
-    key: 'Other_Suffering',
-    label: 'Witnessing a Peer’s Distress',
-    subtext: 'Classmates breaking under exam pressure or suffering in silence',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Karuna (Compassion)',
+    id: 'peer-envy',
+    title: 'Peer Envy / Placement Jealousy',
+    sanskritTrait: 'Muditā (मुदिता)',
+    isPositive: false,
+    explanationText:
+      'Resentment at peer accolades contracts the intellect; celebrate virtue to expand the heart.',
+    actionSteps: [
+      'Acknowledge the effort behind their milestone.',
+      'Remind yourself that another’s accomplishment never diminishes your potential.',
+    ],
+    isResolved: false,
   },
   {
-    key: 'Shared_Success',
-    label: 'Group Achievement / Peer Flourishing',
-    subtext: 'Celebrating collective team breakthroughs & friends’ joy',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Maitri (Friendliness)',
+    id: 'peer-distress',
+    title: 'Witnessing a Peer’s Distress',
+    sanskritTrait: 'Karuṇā (करुणा)',
+    isPositive: false,
+    explanationText:
+      'Observing classmates breaking under pressure demands compassionate presence rather than detached analysis.',
+    actionSteps: [
+      'Offer active, quiet listening without hasty problem-solving.',
+      'Share a grounding moment away from study stress.',
+    ],
+    isResolved: false,
   },
   {
-    key: 'Toxic_Hostility',
-    label: 'Hostility & Online Flame',
-    subtext: 'Malicious remarks, toxic threads, and unprovoked provocation',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Upeksha (Serene Immunity)',
+    id: 'hostility-online',
+    title: 'Hostility & Online Flame',
+    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    isPositive: false,
+    explanationText:
+      'Malicious remarks and flame wars hook the ego; practice majestic neutrality and non-engagement.',
+    actionSteps: [
+      'Step away from the screen immediately.',
+      'Take 5 deep exhalations and leave the unvirtuous comment unaddressed.',
+    ],
+    isResolved: false,
+  },
+  {
+    id: 'friend-milestone',
+    title: 'Celebrating a Friend’s Milestone',
+    sanskritTrait: 'Maitrī (मैत्री)',
+    isPositive: true,
+    appreciationMessage:
+      'Genuinely rejoicing in a peer’s happiness acts as a radiant buffer for your own mental clarity.',
+  },
+  {
+    id: 'shared-gratitude',
+    title: 'Deep Gratitude for Shared Collaboration',
+    sanskritTrait: 'Maitrī (मैत्री)',
+    isPositive: true,
+    appreciationMessage:
+      'Expressing heartfelt gratitude for peer support cultivates enduring Sattva and emotional resilience.',
   },
 ];
 
 /**
  * Mobile-first Bhava Compass (Yoga Sutra 1.33 Chitta Prasadanam).
- * Maps student psychological turmoil and interpersonal perturbations directly
- * to the four classical serene counter-attitudes:
- * - Maitrī (Friendliness toward the happy/prosperous)
- * - Karuṇā (Compassion toward the suffering & self-compassion)
- * - Muditā (Sympathetic delight in others' virtue & success)
- * - Upekṣā (Majestic equanimity and non-reactivity toward toxicity)
+ * Renders an accordion shell to explore the 8 Bhava cards with smooth transitions.
  */
 export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) => {
   const { openShastraLens } = useBrahmaPath();
-  const [selectedEmotion, setSelectedEmotion] =
-    useState<BhavaEmotion>('Academic Burnout seeing others succeed effortlessly');
-
-  const prescription = getBhavaPrescription(selectedEmotion);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   return (
     <div
@@ -101,7 +122,7 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
         backgroundColor: '#FFFFFF',
         borderColor: '#E2E8F0',
       }}
-      className={`p-5 sm:p-6 rounded-3xl border shadow-xs space-y-6 ${className}`}
+      className={`p-5 sm:p-6 rounded-3xl border shadow-xs overflow-y-auto pb-12 space-y-6 ${className}`}
     >
       {/* Header with Title and Shastra Lens Trigger */}
       <div className="flex items-center justify-between border-b border-slate-200/90 pb-4">
@@ -117,144 +138,82 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => openShastraLens('chitta_prasadanam')}
-          style={{ color: '#065F46' }}
-          className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition"
-        >
-          [YS 1.33 Lens]
-        </button>
+        {openShastraLens && (
+          <button
+            type="button"
+            onClick={() => openShastraLens('chitta_prasadanam')}
+            style={{ color: '#065F46' }}
+            className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition"
+          >
+            [YS 1.33 Lens]
+          </button>
+        )}
       </div>
 
-      {/* Emotion Triggers: Stack of Touch-Friendly Mobile Cards */}
+      {/* Accordion List for the 8 BHAVA_CARDS */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-            What is troubling your mind right now?
-          </label>
-          <span className="text-[11px] text-slate-400 font-medium">
-            Tap to find the antidote
-          </span>
-        </div>
+        {BHAVA_CARDS.map((card) => {
+          const isExpanded = expandedId === card.id;
 
-        {/* Triggers List */}
-        <div className="space-y-2">
-          {EMOTION_ITEMS.map((em) => {
-            const isSelected = selectedEmotion === em.key;
-            return (
+          return (
+            <div
+              key={card.id}
+              className={`rounded-2xl border transition-all duration-300 shadow-2xs ${
+                isExpanded
+                  ? 'border-emerald-600/40 bg-emerald-50/20 shadow-xs'
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }`}
+            >
+              {/* Accordion Card Header / Toggle Button */}
               <button
-                key={em.key}
                 type="button"
-                onClick={() => setSelectedEmotion(em.key)}
-                style={{
-                  backgroundColor: isSelected ? '#F0FDF4' : '#FDFBF7',
-                  borderColor: isSelected ? '#065F46' : '#E2E8F0',
-                  color: isSelected ? '#065F46' : '#334155',
-                }}
-                className={`w-full p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer shadow-2xs relative ${
-                  isSelected
-                    ? 'ring-2 ring-emerald-600/30 font-semibold shadow-xs'
-                    : 'hover:bg-slate-50 hover:border-slate-300'
-                }`}
+                onClick={() => setExpandedId(isExpanded ? null : card.id)}
+                className="w-full flex items-center justify-between p-4 text-left cursor-pointer focus:outline-none"
+                aria-expanded={isExpanded}
               >
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <span className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                    {em.label}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 pr-2">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900">
+                    {card.title}
                   </span>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold flex-shrink-0 ${
-                      isSelected
-                        ? 'bg-emerald-700 text-white'
-                        : 'bg-slate-200 text-slate-600'
-                    }`}
-                  >
-                    {em.prescribedLabel}
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    {card.sanskritTrait}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
-                  {em.subtext}
-                </p>
-                {isSelected && (
-                  <div className="mt-2 flex items-center gap-1.5 text-[11px] text-emerald-800 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>Active Antidote Prescribed Below</span>
-                  </div>
-                )}
+
+                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      card.isPositive
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : 'bg-orange-50 text-terracotta border border-orange-200/60'
+                    }`}
+                  >
+                    {card.isPositive ? 'Positive Buffer' : 'Friction Antidote'}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-500 ease-in-out ${
+                      isExpanded ? 'rotate-180 text-emerald-700' : ''
+                    }`}
+                  />
+                </div>
               </button>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Humanized Prescription Details Card */}
-      <div
-        style={{ backgroundColor: '#FDFBF7', borderColor: '#E5E7EB' }}
-        className="p-5 sm:p-6 rounded-2xl border space-y-4 shadow-xs animate-fadeIn"
-      >
-        {/* Prescription Header & Sanskrit Sutra */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 border-b border-slate-200/90 pb-3.5">
-          <div className="flex items-center gap-2">
-            <span
-              style={{ backgroundColor: '#065F46', color: '#FFFFFF' }}
-              className="text-xs px-3.5 py-1.5 rounded-full font-bold shadow-2xs tracking-wide flex items-center gap-1.5"
-            >
-              {prescription.recommendedAttitude === 'Karuna_Compassion' && (
-                <Heart className="w-3.5 h-3.5 text-rose-300 fill-rose-300" />
-              )}
-              {prescription.recommendedAttitude === 'Mudita_SympatheticJoy' && (
-                <Smile className="w-3.5 h-3.5 text-amber-300" />
-              )}
-              {prescription.recommendedAttitude === 'Maitri_Friendliness' && (
-                <HeartHandshake className="w-3.5 h-3.5 text-emerald-300" />
-              )}
-              {prescription.recommendedAttitude === 'Upeksha_Equanimity' && (
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-300" />
-              )}
-              Prescribed: {prescription.recommendedAttitude.replace('_', ' ')}
-            </span>
-          </div>
-
-          <span className="text-[11px] sm:text-xs text-slate-600 font-serif italic">
-            {prescription.sanskritSutra}
-          </span>
-        </div>
-
-        {/* Humanized Cognitive Reappraisal Prompt */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              The Compassionate Reframe:
-            </h4>
-          </div>
-          <div className="text-xs sm:text-sm text-slate-800 leading-relaxed bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-            <p className="font-serif italic text-slate-800 leading-relaxed text-sm">
-              &ldquo;{prescription.cognitivePrompt}&rdquo;
-            </p>
-          </div>
-        </div>
-
-        {/* Gentle Actionable Practice */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <HeartHandshake className="w-4 h-4 text-emerald-700" />
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Gentle Physical Practice:
-            </h4>
-          </div>
-          <div className="text-xs sm:text-sm text-slate-700 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs leading-relaxed">
-            {prescription.actionableStep}
-          </div>
-        </div>
-
-        {/* Guna Equilibrium Target Badge */}
-        <div className="flex items-center justify-between pt-2 text-[11px] text-slate-500 font-medium border-t border-slate-200/80">
-          <span>Target Equilibrium (Yoga Sutra 1.33):</span>
-          <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-            {prescription.targetGunaShift} (Chitta Prasādanam – Lucid Serenity)
-          </span>
-        </div>
+              {/* Accordion Content Shell with Smooth Max-Height Animation */}
+              <div
+                className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                  isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="p-4 pt-1 border-t border-slate-100/80">
+                  {/* Content shell placeholder - ready for data population */}
+                  <div className="text-xs text-slate-400 italic">
+                    Card content shell ready for data rendering...
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
