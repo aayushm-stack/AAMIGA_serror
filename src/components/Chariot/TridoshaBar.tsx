@@ -1,7 +1,7 @@
 import React from 'react';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { DoshaType } from '../../types/iks';
-import { Sparkles, HeartHandshake, ShieldCheck } from 'lucide-react';
+import { HeartHandshake, Sparkles } from 'lucide-react';
 
 export interface TridoshaBarProps {
   vata?: number;
@@ -16,12 +16,12 @@ export interface TridoshaBarProps {
 /**
  * Tridosha Biological Balance visualizer.
  * Normalizes Vata, Pitta, and Kapha to strictly equal 100%,
- * renders a soft horizontal shifting color gradient:
+ * renders a soft, horizontal shifting color gradient:
  * - Slate (#64748B) for Vata (Air/Space)
- * - Terracotta (#D97706) for Pitta (Fire/Water)
+ * - Terracotta (#C2410C) for Pitta (Fire/Water)
  * - Forest Green (#065F46) for Kapha (Water/Earth)
  *
- * Below the gradient, outputs a compassionate, one-line physical remedy.
+ * Below the gradient, outputs a dynamic, compassionate Ayurvedic physical remedy.
  */
 export const TridoshaBar: React.FC<TridoshaBarProps> = ({
   vata,
@@ -43,36 +43,65 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
 
   // Strict normalization guaranteeing vataPct + pittaPct + kaphaPct === 100%
   const total = rawVata + rawPitta + rawKapha || 1;
-  const vataPct = Math.max(5, Math.round((rawVata / total) * 100));
-  const pittaPct = Math.max(5, Math.round((rawPitta / total) * 100));
-  // Guarantee exact sum of 100%
-  const kaphaPct = Math.max(5, 100 - (vataPct + pittaPct));
+  let vataPct = Math.round((rawVata / total) * 100);
+  let pittaPct = Math.round((rawPitta / total) * 100);
+  let kaphaPct = 100 - (vataPct + pittaPct);
 
-  // Active dominant dosha
+  // Safety bounds
+  if (kaphaPct < 0) {
+    pittaPct += kaphaPct;
+    kaphaPct = 0;
+  } else if (kaphaPct > 100) {
+    kaphaPct = 100;
+    vataPct = 0;
+    pittaPct = 0;
+  }
+
+  // Active dominant / highest dosha
   const activeDominant: DoshaType =
-    dominantDosha ?? diag?.aggravatedDosha ?? (
-      vataPct >= pittaPct && vataPct >= kaphaPct
-        ? 'Vata'
-        : pittaPct >= vataPct && pittaPct >= kaphaPct
-        ? 'Pitta'
-        : 'Kapha'
-    );
+    dominantDosha ??
+    diag?.aggravatedDosha ??
+    (vataPct >= pittaPct && vataPct >= kaphaPct
+      ? 'Vata'
+      : pittaPct >= vataPct && pittaPct >= kaphaPct
+      ? 'Pitta'
+      : 'Kapha');
 
-  // Compassionate one-line physical remedy
-  const physicalRemedy =
-    remedy ??
-    diag?.physicalRemedy ??
-    (activeDominant === 'Vata'
-      ? 'High Vata detected: Step away from screens for 10 minutes and sip warm water.'
-      : activeDominant === 'Pitta'
-      ? 'High Pitta detected: Cool mental heat with 3 minutes of Sheetali breathing and splash cold water on your face and eyes.'
-      : 'High Kapha detected: Counter physical stagnation with 10 brisk Surya Namaskars or a 10-minute brisk walk in fresh air.');
+  // Dynamic compassionate physical remedy based on the highest Dosha
+  let physicalRemedy = remedy ?? diag?.physicalRemedy;
+  if (!physicalRemedy) {
+    if (activeDominant === 'Vata') {
+      physicalRemedy =
+        'High Vata detected: Step away from screens for 10 minutes and sip warm water.';
+    } else if (activeDominant === 'Pitta') {
+      physicalRemedy =
+        'High Pitta detected: Cool mental heat with 3 minutes of Sheetali breathing and splash cold water on your face and eyes.';
+    } else {
+      physicalRemedy =
+        'High Kapha detected: Counter physical stagnation with 10 brisk Surya Namaskars or a 10-minute brisk walk in fresh air.';
+    }
+  }
 
-  const handleInspect = onInspectShastra ?? (() => context.openShastraLens('gunas'));
+  const handleInspect =
+    onInspectShastra ?? (() => context.openShastraLens('gunas'));
 
-  // Color Stops for smooth horizontal shifting gradient
-  const vataEnd = Math.max(0, Math.min(90, vataPct));
-  const pittaEnd = Math.max(vataEnd + 5, Math.min(95, vataPct + pittaPct));
+  // Soft blend feathering between color zones for smooth horizontal shifting gradient
+  const feather = 6;
+  const vataEnd = vataPct;
+  const pittaEnd = vataPct + pittaPct;
+
+  const vStop1 = Math.max(0, vataEnd - feather);
+  const vStop2 = Math.min(100, vataEnd + feather);
+  const pStop1 = Math.max(vStop2, pittaEnd - feather);
+  const pStop2 = Math.min(100, pittaEnd + feather);
+
+  const gradientBackground = `linear-gradient(90deg, 
+    #64748B 0%, 
+    #64748B ${vStop1}%, 
+    #C2410C ${vStop2}%, 
+    #C2410C ${pStop1}%, 
+    #065F46 ${pStop2}%, 
+    #065F46 100%)`;
 
   return (
     <div
@@ -86,7 +115,7 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
       <div className="flex items-center justify-between border-b border-slate-200 pb-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#D97706] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#C2410C] animate-pulse" />
             <h3 className="text-base font-bold text-slate-900">
               Tridosha Biological Balance
             </h3>
@@ -118,8 +147,8 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
             activeDominant === 'Vata' ? 'ring-2 ring-slate-400/40 shadow-xs' : ''
           }`}
         >
-          <div className="flex items-center justify-center gap-1 mb-0.5">
-            <span className="w-2 h-2 rounded-full bg-slate-500" />
+          <div className="flex items-center justify-center gap-1.5 mb-0.5">
+            <span className="w-2 h-2 rounded-full bg-[#64748B]" />
             <span className="text-[11px] font-bold text-slate-700">Vata</span>
           </div>
           <span className="text-base font-extrabold text-slate-800">{vataPct}%</span>
@@ -129,18 +158,18 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
         {/* Pitta Badge (Terracotta) */}
         <div
           style={{
-            backgroundColor: activeDominant === 'Pitta' ? '#FEF3C7' : '#F8FAFC',
-            borderColor: activeDominant === 'Pitta' ? '#D97706' : '#E2E8F0',
+            backgroundColor: activeDominant === 'Pitta' ? '#FFF7ED' : '#F8FAFC',
+            borderColor: activeDominant === 'Pitta' ? '#C2410C' : '#E2E8F0',
           }}
           className={`p-2.5 rounded-xl border text-center transition-all ${
-            activeDominant === 'Pitta' ? 'ring-2 ring-amber-500/40 shadow-xs' : ''
+            activeDominant === 'Pitta' ? 'ring-2 ring-orange-500/40 shadow-xs' : ''
           }`}
         >
-          <div className="flex items-center justify-center gap-1 mb-0.5">
-            <span className="w-2 h-2 rounded-full bg-[#D97706]" />
-            <span className="text-[11px] font-bold text-amber-900">Pitta</span>
+          <div className="flex items-center justify-center gap-1.5 mb-0.5">
+            <span className="w-2 h-2 rounded-full bg-[#C2410C]" />
+            <span className="text-[11px] font-bold text-orange-950">Pitta</span>
           </div>
-          <span className="text-base font-extrabold text-[#D97706]">{pittaPct}%</span>
+          <span className="text-base font-extrabold text-[#C2410C]">{pittaPct}%</span>
           <span className="text-[10px] text-slate-400 block">Fire &amp; Water</span>
         </div>
 
@@ -154,9 +183,9 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
             activeDominant === 'Kapha' ? 'ring-2 ring-emerald-600/40 shadow-xs' : ''
           }`}
         >
-          <div className="flex items-center justify-center gap-1 mb-0.5">
+          <div className="flex items-center justify-center gap-1.5 mb-0.5">
             <span className="w-2 h-2 rounded-full bg-[#065F46]" />
-            <span className="text-[11px] font-bold text-emerald-900">Kapha</span>
+            <span className="text-[11px] font-bold text-emerald-950">Kapha</span>
           </div>
           <span className="text-base font-extrabold text-[#065F46]">{kaphaPct}%</span>
           <span className="text-[10px] text-slate-400 block">Water &amp; Earth</span>
@@ -166,25 +195,28 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
       {/* Soft Horizontal Shifting Color Gradient */}
       <div className="space-y-1.5 pt-1">
         <div className="flex justify-between text-[11px] font-semibold text-slate-500 px-0.5">
-          <span>Slate (Vata: {vataPct}%)</span>
-          <span>Terracotta (Pitta: {pittaPct}%)</span>
-          <span>Forest Green (Kapha: {kaphaPct}%)</span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#64748B]" />
+            Slate (Vata: {vataPct}%)
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#C2410C]" />
+            Terracotta (Pitta: {pittaPct}%)
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-[#065F46]" />
+            Forest Green (Kapha: {kaphaPct}%)
+          </span>
         </div>
 
-        {/* Continuous Soft Gradient Track */}
-        <div className="relative w-full h-4 rounded-full overflow-hidden shadow-inner bg-slate-100 p-0.5">
+        {/* Continuous Soft Shifting Gradient Track */}
+        <div className="relative w-full h-5 sm:h-6 rounded-full overflow-hidden shadow-inner bg-slate-100 p-0.5 border border-slate-200">
           <div
             style={{
               width: '100%',
               height: '100%',
               borderRadius: '9999px',
-              background: `linear-gradient(90deg, 
-                #64748B 0%, 
-                #64748B ${Math.max(0, vataEnd - 4)}%, 
-                #D97706 ${vataEnd + 4}%, 
-                #D97706 ${Math.max(vataEnd + 5, pittaEnd - 4)}%, 
-                #065F46 ${pittaEnd + 4}%, 
-                #065F46 100%)`,
+              background: gradientBackground,
               transition: 'background 700ms ease-in-out',
             }}
             className="transition-all duration-700 ease-out shadow-xs"
@@ -192,14 +224,19 @@ export const TridoshaBar: React.FC<TridoshaBarProps> = ({
         </div>
       </div>
 
-      {/* Compassionate One-Line Physical Remedy */}
-      <div className="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl flex items-start gap-2.5 shadow-2xs">
-        <HeartHandshake className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
-        <div className="space-y-0.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 block">
-            Ayurvedic Physical Remedy
-          </span>
-          <p className="text-xs text-amber-950 font-medium leading-relaxed">
+      {/* Dynamic Compassionate Remedy Based on Highest Dosha */}
+      <div className="p-4 bg-amber-50/80 border border-amber-200/90 rounded-xl flex items-start gap-3 shadow-xs">
+        <HeartHandshake className="w-5 h-5 text-amber-700 flex-shrink-0 mt-0.5" />
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
+              Ayurvedic Biological Remedy
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+              Highest: {activeDominant}
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-amber-950 font-medium leading-relaxed">
             {physicalRemedy}
           </p>
         </div>

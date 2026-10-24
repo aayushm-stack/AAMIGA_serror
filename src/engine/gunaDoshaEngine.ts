@@ -158,122 +158,187 @@ export function calculateGunaDistribution(
 }
 
 /**
- * Analyzes behavioral signals and urge triggers to detect acute Dosha imbalances
- * based strictly on real user logs rather than arbitrary percentages:
+ * Analyzes behavioral signals and urge triggers to detect acute Tri-Dosha biological imbalances:
  *
  * - Vata: Spiked by high screen time, irregular sleep, or "Academic Anxiety".
  * - Pitta: Spiked by "Social Comparison" or "Toxic Hostility".
  * - Kapha: Spiked by >9 hours of sleep or Tamasic nutritional intake.
+ *
+ * Normalizes all three doshas to strictly equal 100%, determines the dominant aggravated humor,
+ * and prescribes dynamic, compassionate Ayurvedic remedies based on the highest Dosha.
  */
 export function diagnoseDoshaImbalance(
-  logs: TrayopastambhaLog[],
-  interceptions: InterceptionRecord[]
+  logs: TrayopastambhaLog[] = [],
+  interceptions: InterceptionRecord[] = []
 ): DoshaDiagnosisResult {
+  const safeLogs = Array.isArray(logs) ? logs : [logs];
+  const safeInterceptions = Array.isArray(interceptions) ? interceptions : [interceptions];
+
   let vataScore = 0;
   let pittaScore = 0;
   let kaphaScore = 0;
 
-  // 1. Evaluate user lifestyle logs (Ahara & Nidra signals)
-  const recentLogs = logs.slice(-7);
+  // 1. Evaluate lifestyle & physiological signals from logs (recent 7 days)
+  const recentLogs = safeLogs.slice(-7);
   for (const log of recentLogs) {
-    // VATA: Spikes with high screen time (>120 mins)
-    if (log.ahara.digitalConsumptionMinutes > 120) {
-      const excessIntervals = Math.floor((log.ahara.digitalConsumptionMinutes - 120) / 30) + 1;
-      vataScore += excessIntervals * 10;
+    if (!log) continue;
+
+    // --- VATA SPIKES ---
+    // High screen time (>120 mins)
+    if (log.ahara && typeof log.ahara.digitalConsumptionMinutes === 'number') {
+      if (log.ahara.digitalConsumptionMinutes > 120) {
+        const excessIntervals = Math.floor((log.ahara.digitalConsumptionMinutes - 120) / 30) + 1;
+        vataScore += 20 + excessIntervals * 10;
+      }
     }
 
-    // VATA: Spikes with irregular sleep (erratic schedule or disturbed rest)
-    if (!log.nidra.bedtimeConsistency) {
-      vataScore += 15;
-    }
-    if (log.nidra.restQuality === 'Disturbed') {
-      vataScore += 15;
-    }
-    if (log.nidra.hoursSlept < 6) {
-      vataScore += 12;
+    // Irregular sleep (inconsistent bedtime schedule, disturbed rest quality, or <6 hours)
+    if (log.nidra) {
+      if (log.nidra.bedtimeConsistency === false) {
+        vataScore += 20;
+      }
+      if (log.nidra.restQuality === 'Disturbed') {
+        vataScore += 20;
+      }
+      if (typeof log.nidra.hoursSlept === 'number' && log.nidra.hoursSlept < 6) {
+        vataScore += 15;
+      }
+
+      // --- KAPHA SPIKES ---
+      // >9 hours of sleep
+      if (typeof log.nidra.hoursSlept === 'number' && log.nidra.hoursSlept > 9) {
+        kaphaScore += 35;
+      }
+      if (log.nidra.restQuality === 'Lethargic') {
+        kaphaScore += 20;
+      }
     }
 
-    // KAPHA: Spikes if user logs > 9 hours of sleep
-    if (log.nidra.hoursSlept > 9) {
-      kaphaScore += 25;
-    }
-    if (log.nidra.restQuality === 'Lethargic') {
-      kaphaScore += 15;
+    // --- KAPHA SPIKES ---
+    // Tamasic nutrition
+    if (log.ahara && log.ahara.nutritionQuality === 'Tamasic') {
+      kaphaScore += 35;
     }
 
-    // KAPHA: Spikes if user logs Tamasic nutritional intake
-    if (log.ahara.nutritionQuality === 'Tamasic') {
-      kaphaScore += 25;
-    }
-
-    // PITTA: Supporting dietary heating signals
-    if (log.ahara.nutritionQuality === 'Rajasic') {
+    // Supporting heating signals for Pitta
+    if (log.ahara && log.ahara.nutritionQuality === 'Rajasic') {
       pittaScore += 10;
     }
-    if (log.brahmacharya.dominantGuna === 'Rajas') {
-      pittaScore += 8;
+    if (log.brahmacharya && log.brahmacharya.dominantGuna === 'Rajas') {
+      pittaScore += 10;
+    }
+
+    // General reflection text scan
+    if (log.generalReflection) {
+      const refText = log.generalReflection.toLowerCase();
+      if (
+        refText.includes('academic anxiety') ||
+        (refText.includes('academic') && refText.includes('anxiety'))
+      ) {
+        vataScore += 35;
+      }
+      if (
+        refText.includes('social comparison') ||
+        refText.includes('comparison')
+      ) {
+        pittaScore += 35;
+      }
+      if (
+        refText.includes('toxic hostility') ||
+        refText.includes('toxic') ||
+        refText.includes('hostil')
+      ) {
+        pittaScore += 40;
+      }
     }
   }
 
-  // 2. Evaluate specific trigger categories from Interceptions
-  const recentInterceptions = interceptions.slice(0, 15);
+  // 2. Evaluate urge triggers & vitarka narratives from Interception records (recent 15)
+  const recentInterceptions = safeInterceptions.slice(0, 15);
   for (const rec of recentInterceptions) {
-    const trigger = rec.triggerCategory as string;
+    if (!rec) continue;
+    const trigger = (rec.triggerCategory || '') as string;
     const vitarka = (rec.vitarkaText || '').toLowerCase();
+    const stage = rec.cascadeStageReached as string;
 
-    // VATA: Spike if user triggers "Academic Anxiety"
+    // --- VATA SPIKE: "Academic Anxiety" ---
     if (
       trigger === 'Academic_Anxiety' ||
       trigger === 'Academic Anxiety' ||
-      vitarka.includes('academic') ||
-      vitarka.includes('exam') ||
-      vitarka.includes('anxiety')
+      vitarka.includes('academic anxiety') ||
+      (vitarka.includes('academic') && vitarka.includes('anxiety')) ||
+      vitarka.includes('exam stress') ||
+      vitarka.includes('exam anxiety')
     ) {
-      vataScore += 30;
+      vataScore += 40;
     } else if (trigger === 'Doomscrolling') {
       vataScore += 15;
     }
 
-    // PITTA: Spike if user triggers "Social Comparison" or "Toxic Hostility"
+    // --- PITTA SPIKE: "Social Comparison" ---
     if (
       trigger === 'Social_Comparison' ||
       trigger === 'Social Comparison' ||
+      vitarka.includes('social comparison') ||
       vitarka.includes('comparison') ||
       vitarka.includes('envy') ||
       vitarka.includes('jealous')
     ) {
-      pittaScore += 30;
+      pittaScore += 40;
     }
 
+    // --- PITTA SPIKE: "Toxic Hostility" ---
     if (
       trigger === 'Toxic_Hostility' ||
       trigger === 'Toxic Hostility' ||
-      rec.cascadeStageReached === 'Krodha_Agitation' ||
-      vitarka.includes('hostil') ||
+      stage === 'Krodha_Agitation' ||
+      vitarka.includes('toxic hostility') ||
       vitarka.includes('toxic') ||
-      vitarka.includes('anger')
+      vitarka.includes('hostil') ||
+      vitarka.includes('anger') ||
+      vitarka.includes('rage') ||
+      vitarka.includes('partner')
     ) {
-      pittaScore += 35;
+      pittaScore += 45;
     }
 
-    // KAPHA: Spike if user triggers "Lethargy"
-    if (trigger === 'Lethargy' || vitarka.includes('letharg') || vitarka.includes('inertia')) {
+    // --- KAPHA SPIKE: "Lethargy" ---
+    if (
+      trigger === 'Lethargy' ||
+      vitarka.includes('letharg') ||
+      vitarka.includes('inertia') ||
+      vitarka.includes('sluggish')
+    ) {
       kaphaScore += 30;
     }
   }
 
-  // Natural balanced baseline if no severe disruptions exist yet
+  // Natural balanced baseline if no severe disruptions are recorded yet
   if (vataScore === 0 && pittaScore === 0 && kaphaScore === 0) {
     vataScore = 10;
     pittaScore = 10;
     kaphaScore = 10;
   }
 
-  // Calculate normalized percentages summing to exactly 100%
+  // 3. Normalize these to equal strictly 100%
   const total = vataScore + pittaScore + kaphaScore;
-  const vataPercentage = Math.round((vataScore / total) * 100);
-  const pittaPercentage = Math.round((pittaScore / total) * 100);
-  const kaphaPercentage = 100 - (vataPercentage + pittaPercentage);
+  let vataPercentage = Math.round((vataScore / total) * 100);
+  let pittaPercentage = Math.round((pittaScore / total) * 100);
+  let kaphaPercentage = 100 - (vataPercentage + pittaPercentage);
+
+  // Safety correction guaranteeing valid distribution [0, 100] summing to 100%
+  if (kaphaPercentage < 0) {
+    if (pittaPercentage >= Math.abs(kaphaPercentage)) {
+      pittaPercentage += kaphaPercentage;
+    } else {
+      vataPercentage += kaphaPercentage;
+    }
+    kaphaPercentage = 0;
+  } else if (kaphaPercentage > 100) {
+    kaphaPercentage = 100;
+    vataPercentage = 0;
+    pittaPercentage = 0;
+  }
 
   const normalizedPercentages: DoshaDistribution = {
     vata: vataPercentage,
@@ -287,17 +352,17 @@ export function diagnoseDoshaImbalance(
     kapha: kaphaScore,
   };
 
-  // Determine dominant aggravated dosha
+  // 4. Determine dominant aggravated Dosha (highest percentage)
   let aggravatedDosha: DoshaType = 'Vata';
-  if (pittaScore > vataScore && pittaScore >= kaphaScore) {
+  if (pittaPercentage > vataPercentage && pittaPercentage >= kaphaPercentage) {
     aggravatedDosha = 'Pitta';
-  } else if (kaphaScore > vataScore && kaphaScore > pittaScore) {
+  } else if (kaphaPercentage > vataPercentage && kaphaPercentage > pittaPercentage) {
     aggravatedDosha = 'Kapha';
   } else {
     aggravatedDosha = 'Vata';
   }
 
-  // Generate compassionate, one-line physical remedy based on dominant imbalance
+  // 5. Dynamic, compassionate remedy based on highest Dosha
   let physicalRemedy = '';
   if (aggravatedDosha === 'Vata') {
     physicalRemedy =
