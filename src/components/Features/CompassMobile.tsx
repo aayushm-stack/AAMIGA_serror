@@ -1,99 +1,55 @@
 import React, { useState } from 'react';
 import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
-import { getBhavaPrescription } from '../../engine/bhavaEngine';
-import { BhavaEmotion } from '../../types/iks';
-import {
-  Compass,
-  Sparkles,
-  HeartHandshake,
-  Heart,
-  Smile,
-  ShieldCheck,
-  CheckCircle2,
-} from 'lucide-react';
+import { BhavaCardData } from '../../types/iks';
+import { BHAVA_CARDS } from '../../engine/bhavaEngine';
+import { Compass, ChevronDown, CheckCircle2, Sparkles } from 'lucide-react';
+
+export { BHAVA_CARDS };
 
 export interface CompassMobileProps {
   className?: string;
 }
 
-interface EmotionItem {
-  key: BhavaEmotion;
-  label: string;
-  subtext: string;
-  category: 'Student Turmoil' | 'Interpersonal Dynamics';
-  prescribedLabel: string;
-}
-
-const EMOTION_ITEMS: EmotionItem[] = [
-  // --- Student Psychology Triggers ---
-  {
-    key: 'Academic_Burnout',
-    label: 'Academic Burnout seeing others succeed effortlessly',
-    subtext: 'Exhaustion & comparison when peers make high scores look effortless',
-    category: 'Student Turmoil',
-    prescribedLabel: 'Mudita (Joy in Others)',
-  },
-  {
-    key: 'Imposter_Syndrome',
-    label: 'Imposter Syndrome / Feeling Left Out',
-    subtext: 'Feeling unworthy, fraudulent, or falling behind everyone else',
-    category: 'Student Turmoil',
-    prescribedLabel: 'Karuna (Self-Compassion)',
-  },
-  {
-    key: 'Toxic_Partner',
-    label: 'Dealing with a toxic project partner',
-    subtext: 'Blame-shifting, slackers, or uncooperative team friction',
-    category: 'Student Turmoil',
-    prescribedLabel: 'Upeksha (Equanimity)',
-  },
-  // --- Classical Interpersonal Dynamics ---
-  {
-    key: 'Peer_Envy',
-    label: 'Peer Envy / Placement Jealousy',
-    subtext: 'Resentment at peer accolades, offers, or milestones',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Mudita (Sympathetic Joy)',
-  },
-  {
-    key: 'Other_Suffering',
-    label: 'Witnessing a Peer’s Distress',
-    subtext: 'Classmates breaking under exam pressure or silence',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Karuna (Compassion)',
-  },
-  {
-    key: 'Shared_Success',
-    label: 'Group Achievement / Peer Flourishing',
-    subtext: 'Celebrating collective team breakthroughs & friends’ joy',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Maitri (Friendliness)',
-  },
-  {
-    key: 'Toxic_Hostility',
-    label: 'Hostility & Online Flame',
-    subtext: 'Malicious remarks, toxic threads, and petty provocation',
-    category: 'Interpersonal Dynamics',
-    prescribedLabel: 'Upeksha (Serene Immunity)',
-  },
-];
-
 /**
  * Mobile-first Bhava Compass (Yoga Sutra 1.33 Chitta Prasadanam).
- * Maps student psychological turmoil and interpersonal perturbations directly
- * to the four classical serene counter-attitudes:
- * - Maitrī (Friendliness for the thriving)
- * - Karuṇā (Compassion for the suffering & self-compassion)
- * - Muditā (Sympathetic joy for others' virtue & success)
- * - Upekṣā (Majestic equanimity and non-reactivity toward toxicity)
+ * Interactive accordion of 8 Bhava cards with positive appreciation buffers
+ * and resolvable negative friction antidotes.
  */
 export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) => {
-  const { openShastraLens } = useBrahmaPath();
-  const [selectedEmotion, setSelectedEmotion] =
-    useState<BhavaEmotion>('Academic_Burnout');
+  const { openShastraLens, logInterception } = useBrahmaPath();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [resolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
 
-  const prescription = getBhavaPrescription(selectedEmotion);
+  // Handler to toggle resolution state and sync with the BrahmaPath engine
+  const handleResolve = (card: BhavaCardData) => {
+    const isCurrentlyResolved = resolvedMap[card.id] ?? card.isResolved ?? false;
+    const nextState = !isCurrentlyResolved;
+
+    setResolvedMap((prev) => ({
+      ...prev,
+      [card.id]: nextState,
+    }));
+    card.isResolved = nextState;
+
+    if (nextState && logInterception) {
+      logInterception({
+        triggerCategory: 'Academic_Anxiety',
+        cascadeStageReached: 'Dhyana_Dwelling',
+        initialGuna: 'Rajas',
+        vitarkaText: card.title,
+        pratipakshaText:
+          card.actionSteps?.join('; ') ||
+          'Cultivated Chitta Prasadanam equanimity and resolved interpersonal friction.',
+        microSwapAction:
+          card.actionSteps?.[0] || 'Conscious deep exhalation and mindful pause.',
+        resolvedGunaState: 'Sattva',
+        interactionType: 'resolved_negative_friction',
+        isResolved: true,
+        isPositive: false,
+      });
+    }
+  };
 
   return (
     <div
@@ -101,7 +57,7 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
         backgroundColor: '#FFFFFF',
         borderColor: '#E2E8F0',
       }}
-      className={`p-5 sm:p-6 rounded-3xl border shadow-xs space-y-6 ${className}`}
+      className={`p-5 sm:p-6 rounded-3xl border shadow-xs overflow-y-auto pb-12 space-y-6 ${className}`}
     >
       {/* Header with Title and Shastra Lens Trigger */}
       <div className="flex items-center justify-between border-b border-slate-200/90 pb-4">
@@ -117,140 +73,156 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
           </p>
         </div>
 
-        <ShastraLensButton
-          onClick={() => openShastraLens('chitta_prasadanam')}
-          className="ml-2"
-        />
+        {openShastraLens && (
+          <ShastraLensButton
+            onClick={() => openShastraLens('chitta_prasadanam')}
+            className="ml-2"
+          />
+        )}
       </div>
 
-      {/* Emotion Triggers: Stack of Touch-Friendly Mobile Cards */}
+      {/* Accordion List for the 8 BHAVA_CARDS */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-            What is troubling your mind right now?
-          </label>
-          <span className="text-[11px] text-slate-400 font-medium">
-            Tap to find the antidote
-          </span>
-        </div>
+        {BHAVA_CARDS.map((card) => {
+          const isExpanded = expandedId === card.id;
+          const isCardResolved = resolvedMap[card.id] ?? card.isResolved ?? false;
 
-        {/* Triggers List */}
-        <div className="space-y-2">
-          {EMOTION_ITEMS.map((em) => {
-            const isSelected = selectedEmotion === em.key;
-            return (
+          return (
+            <div
+              key={card.id}
+              className={`rounded-2xl border transition-all duration-300 shadow-2xs ${
+                isExpanded
+                  ? card.isPositive
+                    ? 'border-green-300 bg-green-50/20 shadow-xs'
+                    : 'border-orange-300 bg-orange-50/20 shadow-xs'
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }`}
+            >
+              {/* Accordion Card Header / Toggle Button */}
               <button
-                key={em.key}
                 type="button"
-                onClick={() => setSelectedEmotion(em.key)}
-                style={{
-                  backgroundColor: isSelected ? '#F0FDF4' : '#FDFBF7',
-                  borderColor: isSelected ? '#065F46' : '#E2E8F0',
-                  color: isSelected ? '#065F46' : '#334155',
-                }}
-                className={`w-full p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer shadow-2xs relative ${
-                  isSelected
-                    ? 'ring-2 ring-emerald-600/30 font-semibold shadow-xs'
-                    : 'hover:bg-slate-50 hover:border-slate-300'
-                }`}
+                onClick={() => setExpandedId(isExpanded ? null : card.id)}
+                className="w-full flex items-center justify-between p-4 text-left cursor-pointer focus:outline-none"
+                aria-expanded={isExpanded}
               >
-                <div className="flex items-start justify-between gap-2 mb-1">
-                  <span className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
-                    {em.label}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5 pr-2">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900">
+                    {card.title}
                   </span>
-                  <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold flex-shrink-0 ${
-                      isSelected
-                        ? 'bg-emerald-700 text-white'
-                        : 'bg-slate-200 text-slate-600'
-                    }`}
-                  >
-                    {em.prescribedLabel}
+                  <span className="text-[11px] sm:text-xs text-slate-500 font-medium">
+                    {card.sanskritTrait}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
-                  {em.subtext}
-                </p>
-                {isSelected && (
-                  <div className="mt-2 flex items-center gap-1.5 text-[11px] text-emerald-800 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>Active Antidote Prescribed Below</span>
-                  </div>
-                )}
+
+                <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                  {/* Badge: Green for positive, Terracotta for negative */}
+                  <span
+                    className={`text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                      card.isPositive
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-orange-100 text-orange-800'
+                    }`}
+                  >
+                    {card.isPositive ? 'Positive Buffer' : 'Negative Friction'}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-500 ease-in-out ${
+                      isExpanded
+                        ? card.isPositive
+                          ? 'rotate-180 text-green-700'
+                          : 'rotate-180 text-orange-700'
+                        : ''
+                    }`}
+                  />
+                </div>
               </button>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Humanized Prescription Details Card */}
-      <div
-        style={{ backgroundColor: '#FDFBF7', borderColor: '#E5E7EB' }}
-        className="p-5 sm:p-6 rounded-2xl border space-y-4 shadow-xs animate-fadeIn"
-      >
-        {/* Prescription Header & Sanskrit Sutra */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 border-b border-slate-200/90 pb-3.5">
-          <div className="flex items-center gap-2">
-            <span
-              style={{ backgroundColor: '#065F46', color: '#FFFFFF' }}
-              className="text-xs px-3.5 py-1.5 rounded-full font-bold shadow-2xs tracking-wide flex items-center gap-1.5"
-            >
-              {prescription.recommendedAttitude === 'Karuna_Compassion' && (
-                <Heart className="w-3.5 h-3.5 text-rose-300 fill-rose-300" />
-              )}
-              {prescription.recommendedAttitude === 'Mudita_SympatheticJoy' && (
-                <Smile className="w-3.5 h-3.5 text-amber-300" />
-              )}
-              {prescription.recommendedAttitude === 'Maitri_Friendliness' && (
-                <HeartHandshake className="w-3.5 h-3.5 text-emerald-300" />
-              )}
-              {prescription.recommendedAttitude === 'Upeksha_Equanimity' && (
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-300" />
-              )}
-              Prescribed: {prescription.recommendedAttitude.replace('_', ' ')}
-            </span>
-          </div>
+              {/* Accordion Content Shell with Smooth Max-Height Animation */}
+              <div
+                className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                  isExpanded ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="p-4 pt-1 border-t border-slate-100/90">
+                  {/* POSITIVE CARD: Appreciation message in a soft green box (no button) */}
+                  {card.isPositive && card.appreciationMessage && (
+                    <div className="bg-green-50/90 border border-green-200/90 rounded-2xl p-4 sm:p-5 text-green-900 shadow-2xs space-y-2">
+                      <div className="flex items-center gap-2 text-green-800 font-bold text-xs uppercase tracking-wider">
+                        <Sparkles className="w-3.5 h-3.5 text-green-600" />
+                        <span>Appreciation & Inner Serenity</span>
+                      </div>
+                      <p className="text-xs sm:text-sm leading-relaxed text-green-800 font-serif italic">
+                        &ldquo;{card.appreciationMessage}&rdquo;
+                      </p>
+                    </div>
+                  )}
 
-          <span className="text-[11px] sm:text-xs text-slate-600 font-serif italic">
-            {prescription.sanskritSutra}
-          </span>
-        </div>
+                  {/* NEGATIVE CARD: Explanation, Action Steps, and [ ✓ Mark as Resolved ] button */}
+                  {!card.isPositive && (
+                    <div className="space-y-4 pt-1">
+                      {/* Explanation of what they are experiencing */}
+                      {card.explanationText && (
+                        <div className="space-y-1.5">
+                          <h4 className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
+                            What you are experiencing:
+                          </h4>
+                          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
+                            {card.explanationText}
+                          </div>
+                        </div>
+                      )}
 
-        {/* Humanized Cognitive Reappraisal Prompt */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              The Compassionate Reframe:
-            </h4>
-          </div>
-          <div className="text-xs sm:text-sm text-slate-800 leading-relaxed bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
-            <p className="font-serif italic text-slate-800 leading-relaxed text-sm">
-              "{prescription.cognitivePrompt}"
-            </p>
-          </div>
-        </div>
+                      {/* Action Steps Bulleted List */}
+                      {card.actionSteps && card.actionSteps.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
+                            Actionable Antidotes (YS 1.33):
+                          </h4>
+                          <ul className="space-y-2">
+                            {card.actionSteps.map((step, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 bg-white border border-slate-200/90 rounded-xl p-3 shadow-2xs"
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#C85A32] mt-1.5 flex-shrink-0" />
+                                <span className="leading-relaxed">{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-        {/* Gentle Actionable Practice */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5">
-            <HeartHandshake className="w-4 h-4 text-emerald-700" />
-            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              Gentle Physical Practice:
-            </h4>
-          </div>
-          <div className="text-xs sm:text-sm text-slate-700 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs leading-relaxed">
-            {prescription.actionableStep}
-          </div>
-        </div>
-
-        {/* Guna Equilibrium Target Badge */}
-        <div className="flex items-center justify-between pt-2 text-[11px] text-slate-500 font-medium border-t border-slate-200/80">
-          <span>Target Equilibrium (Yoga Sutra 1.33):</span>
-          <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-            {prescription.targetGunaShift} (Chitta Prasādanam – Lucid Serenity)
-          </span>
-        </div>
+                      {/* Bottom Full-Width Terracotta Button */}
+                      <div className="pt-2">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResolve(card);
+                          }}
+                          className={`w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm shadow-xs transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] ${
+                            isCardResolved
+                              ? 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-500 ring-2 ring-emerald-500/20'
+                              : 'bg-[#C85A32] hover:bg-[#B24D28] text-white'
+                          }`}
+                        >
+                          <CheckCircle2
+                            className={`w-4 h-4 transition-transform duration-300 ${
+                              isCardResolved ? 'scale-110 text-white' : 'text-white/90'
+                            }`}
+                          />
+                          <span>
+                            {isCardResolved ? 'Intellect Cleared' : '✓ Mark as Resolved'}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

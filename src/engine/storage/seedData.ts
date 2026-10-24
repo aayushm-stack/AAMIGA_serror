@@ -32,21 +32,23 @@ function toDateString(date: Date): string {
 }
 
 /**
- * 14-day template progression telling the transformation narrative:
- * - Days 1-4 (offsets 13 down to 10): High Vata/Tamas, sleep disruption, screen binge, low scores.
- * - Days 5-14 (offsets 9 down to 0): Progressive habit mastery, Pause Gate adoption, high Yukta scores & Sattva.
+ * 8-day template progression telling the student transformation narrative:
+ * - Days 1-3 (offsets 7, 6, 5): Low Yukta scores (<50) and high Vata/Tamas
+ *   (doomscrolling, irregular sleep, low mindfulness, imposter syndrome).
+ * - Days 4-8 (offsets 4 down to 0): Steady, progressive improvement into Sattvic balance
+ *   (regular circadian sleep, Pause Gate habituation, high Yukta scores >75, Svastha calm).
  */
-const FOURTEEN_DAY_JUDGE_TEMPLATES = [
-  // --- First 4 Days: High Vata / Tamas, Chronic Overwhelm, Low Yukta ---
+export const EIGHT_DAY_JUDGE_TEMPLATES = [
+  // --- Day 1 (7 days ago): Severe Vata & Tamas Spikes, Low Yukta Score ---
   {
-    offset: 13,
+    offset: 7,
     ahara: {
       nutritionQuality: 'Tamasic' as const,
-      digitalConsumptionMinutes: 320,
+      digitalConsumptionMinutes: 340,
       sensoryMindfulnessScore: 1,
     },
     nidra: {
-      hoursSlept: 4.8,
+      hoursSlept: 4.5,
       bedtimeConsistency: false,
       restQuality: 'Disturbed' as const,
     },
@@ -55,19 +57,21 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
       focusedStudyBlocks: 0,
       dominantGuna: 'Tamas' as const,
     },
-    yuktaScore: 36,
+    yuktaScore: 35,
     generalReflection:
-      'Spiraling in late-night doomscrolling until 3:15 AM. Severe brain fog, missed morning lecture, high anxiety (Spiked Vata & Tamas).',
+      'Late-night doomscrolling until 3:30 AM. Extreme lethargy, missed morning lecture, high anxiety (Spiked Vata & Tamas).',
   },
+
+  // --- Day 2 (6 days ago): Heavy Caffeine, Disturbed Sleep, Low Yukta Score ---
   {
-    offset: 12,
+    offset: 6,
     ahara: {
       nutritionQuality: 'Tamasic' as const,
-      digitalConsumptionMinutes: 285,
+      digitalConsumptionMinutes: 290,
       sensoryMindfulnessScore: 1,
     },
     nidra: {
-      hoursSlept: 5.2,
+      hoursSlept: 5.0,
       bedtimeConsistency: false,
       restQuality: 'Disturbed' as const,
     },
@@ -76,15 +80,17 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
       focusedStudyBlocks: 1,
       dominantGuna: 'Tamas' as const,
     },
-    yuktaScore: 41,
+    yuktaScore: 40,
     generalReflection:
-      'High caffeine and energy drink crashes. Constant notification anxiety, struggled to sustain attention for even 10 minutes.',
+      'High caffeine and sugar crashes. Fragmented attention, social media FOMO, constant notification checking (Spiked Vata).',
   },
+
+  // --- Day 3 (5 days ago): Imposter Syndrome, Academic Anxiety, Low Yukta Score ---
   {
-    offset: 11,
+    offset: 5,
     ahara: {
       nutritionQuality: 'Rajasic' as const,
-      digitalConsumptionMinutes: 245,
+      digitalConsumptionMinutes: 240,
       sensoryMindfulnessScore: 2,
     },
     nidra: {
@@ -97,59 +103,17 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
       focusedStudyBlocks: 1,
       dominantGuna: 'Rajas' as const,
     },
-    yuktaScore: 45,
+    yuktaScore: 46,
     generalReflection:
-      'Restless comparison on LinkedIn seeing peers landing dream internships. Feeling left out and overwhelmed by academic debt.',
-  },
-  {
-    offset: 10,
-    ahara: {
-      nutritionQuality: 'Rajasic' as const,
-      digitalConsumptionMinutes: 210,
-      sensoryMindfulnessScore: 2,
-    },
-    nidra: {
-      hoursSlept: 5.8,
-      bedtimeConsistency: false,
-      restQuality: 'Disturbed' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 2,
-      focusedStudyBlocks: 2,
-      dominantGuna: 'Rajas' as const,
-    },
-    yuktaScore: 49,
-    generalReflection:
-      'Hit a breaking point. Installed BrahmaPath, defined first Sankalpa: "Conserve cognitive virya and cultivate Sattvic focus".',
+      'Academic anxiety and imposter syndrome comparing myself to peers. Restless mind, fragmented study sessions (Spiked Rajas & Vata).',
   },
 
-  // --- Next 10 Days: Steady Improvement into Sattvic Balance & High Yukta Scores ---
+  // --- Day 4 (4 days ago): Rebound begins, Pause Gate implemented, Moderate Yukta ---
   {
-    offset: 9,
+    offset: 4,
     ahara: {
       nutritionQuality: 'Rajasic' as const,
-      digitalConsumptionMinutes: 175,
-      sensoryMindfulnessScore: 2,
-    },
-    nidra: {
-      hoursSlept: 6.2,
-      bedtimeConsistency: true,
-      restQuality: 'Lethargic' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 3,
-      focusedStudyBlocks: 2,
-      dominantGuna: 'Rajas' as const,
-    },
-    yuktaScore: 56,
-    generalReflection:
-      'First deliberate use of Pause Gate. Caught craving at step 3 (Kāma) and swapped phone for a glass of water.',
-  },
-  {
-    offset: 8,
-    ahara: {
-      nutritionQuality: 'Rajasic' as const,
-      digitalConsumptionMinutes: 140,
+      digitalConsumptionMinutes: 160,
       sensoryMindfulnessScore: 3,
     },
     nidra: {
@@ -159,64 +123,47 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
     },
     brahmacharya: {
       energyConservationRating: 3,
-      focusedStudyBlocks: 3,
+      focusedStudyBlocks: 2,
       dominantGuna: 'Rajas' as const,
     },
-    yuktaScore: 63,
+    yuktaScore: 62,
     generalReflection:
-      'Practiced 4-7-8 breathing before evening study block. Noticed reduced palpitations when opening problem sets.',
+      'First day implementing the Pause Gate before YouTube binges. Slept before midnight, waking up with more clear energy.',
   },
+
+  // --- Day 5 (3 days ago): Building Momentum, Screen reduction, Approaching Balance ---
   {
-    offset: 7,
+    offset: 3,
     ahara: {
-      nutritionQuality: 'Rajasic' as const,
-      digitalConsumptionMinutes: 115,
+      nutritionQuality: 'Sattvic' as const,
+      digitalConsumptionMinutes: 120,
       sensoryMindfulnessScore: 3,
     },
     nidra: {
-      hoursSlept: 6.8,
+      hoursSlept: 7.0,
       bedtimeConsistency: true,
       restQuality: 'Restorative' as const,
     },
     brahmacharya: {
       energyConservationRating: 4,
       focusedStudyBlocks: 3,
-      dominantGuna: 'Sattva' as const,
+      dominantGuna: 'Rajas' as const,
     },
-    yuktaScore: 69,
+    yuktaScore: 73,
     generalReflection:
-      'Screen time dropped below 2 hours for the first time in months. Mind feels noticeably calmer and less reactive.',
+      'Adopted fresh home-cooked meals and phone-free mornings. Two solid 50-minute deep work blocks completed with steady focus.',
   },
+
+  // --- Day 6 (2 days ago): Crossing the 75 Threshold into Sattva & Calm Chariot ---
   {
-    offset: 6,
-    ahara: {
-      nutritionQuality: 'Sattvic' as const,
-      digitalConsumptionMinutes: 95,
-      sensoryMindfulnessScore: 4,
-    },
-    nidra: {
-      hoursSlept: 7.2,
-      bedtimeConsistency: true,
-      restQuality: 'Restorative' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 4,
-      focusedStudyBlocks: 4,
-      dominantGuna: 'Sattva' as const,
-    },
-    yuktaScore: 75,
-    generalReflection:
-      'Crossed the Yukta equilibrium threshold (75)! Chariot status transition from Brisk to Calm.',
-  },
-  {
-    offset: 5,
+    offset: 2,
     ahara: {
       nutritionQuality: 'Sattvic' as const,
       digitalConsumptionMinutes: 80,
       sensoryMindfulnessScore: 4,
     },
     nidra: {
-      hoursSlept: 7.4,
+      hoursSlept: 7.5,
       bedtimeConsistency: true,
       restQuality: 'Restorative' as const,
     },
@@ -225,33 +172,14 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
       focusedStudyBlocks: 4,
       dominantGuna: 'Sattva' as const,
     },
-    yuktaScore: 80,
+    yuktaScore: 82,
     generalReflection:
-      'Applied Bhāva Compass (Muditā) when peer celebrated big placement offer. Envy dissolved into sincere sympathetic joy.',
+      'Sattvic clarity emerging. Crossed into the Yukta threshold (>75). Pratipaksha Bhavana helped disarm comparison anxiety seamlessly.',
   },
+
+  // --- Day 7 (1 day ago / Yesterday): Deep Sattvic poise, High vitality ---
   {
-    offset: 4,
-    ahara: {
-      nutritionQuality: 'Sattvic' as const,
-      digitalConsumptionMinutes: 70,
-      sensoryMindfulnessScore: 4,
-    },
-    nidra: {
-      hoursSlept: 7.6,
-      bedtimeConsistency: true,
-      restQuality: 'Restorative' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 5,
-      focusedStudyBlocks: 4,
-      dominantGuna: 'Sattva' as const,
-    },
-    yuktaScore: 84,
-    generalReflection:
-      'Phone kept outside bedroom 45 minutes before sleep. Surrendered deeply to rest without bedtime racing thoughts.',
-  },
-  {
-    offset: 3,
+    offset: 1,
     ahara: {
       nutritionQuality: 'Sattvic' as const,
       digitalConsumptionMinutes: 60,
@@ -264,39 +192,20 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
     },
     brahmacharya: {
       energyConservationRating: 5,
-      focusedStudyBlocks: 5,
+      focusedStudyBlocks: 4,
       dominantGuna: 'Sattva' as const,
     },
-    yuktaScore: 88,
+    yuktaScore: 89,
     generalReflection:
-      'Completed 5 intense, deep study blocks on compiler optimization. No afternoon drowsiness or urge to check social feeds.',
+      'Deep restorative sleep. Chariot intellect (Buddhi) in command; senses felt calm and receptive without compulsive urges.',
   },
+
+  // --- Day 8 (Today / Offset 0): Peak Svastha Equilibrium, Chariot Calm State ---
   {
-    offset: 2,
+    offset: 0,
     ahara: {
       nutritionQuality: 'Sattvic' as const,
-      digitalConsumptionMinutes: 50,
-      sensoryMindfulnessScore: 5,
-    },
-    nidra: {
-      hoursSlept: 7.8,
-      bedtimeConsistency: true,
-      restQuality: 'Restorative' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 5,
-      focusedStudyBlocks: 5,
-      dominantGuna: 'Sattva' as const,
-    },
-    yuktaScore: 92,
-    generalReflection:
-      'Pratipaksha Bhavana is now instinctual: whenever distraction knocks, the wholesome counter-thought arises immediately.',
-  },
-  {
-    offset: 1,
-    ahara: {
-      nutritionQuality: 'Sattvic' as const,
-      digitalConsumptionMinutes: 42,
+      digitalConsumptionMinutes: 40,
       sensoryMindfulnessScore: 5,
     },
     nidra: {
@@ -311,40 +220,25 @@ const FOURTEEN_DAY_JUDGE_TEMPLATES = [
     },
     yuktaScore: 95,
     generalReflection:
-      'Sustained mental vitality throughout all labs. Dosha diagnosis shows balanced Vata and peak Sattvic clarity.',
-  },
-  {
-    offset: 0,
-    ahara: {
-      nutritionQuality: 'Sattvic' as const,
-      digitalConsumptionMinutes: 35,
-      sensoryMindfulnessScore: 5,
-    },
-    nidra: {
-      hoursSlept: 8.0,
-      bedtimeConsistency: true,
-      restQuality: 'Restorative' as const,
-    },
-    brahmacharya: {
-      energyConservationRating: 5,
-      focusedStudyBlocks: 5,
-      dominantGuna: 'Sattva' as const,
-    },
-    yuktaScore: 97,
-    generalReflection:
-      'Svastha state. Katha Upanishad Chariot in complete harmony: Buddhi holds the reins firmly, and the senses follow like noble horses.',
+      'Svastha state. Katha Upanishad Chariot in complete equilibrium: intellect awake, reins steady, noble horses moving in harmony.',
   },
 ];
 
 /**
- * Generates an array of 14 days of realistic Trayopastambha daily logs
- * for judges, illustrating the complete journey from initial Rajas/Tamas
- * and high Vata into stable Sattvic equilibrium.
+ * Backwards compatibility alias for 14-day template references.
  */
-export function generate14DayJudgeLogs(): TrayopastambhaLog[] {
+export const FOURTEEN_DAY_JUDGE_TEMPLATES = EIGHT_DAY_JUDGE_TEMPLATES;
+
+/**
+ * Generates an array of 8 days of realistic Trayopastambha daily logs
+ * for hackathon judges, illustrating the complete journey:
+ * - First 3 days: low Yukta scores (<50) and high Vata/Tamas.
+ * - Last 5 days: steady improvement into Sattvic balance.
+ */
+export function generate8DayJudgeLogs(): TrayopastambhaLog[] {
   const now = new Date();
 
-  return FOURTEEN_DAY_JUDGE_TEMPLATES.map((tmpl) => {
+  return EIGHT_DAY_JUDGE_TEMPLATES.map((tmpl) => {
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() - tmpl.offset);
     const dateStr = toDateString(targetDate);
@@ -362,45 +256,22 @@ export function generate14DayJudgeLogs(): TrayopastambhaLog[] {
 }
 
 /**
- * Secret judge demo injection utility.
- * Instantly populates local storage with 14 days of narrative data,
- * sets the account creation date to 14 days ago, and adds realistic
- * Pause Gate interception records.
- *
- * @returns The generated 14-day TrayopastambhaLog array.
+ * Backwards-compatible alias returning the 8-day judge logs.
  */
-export function injectJudgeDemoData(): TrayopastambhaLog[] {
-  const logs = generate14DayJudgeLogs();
-  const interceptions = generateDemoInterceptions();
-
-  const fourteenDaysAgo = new Date();
-  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
-
-  const judgePreferences: UserPreferences = {
-    ...DEFAULT_PREFERENCES,
-    accountCreationDate: toDateString(fourteenDaysAgo),
-    onboardingCompleted: true,
-  };
-
-  // Persist directly to local storage keys
-  setLocalItem(STORAGE_KEYS.LOGS, logs);
-  setLocalItem(STORAGE_KEYS.INTERCEPTIONS, interceptions);
-  setLocalItem(STORAGE_KEYS.PREFS, judgePreferences);
-
-  return logs;
+export function generate14DayJudgeLogs(): TrayopastambhaLog[] {
+  return generate8DayJudgeLogs();
 }
 
 /**
- * Generates 7 days of realistic student sadhana logs ending today.
- * Demonstrates a tangible trajectory progressing from Rajas/Tamas towards Sattva.
+ * Generates 8 days of realistic student sadhana logs ending today.
  */
 export function generateDemoSadhanaLogs(): TrayopastambhaLog[] {
-  return generate14DayJudgeLogs().slice(-7);
+  return generate8DayJudgeLogs();
 }
 
 /**
- * Generates 6 realistic interception records with authentic student vitarka thoughts
- * and Patanjali Pratipaksha Bhavana reframes.
+ * Generates realistic Pause Gate interception records spanning the 8-day journey,
+ * with authentic student vitarka triggers and Patanjali Pratipaksha Bhavana reframes.
  */
 export function generateDemoInterceptions(): InterceptionRecord[] {
   const now = new Date();
@@ -419,7 +290,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: 'Sattva' as const,
     },
     {
-      hoursAgo: 112,
+      hoursAgo: 110,
       triggerCategory: 'Academic_Anxiety' as const,
       cascadeStageReached: 'Krodha_Agitation' as const,
       initialGuna: 'Rajas' as const,
@@ -432,7 +303,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: 'Sattva' as const,
     },
     {
-      hoursAgo: 88,
+      hoursAgo: 84,
       triggerCategory: 'Social_Comparison' as const,
       cascadeStageReached: 'Sanga_Attachment' as const,
       initialGuna: 'Rajas' as const,
@@ -445,7 +316,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: 'Sattva' as const,
     },
     {
-      hoursAgo: 64,
+      hoursAgo: 58,
       triggerCategory: 'Lethargy' as const,
       cascadeStageReached: 'Sammoha_Delusion' as const,
       initialGuna: 'Tamas' as const,
@@ -458,7 +329,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: 'Rajas' as const,
     },
     {
-      hoursAgo: 36,
+      hoursAgo: 30,
       triggerCategory: 'Sensory_Craving' as const,
       cascadeStageReached: 'Kama_Craving' as const,
       initialGuna: 'Rajas' as const,
@@ -471,7 +342,7 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: 'Sattva' as const,
     },
     {
-      hoursAgo: 8,
+      hoursAgo: 4,
       triggerCategory: 'Doomscrolling' as const,
       cascadeStageReached: 'SmritiVibhrama_MemoryLoss' as const,
       initialGuna: 'Tamas' as const,
@@ -500,4 +371,34 @@ export function generateDemoInterceptions(): InterceptionRecord[] {
       resolvedGunaState: item.resolvedGunaState,
     };
   });
+}
+
+/**
+ * Secret judge demo injection utility.
+ * Instantly populates local storage with 8 days of realistic presentation logs:
+ * - First 3 days show low Yukta scores (<50) and high Vata/Tamas.
+ * - Last 5 days show steady improvement into Sattvic balance.
+ * Sets the account creation date to 8 days ago (today - 7 days) and adds realistic Pause Gate records.
+ *
+ * @returns The generated 8-day TrayopastambhaLog array.
+ */
+export function injectJudgeDemoData(): TrayopastambhaLog[] {
+  const logs = generate8DayJudgeLogs();
+  const interceptions = generateDemoInterceptions();
+
+  const eightDaysAgo = new Date();
+  eightDaysAgo.setDate(eightDaysAgo.getDate() - 7);
+
+  const judgePreferences: UserPreferences = {
+    ...DEFAULT_PREFERENCES,
+    accountCreationDate: toDateString(eightDaysAgo),
+    onboardingCompleted: true,
+  };
+
+  // Persist directly to local storage keys
+  setLocalItem(STORAGE_KEYS.LOGS, logs);
+  setLocalItem(STORAGE_KEYS.INTERCEPTIONS, interceptions);
+  setLocalItem(STORAGE_KEYS.PREFS, judgePreferences);
+
+  return logs;
 }

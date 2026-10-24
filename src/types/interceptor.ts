@@ -64,4 +64,20 @@ export interface InterceptionRecord {
   microSwapAction: string;
   /** Attained psychological state following the intervention */
   resolvedGunaState: GunaType;
+  /**
+   * Tracks whether the logged interaction was a positive buffer or a resolved/unresolved negative friction.
+   */
+  interactionType?:
+    | 'positive_buffer'
+    | 'resolved_negative_friction'
+    | 'unresolved_negative_friction';
+  /**
+   * Whether the interaction or negative friction has been resolved.
+   * Defaults to false for unresolved negative friction; true for positive buffers and resolved friction.
+   */
+  isResolved?: boolean;
+  /**
+   * Whether the logged interaction is inherently positive.
+   */
+  isPositive?: boolean;
 }

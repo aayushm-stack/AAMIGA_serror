@@ -228,15 +228,15 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
 
       {/* Feedback Alert Banner */}
       {sadhanaMessage && (
-        <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs rounded-2xl flex items-center gap-2.5 animate-fadeIn">
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs rounded-2xl flex items-center gap-2.5 animate-fadeIn">
           <CheckCircle2 className="w-4 h-4 text-emerald-700 flex-shrink-0" />
           <span className="font-semibold">{sadhanaMessage}</span>
         </div>
       )}
 
-      <form onSubmit={handleSaveSadhana} className="space-y-6">
+      <form onSubmit={handleSaveSadhana} className="flex flex-col space-y-6">
         {/* ================= 1. AHARA PILLAR ================= */}
-        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-4">
+        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex flex-col space-y-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Utensils className="w-4 h-4 text-amber-700" />
@@ -247,24 +247,24 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             <span className="text-[10px] text-slate-400 font-medium">Sensory Diet</span>
           </div>
 
-          {/* Compassionate Sensory Prompt & Helper Text */}
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold text-slate-800">
+          {/* Compassionate Sensory Prompt & Helper Subtext */}
+          <div className="flex flex-col space-y-1.5">
+            <h4 className="text-sm font-semibold text-slate-900">
               What did your eyes and mind consume today?
             </h4>
-            <p className="text-[11px] text-slate-500 italic leading-relaxed">
-              &ldquo;Ahara is not just food; it is everything you feed your senses.&rdquo;
+            <p className="text-xs text-slate-500 italic leading-relaxed">
+              Ahara is not just food; it is everything you feed your senses.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex flex-col space-y-5 pt-1">
             {/* Digital Screen Intake Slider */}
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-medium text-slate-600">
-                  Screen &amp; Digital Volume
+                <span className="text-xs font-medium text-slate-700">
+                  Screen &amp; Digital Intake
                 </span>
-                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
                   {digitalMinutes} mins
                 </span>
               </div>
@@ -277,19 +277,19 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 onChange={(e) => setDigitalMinutes(Number(e.target.value))}
                 className="w-full accent-[#D97706] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-500 font-medium px-0.5">
+              <div className="flex justify-between text-xs text-slate-500 font-medium px-0.5">
                 <span>[Mindful &amp; Intentional]</span>
                 <span>[Overwhelmed by the Noise]</span>
               </div>
             </div>
 
             {/* Sensory Mindfulness Slider */}
-            <div className="space-y-2 pt-1 border-t border-slate-200/60">
+            <div className="flex flex-col space-y-2 pt-3 border-t border-slate-200/70">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-medium text-slate-700">
                   Sensory Presence (Pratyahara Awareness)
                 </label>
-                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
                   {mindfulnessScore} / 5
                 </span>
               </div>
@@ -302,14 +302,14 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 onChange={(e) => setMindfulnessScore(Number(e.target.value))}
                 className="w-full accent-[#065F46] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 px-0.5">
+              <div className="flex justify-between text-[11px] text-slate-400 px-0.5">
                 <span>1 (Scattered / Reactive)</span>
                 <span>5 (Deeply anchored &amp; present)</span>
               </div>
             </div>
 
             {/* Nutritional Quality Select */}
-            <div className="space-y-1 pt-1 border-t border-slate-200/60">
+            <div className="flex flex-col space-y-1.5 pt-3 border-t border-slate-200/70">
               <label className="block text-xs font-medium text-slate-700">
                 Nourishment Quality
               </label>
@@ -327,7 +327,7 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
         </div>
 
         {/* ================= 2. NIDRA PILLAR ================= */}
-        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-4">
+        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex flex-col space-y-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Moon className="w-4 h-4 text-indigo-700" />
@@ -339,18 +339,18 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
           </div>
 
           {/* Compassionate Sleep Prompt */}
-          <div className="space-y-0.5">
-            <h4 className="text-xs font-bold text-slate-800">
+          <div className="flex flex-col space-y-1">
+            <h4 className="text-sm font-semibold text-slate-900">
               How deeply did your mind surrender to rest?
             </h4>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-xs text-slate-500 leading-relaxed">
               Sleep is nature&apos;s innate restorative cycle—honoring it is an act of self-reverence.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex flex-col space-y-5 pt-1">
             {/* Rest Quality Select */}
-            <div className="space-y-1">
+            <div className="flex flex-col space-y-1.5">
               <label className="block text-xs font-medium text-slate-700">
                 Quality of Rest
               </label>
@@ -366,7 +366,7 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             </div>
 
             {/* Hours Slept Number Input */}
-            <div className="space-y-1">
+            <div className="flex flex-col space-y-1.5 pt-3 border-t border-slate-200/70">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-medium text-slate-700">
                   Hours Slept
@@ -382,12 +382,12 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 max="14"
                 value={hoursSlept}
                 onChange={(e) => setHoursSlept(Number(e.target.value))}
-                className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
+                className="w-full p-3.5 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
               />
             </div>
 
             {/* Consistent Bedtime Checkbox */}
-            <div className="flex items-start gap-3 pt-1">
+            <div className="flex items-start gap-3 pt-3 border-t border-slate-200/70">
               <input
                 type="checkbox"
                 id="bedtimeConsistencyMobile"
@@ -406,7 +406,7 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
         </div>
 
         {/* ================= 3. BRAHMACHARYA PILLAR ================= */}
-        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-4">
+        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex flex-col space-y-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-amber-600" />
@@ -417,27 +417,27 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             <span className="text-[10px] text-slate-400 font-medium">Prana Conservation</span>
           </div>
 
-          {/* Compassionate Vitality Prompt & Self-Forgiveness Subtext */}
-          <div className="space-y-1">
-            <h4 className="text-xs font-bold text-slate-800">
+          {/* Compassionate Vitality Prompt & Subtext */}
+          <div className="flex flex-col space-y-2">
+            <h4 className="text-sm font-semibold text-slate-900">
               How well did you protect your inner vitality today?
             </h4>
-            <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/70 flex items-start gap-2">
-              <Heart className="w-3.5 h-3.5 text-amber-700 flex-shrink-0 mt-0.5" />
-              <p className="text-[11px] text-amber-900/90 leading-relaxed italic">
-                Be gentle with yourself. Forgive any moments where attention or energy leaked into distractions—awareness without shame is how we reclaim vitality.
+            <div className="p-4 bg-amber-50/70 rounded-xl border border-amber-200/80 flex items-start gap-2.5">
+              <Heart className="w-4 h-4 text-amber-700 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-amber-950 leading-relaxed italic">
+                Forgive yourself if energy leaked into distractions; note it and move forward.
               </p>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex flex-col space-y-5 pt-1">
             {/* Energy Conservation Slider */}
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-medium text-slate-700">
                   Inner Vitality Rating
                 </label>
-                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                <span className="text-xs font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
                   {energyRating} / 5
                 </span>
               </div>
@@ -450,14 +450,14 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 onChange={(e) => setEnergyRating(Number(e.target.value))}
                 className="w-full accent-[#D97706] cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-400 px-0.5">
+              <div className="flex justify-between text-[11px] text-slate-400 px-0.5">
                 <span>1 (Drained / Leaking into compulsions)</span>
                 <span>5 (Luminous &amp; conserved)</span>
               </div>
             </div>
 
             {/* Focused Study Blocks Number Input */}
-            <div className="space-y-1 pt-1 border-t border-slate-200/60">
+            <div className="flex flex-col space-y-1.5 pt-3 border-t border-slate-200/70">
               <div className="flex justify-between items-center">
                 <label className="text-xs font-medium text-slate-700">
                   Focused Study / Deep Work Blocks
@@ -472,12 +472,12 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
                 max="12"
                 value={studyBlocks}
                 onChange={(e) => setStudyBlocks(Number(e.target.value))}
-                className="w-full p-3 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
+                className="w-full p-3.5 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 transition"
               />
             </div>
 
             {/* Dominant Observed Guna Select */}
-            <div className="space-y-1 pt-1 border-t border-slate-200/60">
+            <div className="flex flex-col space-y-1.5 pt-3 border-t border-slate-200/70">
               <label className="block text-xs font-medium text-slate-700">
                 Dominant Mental Quality (Observed Guna)
               </label>
@@ -495,10 +495,10 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
         </div>
 
         {/* ================= 4. DAILY REFLECTION ================= */}
-        <div className="space-y-2">
+        <div className="p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 flex flex-col space-y-3">
           <div className="flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-slate-500" />
-            <label className="block text-xs font-semibold text-slate-700">
+            <BookOpen className="w-4 h-4 text-slate-600" />
+            <label className="block text-xs font-semibold text-slate-800">
               Daily Reflection &amp; Mindful Note
             </label>
           </div>
@@ -507,7 +507,7 @@ export const SadhanaMobile: React.FC<SadhanaMobileProps> = ({ className = '' }) 
             placeholder="How is your inner weather right now? Acknowledge what felt peaceful today and gently release whatever felt heavy..."
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
-            className="w-full p-4 border border-slate-300 rounded-2xl bg-white text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 resize-none leading-relaxed transition"
+            className="w-full p-4 border border-slate-300 rounded-xl bg-white text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:border-emerald-700 resize-none leading-relaxed transition"
           />
         </div>
 
