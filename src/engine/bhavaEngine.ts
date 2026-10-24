@@ -116,7 +116,7 @@ export const BHAVA_COMPASS_MAP: Record<BhavaEmotion, BhavaPrescription> = {
 };
 
 /**
- * Bhava Compass cards covering student psychological friction and positive emotional buffers
+ * 8 Bhava Compass cards covering student psychological friction and positive emotional buffers
  * rooted in Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33).
  */
 export const BHAVA_CARDS: BhavaCardData[] = [
@@ -182,22 +182,38 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     isResolved: false,
   },
 
-  // --- Negative Friction Card (Upeksha) ---
+  // --- 6. Negative Friction Card (Upeksha) ---
   {
-    id: 'toxic-partner',
-    title: 'Dealing with a toxic project partner',
+    id: 'toxic-partner-unfair-treatment',
+    title: 'Toxic Partner or Unfair Treatment',
     sanskritTrait: 'Upekṣā (Equanimity)',
     isPositive: false,
     explanationText:
-      'Passive-aggressive friction or slackers drain mental bandwidth; practice serene Upeksha.',
+      'You are carrying the weight while someone else slacks off, or you are dealing with outright hostility and blame. It feels deeply unfair, and the frustration is completely draining your energy.',
     actionSteps: [
-      'Establish firm, objective task boundaries without reactive hostility.',
-      'Conserve your cognitive virya by refusing to absorb their chaotic energy.',
+      'Recognize that their toxic behavior is a reflection of their own character and stress, not yours.',
+      'Practice emotional detachment (Upeksha). You do not have to absorb their chaos. Build a mental shield.',
+      'Protect your peace. Stop fighting a pointless battle in your head, draw a strict boundary, and focus only on the work you can actually control.',
     ],
     isResolved: false,
   },
 
-  // --- Negative Friction Card (Mudita) ---
+  // --- 7. Negative Friction Card (Maitri) ---
+  {
+    id: 'social-isolation-loneliness',
+    title: 'Social Isolation & Loneliness',
+    sanskritTrait: 'Maitrī (Friendliness)',
+    isPositive: false,
+    explanationText:
+      'You are on a campus surrounded by hundreds of people, yet you feel completely disconnected and invisible. That kind of quiet loneliness is one of the heaviest things to carry.',
+    actionSteps: [
+      'Know that this feeling is temporary, and many students in the rooms right next to you are feeling the exact same quiet isolation right now.',
+      "Don't wait for the world to reach out. Extend a tiny branch of friendliness (Maitri) outward. Text a friend you haven't spoken to, or simply go sit with your laptop in a public, shared space. Connection starts with small ripples.",
+    ],
+    isResolved: false,
+  },
+
+  // --- 8. Negative Friction Card (Mudita) ---
   {
     id: 'burnout-effortless',
     title: 'Academic Burnout seeing others succeed effortlessly',
@@ -208,21 +224,6 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     actionSteps: [
       'Silently wish them well, and watch your own mental burden disappear.',
       'Refocus attention onto your immediate Swadharma.',
-    ],
-    isResolved: false,
-  },
-
-  // --- Negative Friction Card (Upeksha) ---
-  {
-    id: 'hostility-online',
-    title: 'Hostility & Online Flame',
-    sanskritTrait: 'Upekṣā (Equanimity)',
-    isPositive: false,
-    explanationText:
-      'Malicious remarks and flame wars hook the ego; practice majestic neutrality and non-engagement.',
-    actionSteps: [
-      'Step away from the screen immediately.',
-      'Take 5 deep exhalations and leave the unvirtuous comment unaddressed.',
     ],
     isResolved: false,
   },
@@ -239,22 +240,22 @@ export function getBhavaPrescription(emotion: BhavaEmotion | string): BhavaPresc
 
   if (typeof emotion === 'string') {
     const lower = emotion.toLowerCase();
-    if (lower.includes('imposter') || lower.includes('left out')) {
+    if (lower.includes('imposter') || lower.includes('left out') || lower.includes('self-doubt')) {
       return BHAVA_COMPASS_MAP['Imposter Syndrome / Feeling Left Out'];
     }
     if (lower.includes('burnout') || lower.includes('effortless')) {
       return BHAVA_COMPASS_MAP['Academic Burnout seeing others succeed effortlessly'];
     }
-    if (lower.includes('partner') || (lower.includes('toxic') && lower.includes('project'))) {
+    if (lower.includes('partner') || (lower.includes('toxic') && lower.includes('project')) || lower.includes('unfair')) {
       return BHAVA_COMPASS_MAP['Dealing with a toxic project partner'];
     }
     if (lower.includes('hostil') || lower.includes('toxic')) {
       return BHAVA_COMPASS_MAP['Toxic_Hostility'];
     }
-    if (lower.includes('envy') || lower.includes('jealous')) {
+    if (lower.includes('envy') || lower.includes('jealous') || lower.includes('placement')) {
       return BHAVA_COMPASS_MAP['Peer_Envy'];
     }
-    if (lower.includes('suffering') || lower.includes('distress')) {
+    if (lower.includes('suffering') || lower.includes('distress') || lower.includes('isolation') || lower.includes('lonel')) {
       return BHAVA_COMPASS_MAP['Other_Suffering'];
     }
     if (lower.includes('shared') || lower.includes('friend')) {
