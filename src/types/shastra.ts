@@ -88,6 +88,8 @@ export interface ShastraLensData {
  * User profile and behavioral preferences persisted in local storage.
  */
 export interface UserPreferences {
+  /** User preferred name or spiritual title */
+  name?: string;
   /** One-line personal Sankalpa (guiding purpose and intention) */
   sankalpa: string;
   /** User's baseline Guna constitution */

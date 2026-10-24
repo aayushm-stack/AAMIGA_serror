@@ -9,6 +9,7 @@ import { STORAGE_KEYS, setLocalItem } from './localStore';
  * Default starter preferences for students embarking on the BrahmaPath protocol.
  */
 export const DEFAULT_PREFERENCES: UserPreferences = {
+  name: 'Arjuna',
   sankalpa: 'Conserve cognitive virya and cultivate Sattvic focus',
   baselineGuna: 'Rajas',
   dominantDosha: 'Vata',

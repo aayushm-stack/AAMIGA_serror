@@ -43,6 +43,9 @@ import { useAccount } from './AccountContext';
  * Full contract for the global BrahmaPath application state and logic layer.
  */
 export interface BrahmaPathContextType {
+  // Navigation View Routing State
+  activeView: string;
+  setActiveView: (view: string) => void;
   // User Account & Preferred Name (Decoupled Global State)
   userName: string;
   setUserName: (name: string) => void;
@@ -100,6 +103,9 @@ const BrahmaPathContext = createContext<BrahmaPathContextType | undefined>(undef
 export function BrahmaPathProvider({ children }: { children: ReactNode }) {
   // Global Account Context (userName)
   const { userName, setUserName } = useAccount();
+
+  // Navigation view state
+  const [activeView, setActiveView] = useState<string>('home');
   // Underlying persistent hooks
   const {
     logs,
@@ -214,6 +220,23 @@ export function BrahmaPathProvider({ children }: { children: ReactNode }) {
     [reloadFromStorage, reloadInterceptions]
   );
 
+  const handleUpdatePreferences = useCallback(
+    (partial: Partial<UserPreferences>) => {
+      updatePreferences(partial);
+      if (partial.name !== undefined) {
+        setUserName(partial.name);
+      }
+    },
+    [updatePreferences, setUserName]
+  );
+
+  const mergedPreferences = useMemo(() => {
+    return {
+      ...preferences,
+      name: preferences.name ?? userName ?? 'Arjuna',
+    };
+  }, [preferences, userName]);
+
   const resetAllData = useCallback(() => {
     clearAllBrahmaPathData();
     reloadFromStorage();
@@ -222,13 +245,15 @@ export function BrahmaPathProvider({ children }: { children: ReactNode }) {
 
   const contextValue: BrahmaPathContextType = useMemo(
     () => ({
+      activeView,
+      setActiveView,
       userName,
       setUserName,
       logs,
-      preferences,
+      preferences: mergedPreferences,
       todayLog,
       addOrUpdateDailyLog,
-      updatePreferences,
+      updatePreferences: handleUpdatePreferences,
       interceptions,
       logInterception,
       deleteInterception,
@@ -250,13 +275,15 @@ export function BrahmaPathProvider({ children }: { children: ReactNode }) {
       resetAllData,
     }),
     [
+      activeView,
+      setActiveView,
       userName,
       setUserName,
       logs,
-      preferences,
+      mergedPreferences,
       todayLog,
       addOrUpdateDailyLog,
-      updatePreferences,
+      handleUpdatePreferences,
       interceptions,
       logInterception,
       deleteInterception,

@@ -2,6 +2,7 @@
 export { AppLayout } from './Layout/AppLayout';
 export { TopBar } from './Layout/TopBar';
 export { BottomNav, type NavTab } from './Layout/BottomNav';
+export { SettingsPage, type SettingsPageProps } from './Layout/SettingsPage';
 
 // Sadhana Hub Components
 export { DailyVerseCard, type DailyVerse } from './SadhanaHub/DailyVerseCard';

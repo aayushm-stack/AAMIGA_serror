@@ -17,11 +17,12 @@ import {
   FeaturesPage,
   ShastraLensDrawer,
   SettingsModal,
+  SettingsPage,
   SankalpaHub,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
 
-type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa';
+type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa' | 'settings';
 
 /**
  * Main application content bound to the global IKS context, decoupled account state,
@@ -29,14 +30,17 @@ type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sanka
  */
 function MainContent() {
   const {
+    activeView,
+    setActiveView,
     gunaDistribution,
     activeLensData,
     openShastraLens,
     closeShastraLens,
   } = useBrahmaPath();
 
-  // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa'
-  const [activeTab, setActiveTab] = useState<AppViewTab>('home');
+  // Navigation tab state bound to global activeView
+  const activeTab = (activeView as AppViewTab) || 'home';
+  const setActiveTab = (tab: AppViewTab) => setActiveView(tab);
 
   // Global Settings Modal state (isolated from daily workflows)
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
@@ -84,7 +88,7 @@ function MainContent() {
           <TopBar
             onSankalpaClick={() => setActiveTab(activeTab === 'sankalpa' ? 'home' : 'sankalpa')}
             isSankalpaActive={activeTab === 'sankalpa'}
-            onSettingsClick={() => setIsSettingsOpen(true)}
+            onSettingsClick={() => setActiveTab(activeTab === 'settings' ? 'home' : 'settings')}
           />
 
           <main className="p-4 space-y-4">
@@ -136,6 +140,11 @@ function MainContent() {
               <div className="space-y-4">
                 <SankalpaHub onOpenShastraLens={openShastraLens} />
               </div>
+            )}
+
+            {/* 6. SETTINGS VIEWPORT (User Profile & Danger Zone) */}
+            {activeTab === 'settings' && (
+              <SettingsPage />
             )}
           </main>
 
