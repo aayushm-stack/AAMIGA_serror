@@ -98,7 +98,7 @@ function MainContent() {
             {activeTab === 'home' && (
               <div className="space-y-4">
                 {/* Katha Upanishad Chariot Allegory */}
-                <ChariotHome />
+                <ChariotHome onInspectShastra={() => openShastraLens('chariot')} />
 
                 {/* Daily Anchor Shloka */}
                 <DailyVerseCard

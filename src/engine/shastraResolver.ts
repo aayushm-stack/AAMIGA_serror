@@ -73,6 +73,20 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     practicalModernApplication:
       'This is the exact logic behind the app\'s Yukta Scoring algorithm. The app doesn\'t demand 14 hours of study and zero entertainment. It rewards you for balanced sleep (6.5 to 8 hours), mindful digital boundaries, and sustainable daily focus.',
   },
+  chariot: {
+    id: 'shastra-chariot',
+    featureKey: 'chariot',
+    sanskritVerse:
+      'आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥\nइन्द्रियाणि हयानाहुर्विषयांस्तेषु गोचरान् ॥',
+    transliteration:
+      'ātmānaṁ rathinaṁ viddhi śarīraṁ rathameva tu | buddhiṁ tu sārathiṁ viddhi manaḥ pragrahameva ca ||\nindriyāṇi hayān āhur viṣayāṁs teṣu gocarān ||',
+    sourceText: 'Katha Upanishad 1.3.3-4',
+    commentaryReference: 'Shankara Bhashya on Katha Upanishad 1.3.3-4',
+    literalMeaning:
+      'The human body is a chariot, the intellect (Buddhi) is the charioteer, the mind (Manas) acts as the reins, and the senses (Indriyas) are the wild horses. If the intellect is asleep and the mind lacks restraint, the sensory horses run wild and drag the chariot off course.',
+    practicalModernApplication:
+      'This is the dynamic visual on your Home Dashboard. Instead of a boring chart, you see your current chariot state. If your digital screen time is too high, your chariot shows as \'Galloping\' out of control, instantly telling you that your intellect needs to pull the reins.',
+  },
   breathing: {
     id: 'shastra-breathing',
     featureKey: 'breathing',
@@ -125,20 +139,6 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
       'Sattva (clarity/light), Rajas (passion/agitation), and Tamas (inertia/dullness)—these three qualities born of material nature condition the embodied self. Upon the firm establishment of regulated conduct (Brahmacharya), unshakeable cognitive vitality and vigor (Virya) is attained.',
     practicalModernApplication:
       'Daily Guna monitoring and analytics: empowers students to self-diagnose mental states (distracted Rajas, lethargic Tamas, or focused Sattva) and consciously align their daily rhythms.',
-  },
-  chariot: {
-    id: 'shastra-chariot',
-    featureKey: 'chariot',
-    sanskritVerse:
-      'आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥\nइन्द्रियाणि हयानाहुर्विषयांस्तेषु गोचरान् ॥',
-    transliteration:
-      'ātmānaṁ rathinaṁ viddhi śarīraṁ rathameva tu | buddhiṁ tu sārathiṁ viddhi manaḥ pragrahameva ca ||\nindriyāṇi hayān āhur viṣayāṁs teṣu gocarān ||',
-    sourceText: 'Katha Upanishad 1.3.3-4',
-    commentaryReference: 'Shankara Bhashya on Katha Upanishad 1.3.3-4',
-    literalMeaning:
-      'Know the Atman (Self) as the rider of the chariot, and the body as the chariot itself. Know the intellect (Buddhi) as the charioteer, and the mind (Manas) as the reins. The senses (Indriyas) are the galloping horses, and the sensory objects (Vishayas) are the roads over which they range.',
-    practicalModernApplication:
-      'The central dashboard visual metaphor: visualizes the student’s daily discipline through the chariot’s composure, showing whether the horses (senses) are in Calm harmony, Brisk engagement, or Galloping unchecked.',
   },
 };
 

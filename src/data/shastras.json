@@ -28,6 +28,20 @@
     "practicalModernApplication": "Think of your attention like a battery. The Energy Conservation slider exists because true focus isn't just about logging hours at a desk—it's about how well you protect your mental charge from draining notifications and digital noise."
   },
   {
+    "id": "shastra-chariot",
+    "featureKey": "chariot",
+    "verse": "आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥",
+    "sanskritVerse": "आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥\nइन्द्रियाणि हयानाहुर्विषयांस्तेषु गोचरान् ॥",
+    "transliteration": "ātmānaṁ rathinaṁ viddhi śarīraṁ rathameva tu | buddhiṁ tu sārathiṁ viddhi manaḥ pragrahameva ca ||\nindriyāṇi hayān āhur viṣayāṁs teṣu gocarān ||",
+    "source": "Katha Upanishad 1.3.3-4",
+    "sourceText": "Katha Upanishad 1.3.3-4",
+    "commentaryReference": "Shankara Bhashya on Katha Upanishad 1.3.3-4",
+    "commentary": "The human body is a chariot, the intellect (Buddhi) is the charioteer, the mind (Manas) acts as the reins, and the senses (Indriyas) are the wild horses. If the intellect is asleep and the mind lacks restraint, the sensory horses run wild and drag the chariot off course.",
+    "literalMeaning": "The human body is a chariot, the intellect (Buddhi) is the charioteer, the mind (Manas) acts as the reins, and the senses (Indriyas) are the wild horses. If the intellect is asleep and the mind lacks restraint, the sensory horses run wild and drag the chariot off course.",
+    "application": "This is the dynamic visual on your Home Dashboard. Instead of a boring chart, you see your current chariot state. If your digital screen time is too high, your chariot shows as 'Galloping' out of control, instantly telling you that your intellect needs to pull the reins.",
+    "practicalModernApplication": "This is the dynamic visual on your Home Dashboard. Instead of a boring chart, you see your current chariot state. If your digital screen time is too high, your chariot shows as 'Galloping' out of control, instantly telling you that your intellect needs to pull the reins."
+  },
+  {
     "id": "shastra-cascade",
     "featureKey": "cascade",
     "verse": "ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते । सङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥",
