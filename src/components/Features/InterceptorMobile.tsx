@@ -11,6 +11,7 @@ import {
 } from '../../engine/pratipakshaEngine';
 import { TriggerCategory } from '../../types/iks';
 import { ShieldCheck, Sparkles, CheckCircle2, AlertTriangle, Heart } from 'lucide-react';
+import { CascadeVisualizer } from './CascadeVisualizer';
 
 export interface InterceptorMobileProps {
   className?: string;
@@ -181,84 +182,7 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
       </div>
 
       {/* 3. 7-Step Bhagavad Gita 2.62-63 Visual Progress Tracker */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-            Gita 2.62-63 Psychological Cascade:
-          </span>
-          <span className="text-[10px] text-slate-400 font-medium">7-Step Insight</span>
-        </div>
-
-        {/* 7-Step Cascade Grid Highlighting Step 3 (Kama / Craving) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
-          {GITA_CASCADE_STEPS.map((step) => {
-            const isStep3Kama = step.stepNumber === 3;
-            const isCurrent = step.stepNumber === estimatedStage.stepNumber;
-            const isPast = step.stepNumber < estimatedStage.stepNumber;
-
-            return (
-              <div
-                key={step.stage}
-                style={{
-                  backgroundColor: isStep3Kama
-                    ? '#FEF3C7'
-                    : isCurrent
-                    ? '#FFFBEB'
-                    : isPast
-                    ? '#F8FAFC'
-                    : '#FFFFFF',
-                  borderColor: isStep3Kama
-                    ? '#D97706'
-                    : isCurrent
-                    ? '#F59E0B'
-                    : isPast
-                    ? '#CBD5E1'
-                    : '#E2E8F0',
-                }}
-                className={`p-2.5 rounded-xl border text-center space-y-1 transition-all ${
-                  isStep3Kama
-                    ? 'ring-2 ring-amber-500 shadow-xs scale-[1.02]'
-                    : isCurrent
-                    ? 'ring-1 ring-amber-400'
-                    : ''
-                }`}
-              >
-                <div className="flex items-center justify-center gap-1">
-                  <span className="text-[10px] font-bold text-slate-500 block">
-                    Step {step.stepNumber}
-                  </span>
-                  {isStep3Kama && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
-                  )}
-                </div>
-                <p className="text-xs font-bold text-slate-800 leading-tight">
-                  {step.englishTitle}
-                </p>
-                <span
-                  style={{
-                    color: step.canInterceptEasily ? '#065F46' : '#991B1B',
-                  }}
-                  className="text-[9px] font-bold block"
-                >
-                  {isStep3Kama
-                    ? '★ Active Intercept'
-                    : step.canInterceptEasily
-                    ? '✓ Early'
-                    : '⚠ Critical'}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Reassuring Text Rendered Below Step 3 Kama */}
-        <div className="p-4 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl flex items-start gap-3 shadow-xs animate-fadeIn">
-          <Heart className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
-          <p className="text-xs sm:text-sm text-emerald-950 font-medium leading-relaxed">
-            You are currently experiencing Kama. You have caught this early. Your discriminative intellect (Buddhi) is still awake and in control.
-          </p>
-        </div>
-      </div>
+      <CascadeVisualizer activeStep={estimatedStage.stepNumber || 3} />
 
       {/* 4. Pratipaksha Bhavana Form with Guided Prompt */}
       <div className="space-y-4 pt-2 border-t border-slate-200/90">

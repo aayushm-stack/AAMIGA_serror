@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { SadhanaMobile } from './SadhanaMobile';
 import { InterceptorMobile } from './InterceptorMobile';
 import { CompassMobile } from './CompassMobile';
-export { SadhanaMobile, InterceptorMobile, CompassMobile };
+import { CascadeVisualizer } from './CascadeVisualizer';
+
+export { SadhanaMobile, InterceptorMobile, CompassMobile, CascadeVisualizer };
 
 export type FeatureTab = 'sadhana' | 'interceptor' | 'compass';
 
@@ -48,7 +50,7 @@ export const FeaturesPage: React.FC<FeaturesPageProps> = ({ className = '' }) =>
               : 'bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
           }`}
         >
-          2. Pause Gate
+          2. Distraction Interceptor
         </button>
 
         <button
@@ -64,8 +66,8 @@ export const FeaturesPage: React.FC<FeaturesPageProps> = ({ className = '' }) =>
         </button>
       </div>
 
-      {/* Conditionally Rendered Feature Placeholders */}
-      <div className="pt-1">
+      {/* Feature Content Views */}
+      <div className="transition-all duration-200">
         {activeFeature === 'sadhana' && <SadhanaMobile />}
         {activeFeature === 'interceptor' && <InterceptorMobile />}
         {activeFeature === 'compass' && <CompassMobile />}
