@@ -1,112 +1,14 @@
 import React, { useState } from 'react';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { BhavaCardData } from '../../types/iks';
+import { BHAVA_CARDS } from '../../engine/bhavaEngine';
 import { Compass, ChevronDown, CheckCircle2, Sparkles } from 'lucide-react';
+
+export { BHAVA_CARDS };
 
 export interface CompassMobileProps {
   className?: string;
 }
-
-/**
- * 8 Bhava Compass cards covering student psychological friction and positive emotional buffers
- * rooted in Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33).
- */
-export const BHAVA_CARDS: BhavaCardData[] = [
-  {
-    id: 'burnout-effortless',
-    title: 'Academic Burnout seeing others succeed effortlessly',
-    sanskritTrait: 'Muditā (मुदिता)',
-    isPositive: false,
-    explanationText:
-      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
-    actionSteps: [
-      'Silently wish them well, and watch your own mental burden disappear.',
-      'Refocus attention onto your immediate Swadharma.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'imposter-syndrome',
-    title: 'Imposter Syndrome / Feeling Left Out',
-    sanskritTrait: 'Karuṇā (करुणा)',
-    isPositive: false,
-    explanationText:
-      'Feeling fraudulent or left behind creates intense self-directed hostility; counter self-criticism with Karuna.',
-    actionSteps: [
-      'Recognize that peers experience identical self-doubt in silence.',
-      'Apply gentle, non-judgmental kindness to your current learning stage.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'toxic-partner',
-    title: 'Dealing with a toxic project partner',
-    sanskritTrait: 'Upekṣā (उपेक्षा)',
-    isPositive: false,
-    explanationText:
-      'Passive-aggressive friction or slackers drain mental bandwidth; practice serene Upeksha.',
-    actionSteps: [
-      'Establish firm, objective task boundaries without reactive hostility.',
-      'Conserve your cognitive virya by refusing to absorb their chaotic energy.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'peer-envy',
-    title: 'Peer Envy / Placement Jealousy',
-    sanskritTrait: 'Muditā (मुदिता)',
-    isPositive: false,
-    explanationText:
-      'Resentment at peer accolades contracts the intellect; celebrate virtue to expand the heart.',
-    actionSteps: [
-      'Acknowledge the effort behind their milestone.',
-      'Remind yourself that another’s accomplishment never diminishes your potential.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'peer-distress',
-    title: 'Witnessing a Peer’s Distress',
-    sanskritTrait: 'Karuṇā (करुणा)',
-    isPositive: false,
-    explanationText:
-      'Observing classmates breaking under pressure demands compassionate presence rather than detached analysis.',
-    actionSteps: [
-      'Offer active, quiet listening without hasty problem-solving.',
-      'Share a grounding moment away from study stress.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'hostility-online',
-    title: 'Hostility & Online Flame',
-    sanskritTrait: 'Upekṣā (उपेक्षा)',
-    isPositive: false,
-    explanationText:
-      'Malicious remarks and flame wars hook the ego; practice majestic neutrality and non-engagement.',
-    actionSteps: [
-      'Step away from the screen immediately.',
-      'Take 5 deep exhalations and leave the unvirtuous comment unaddressed.',
-    ],
-    isResolved: false,
-  },
-  {
-    id: 'friend-milestone',
-    title: 'Celebrating a Friend’s Milestone',
-    sanskritTrait: 'Maitrī (मैत्री)',
-    isPositive: true,
-    appreciationMessage:
-      'Genuinely rejoicing in a peer’s happiness acts as a radiant buffer for your own mental clarity.',
-  },
-  {
-    id: 'shared-gratitude',
-    title: 'Deep Gratitude for Shared Collaboration',
-    sanskritTrait: 'Maitrī (मैत्री)',
-    isPositive: true,
-    appreciationMessage:
-      'Expressing heartfelt gratitude for peer support cultivates enduring Sattva and emotional resilience.',
-  },
-];
 
 /**
  * Mobile-first Bhava Compass (Yoga Sutra 1.33 Chitta Prasadanam).

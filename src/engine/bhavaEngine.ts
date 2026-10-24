@@ -1,4 +1,4 @@
-import { BhavaEmotion, BhavaPrescription } from '../types/iks';
+import { BhavaEmotion, BhavaPrescription, BhavaCardData } from '../types/iks';
 
 /**
  * Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33):
@@ -114,6 +114,105 @@ export const BHAVA_COMPASS_MAP: Record<BhavaEmotion, BhavaPrescription> = {
     targetGunaShift: 'Sattva',
   },
 };
+
+/**
+ * 8 Bhava Compass cards covering student psychological friction and positive emotional buffers
+ * rooted in Patanjali's Chitta Prasadanam framework (Yoga Sutra 1.33).
+ */
+export const BHAVA_CARDS: BhavaCardData[] = [
+  // --- Negative Friction Cards (Antidotes via YS 1.33) ---
+  {
+    id: 'burnout-effortless',
+    title: 'Academic Burnout seeing others succeed effortlessly',
+    sanskritTrait: 'Muditā (मुदिता)',
+    isPositive: false,
+    explanationText:
+      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
+    actionSteps: [
+      'Silently wish them well, and watch your own mental burden disappear.',
+      'Refocus attention onto your immediate Swadharma.',
+    ],
+    isResolved: false,
+  },
+  {
+    id: 'imposter-syndrome',
+    title: 'Imposter Syndrome / Feeling Left Out',
+    sanskritTrait: 'Karuṇā (करुणा)',
+    isPositive: false,
+    explanationText:
+      'Feeling fraudulent or left behind creates intense self-directed hostility; counter self-criticism with Karuna.',
+    actionSteps: [
+      'Recognize that peers experience identical self-doubt in silence.',
+      'Apply gentle, non-judgmental kindness to your current learning stage.',
+    ],
+    isResolved: false,
+  },
+  {
+    id: 'toxic-partner',
+    title: 'Dealing with a toxic project partner',
+    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    isPositive: false,
+    explanationText:
+      'Passive-aggressive friction or slackers drain mental bandwidth; practice serene Upeksha.',
+    actionSteps: [
+      'Establish firm, objective task boundaries without reactive hostility.',
+      'Conserve your cognitive virya by refusing to absorb their chaotic energy.',
+    ],
+    isResolved: false,
+  },
+  {
+    id: 'peer-envy',
+    title: 'Peer Envy / Placement Jealousy',
+    sanskritTrait: 'Muditā (मुदिता)',
+    isPositive: false,
+    explanationText:
+      'Resentment at peer accolades contracts the intellect; celebrate virtue to expand the heart.',
+    actionSteps: [
+      'Acknowledge the effort behind their milestone.',
+      'Remind yourself that another’s accomplishment never diminishes your potential.',
+    ],
+    isResolved: false,
+  },
+  {
+    id: 'hostility-online',
+    title: 'Hostility & Online Flame',
+    sanskritTrait: 'Upekṣā (उपेक्षा)',
+    isPositive: false,
+    explanationText:
+      'Malicious remarks and flame wars hook the ego; practice majestic neutrality and non-engagement.',
+    actionSteps: [
+      'Step away from the screen immediately.',
+      'Take 5 deep exhalations and leave the unvirtuous comment unaddressed.',
+    ],
+    isResolved: false,
+  },
+
+  // --- Positive Buffer Cards (Emotional Surplus via YS 1.33) ---
+  {
+    id: 'celebrating-shared-success',
+    title: 'Celebrating a Shared Success & Team Win',
+    sanskritTrait: 'Maitrī (Friendliness)',
+    isPositive: true,
+    appreciationMessage:
+      "Your mind expands when you elevate others! Taking a moment to genuinely celebrate a team win or a friend's good news proves that you are operating from a place of abundance. Shared joy completely cancels out competitive burnout. Keep sharing that light!",
+  },
+  {
+    id: 'inspired-hard-work',
+    title: "Inspired by Someone's Hard Work",
+    sanskritTrait: 'Muditā (Joy in Virtue)',
+    isPositive: true,
+    appreciationMessage:
+      "Recognizing and admiring someone else's intense dedication or good character is a beautiful trait. It means your ego is quiet enough to let someone else shine without feeling threatened. Let their dedication fuel your own focus and study session today!",
+  },
+  {
+    id: 'handling-setback-grace',
+    title: 'Handling a Setback with Grace',
+    sanskritTrait: 'Karuṇā (Self-Compassion)',
+    isPositive: true,
+    appreciationMessage:
+      'You faced a bad grade, a rejected application, or a tough setback today—and instead of spiraling into self-hate, you chose resilience and self-forgiveness. That takes immense emotional maturity. Be proud of how you handled this; this is what true self-mastery looks like.',
+  },
+];
 
 /**
  * Retrieves the specific Chitta Prasadanam psychological prescription for an emotional trigger.
