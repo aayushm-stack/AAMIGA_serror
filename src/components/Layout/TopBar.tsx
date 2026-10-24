@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { injectJudgeDemoData } from '../../engine/storage/seedData';
-import { Target, Settings, Sparkles } from 'lucide-react';
+import { Target, Settings } from 'lucide-react';
 
 export interface TopBarProps {
   onSankalpaClick?: () => void;
@@ -102,16 +102,13 @@ export const TopBar: React.FC<TopBarProps> = ({
           className="text-center cursor-pointer select-none group focus:outline-none"
           title="BrahmaPath Cognitive Regulation"
         >
-          <div className="flex items-center justify-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600 opacity-80 transition-transform group-active:scale-95" />
-            <h1
-              className="font-serif text-lg sm:text-xl font-semibold tracking-wide text-charcoal cursor-pointer"
-              onDoubleClick={handleDoubleClick}
-            >
-              BrahmaPath
-            </h1>
-          </div>
-          <p className="text-[10px] uppercase tracking-widest text-charcoal/60 font-semibold -mt-0.5">
+          <h1
+            className="font-serif text-lg sm:text-xl font-semibold tracking-wide text-charcoal leading-tight transition-transform group-active:scale-95 cursor-pointer"
+            onDoubleClick={handleDoubleClick}
+          >
+            BrahmaPath
+          </h1>
+          <p className="text-[8px] sm:text-[8.5px] uppercase tracking-[0.14em] sm:tracking-[0.18em] text-charcoal/60 font-semibold -mt-0.5 whitespace-nowrap">
             Cognitive Regulation
           </p>
         </div>
