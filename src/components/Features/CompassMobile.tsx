@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { BhavaCardData } from '../../types/iks';
-import { Compass, ChevronDown } from 'lucide-react';
+import { Compass, ChevronDown, CheckCircle2, Sparkles } from 'lucide-react';
 
 export interface CompassMobileProps {
   className?: string;
@@ -18,7 +18,7 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     sanskritTrait: 'Muditā (मुदिता)',
     isPositive: false,
     explanationText:
-      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts. Cultivate Mudita.',
+      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
     actionSteps: [
       'Silently wish them well, and watch your own mental burden disappear.',
       'Refocus attention onto your immediate Swadharma.',
@@ -31,7 +31,7 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     sanskritTrait: 'Karuṇā (करुणा)',
     isPositive: false,
     explanationText:
-      'Feeling fraudulent or isolated is a universal student experience; counter self-criticism with Karuna.',
+      'Feeling fraudulent or left behind creates intense self-directed hostility; counter self-criticism with Karuna.',
     actionSteps: [
       'Recognize that peers experience identical self-doubt in silence.',
       'Apply gentle, non-judgmental kindness to your current learning stage.',
@@ -110,11 +110,43 @@ export const BHAVA_CARDS: BhavaCardData[] = [
 
 /**
  * Mobile-first Bhava Compass (Yoga Sutra 1.33 Chitta Prasadanam).
- * Renders an accordion shell to explore the 8 Bhava cards with smooth transitions.
+ * Interactive accordion of 8 Bhava cards with positive appreciation buffers
+ * and resolvable negative friction antidotes.
  */
 export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) => {
-  const { openShastraLens } = useBrahmaPath();
+  const { openShastraLens, logInterception } = useBrahmaPath();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [resolvedMap, setResolvedMap] = useState<Record<string, boolean>>({});
+
+  // Handler to toggle resolution state and sync with the BrahmaPath engine
+  const handleResolve = (card: BhavaCardData) => {
+    const isCurrentlyResolved = resolvedMap[card.id] ?? card.isResolved ?? false;
+    const nextState = !isCurrentlyResolved;
+
+    setResolvedMap((prev) => ({
+      ...prev,
+      [card.id]: nextState,
+    }));
+    card.isResolved = nextState;
+
+    if (nextState && logInterception) {
+      logInterception({
+        triggerCategory: 'Academic_Anxiety',
+        cascadeStageReached: 'Dhyana_Dwelling',
+        initialGuna: 'Rajas',
+        vitarkaText: card.title,
+        pratipakshaText:
+          card.actionSteps?.join('; ') ||
+          'Cultivated Chitta Prasadanam equanimity and resolved interpersonal friction.',
+        microSwapAction:
+          card.actionSteps?.[0] || 'Conscious deep exhalation and mindful pause.',
+        resolvedGunaState: 'Sattva',
+        interactionType: 'resolved_negative_friction',
+        isResolved: true,
+        isPositive: false,
+      });
+    }
+  };
 
   return (
     <div
@@ -154,13 +186,16 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
       <div className="space-y-3">
         {BHAVA_CARDS.map((card) => {
           const isExpanded = expandedId === card.id;
+          const isCardResolved = resolvedMap[card.id] ?? card.isResolved ?? false;
 
           return (
             <div
               key={card.id}
               className={`rounded-2xl border transition-all duration-300 shadow-2xs ${
                 isExpanded
-                  ? 'border-emerald-600/40 bg-emerald-50/20 shadow-xs'
+                  ? card.isPositive
+                    ? 'border-green-300 bg-green-50/20 shadow-xs'
+                    : 'border-orange-300 bg-orange-50/20 shadow-xs'
                   : 'border-slate-200 bg-white hover:border-slate-300'
               }`}
             >
@@ -181,18 +216,23 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                  {/* Badge: Green for positive, Terracotta for negative */}
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                    className={`text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-bold ${
                       card.isPositive
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        : 'bg-orange-50 text-terracotta border border-orange-200/60'
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-orange-100 text-orange-800'
                     }`}
                   >
-                    {card.isPositive ? 'Positive Buffer' : 'Friction Antidote'}
+                    {card.isPositive ? 'Positive Buffer' : 'Negative Friction'}
                   </span>
                   <ChevronDown
                     className={`w-4 h-4 text-slate-400 transition-transform duration-500 ease-in-out ${
-                      isExpanded ? 'rotate-180 text-emerald-700' : ''
+                      isExpanded
+                        ? card.isPositive
+                          ? 'rotate-180 text-green-700'
+                          : 'rotate-180 text-orange-700'
+                        : ''
                     }`}
                   />
                 </div>
@@ -201,14 +241,84 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
               {/* Accordion Content Shell with Smooth Max-Height Animation */}
               <div
                 className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                  isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  isExpanded ? 'max-h-[700px] opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="p-4 pt-1 border-t border-slate-100/80">
-                  {/* Content shell placeholder - ready for data population */}
-                  <div className="text-xs text-slate-400 italic">
-                    Card content shell ready for data rendering...
-                  </div>
+                <div className="p-4 pt-1 border-t border-slate-100/90">
+                  {/* POSITIVE CARD: Appreciation message in a soft green box (no button) */}
+                  {card.isPositive && card.appreciationMessage && (
+                    <div className="bg-green-50/90 border border-green-200/90 rounded-2xl p-4 sm:p-5 text-green-900 shadow-2xs space-y-2">
+                      <div className="flex items-center gap-2 text-green-800 font-bold text-xs uppercase tracking-wider">
+                        <Sparkles className="w-3.5 h-3.5 text-green-600" />
+                        <span>Appreciation & Inner Serenity</span>
+                      </div>
+                      <p className="text-xs sm:text-sm leading-relaxed text-green-800 font-serif italic">
+                        &ldquo;{card.appreciationMessage}&rdquo;
+                      </p>
+                    </div>
+                  )}
+
+                  {/* NEGATIVE CARD: Explanation, Action Steps, and [ ✓ Mark as Resolved ] button */}
+                  {!card.isPositive && (
+                    <div className="space-y-4 pt-1">
+                      {/* Explanation of what they are experiencing */}
+                      {card.explanationText && (
+                        <div className="space-y-1.5">
+                          <h4 className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
+                            What you are experiencing:
+                          </h4>
+                          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 border border-slate-200/80 rounded-xl p-3.5">
+                            {card.explanationText}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Steps Bulleted List */}
+                      {card.actionSteps && card.actionSteps.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="text-[11px] uppercase tracking-wider font-bold text-slate-500">
+                            Actionable Antidotes (YS 1.33):
+                          </h4>
+                          <ul className="space-y-2">
+                            {card.actionSteps.map((step, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 bg-white border border-slate-200/90 rounded-xl p-3 shadow-2xs"
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#C85A32] mt-1.5 flex-shrink-0" />
+                                <span className="leading-relaxed">{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Bottom Full-Width Terracotta Button */}
+                      <div className="pt-2">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResolve(card);
+                          }}
+                          className={`w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm shadow-xs transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] ${
+                            isCardResolved
+                              ? 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-500 ring-2 ring-emerald-500/20'
+                              : 'bg-[#C85A32] hover:bg-[#B24D28] text-white'
+                          }`}
+                        >
+                          <CheckCircle2
+                            className={`w-4 h-4 transition-transform duration-300 ${
+                              isCardResolved ? 'scale-110 text-white' : 'text-white/90'
+                            }`}
+                          />
+                          <span>
+                            {isCardResolved ? 'Intellect Cleared' : '✓ Mark as Resolved'}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
