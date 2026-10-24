@@ -2,6 +2,8 @@ import {
   ChariotState,
   TrayopastambhaLog,
   InterceptionRecord,
+  BhavaLog,
+  BhavaCardData,
 } from '../types/iks';
 
 /**
@@ -41,17 +43,96 @@ function isInterceptionSuccessful(item: InterceptionRecord | any): boolean {
 }
 
 /**
- * Helper to determine if a Bhava Compass interaction was successfully resolved.
+ * Helper to determine if a Bhava Compass interaction represents a positive emotional buffer.
  */
-function isBhavaResolved(item: any): boolean {
+export function isBhavaPositive(item: any): boolean {
+  if (!item) return false;
+  if (typeof item.isPositive === 'boolean') return item.isPositive;
+  if (item.interactionType === 'positive_buffer') return true;
+  if (item.type === 'positive' || item.category === 'positive') return true;
+  if (
+    typeof item.appreciationMessage === 'string' &&
+    item.appreciationMessage.trim().length > 0
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Helper to determine if a negative Bhava Compass friction was successfully resolved.
+ */
+export function isBhavaNegativeResolved(item: any): boolean {
   if (!item) return false;
   if (typeof item === 'boolean') return item;
   if (typeof item.isResolved === 'boolean') return item.isResolved;
   if (typeof item.resolved === 'boolean') return item.resolved;
+  if (item.interactionType === 'resolved_negative_friction') return true;
+  if (item.interactionType === 'unresolved_negative_friction') return false;
   if (typeof item.success === 'boolean') return item.success;
-  if (item.status) return item.status === 'resolved' || item.status === 'success';
-  if (item.targetGunaShift) return item.targetGunaShift === 'Sattva';
-  return true;
+  if (item.status === 'resolved' || item.status === 'success') return true;
+  if (item.status === 'unresolved') return false;
+  if (item.targetGunaShift === 'Sattva') return true;
+  return false;
+}
+
+/**
+ * Helper for backwards-compatibility checking whether a Bhava log is resolved.
+ */
+export function isBhavaResolved(item: any): boolean {
+  if (!item) return false;
+  if (isBhavaPositive(item)) return true;
+  return isBhavaNegativeResolved(item);
+}
+
+/**
+ * Calculates the Bhava Score using the Emotional Surplus (Buffer) algorithm.
+ *
+ * Mathematical Formula:
+ * BhavaScore = Math.min(100, ((resolvedNegatives / totalNegatives) * 100) + (totalPositives * 20))
+ *
+ * Edge Case:
+ * If totalNegatives === 0, the base score automatically defaults to 100,
+ * and the positive bonus is still added (capped at 100 by Math.min).
+ *
+ * This means positive logs act as a +20 point buffer to rescue the user's score
+ * if they leave a negative log unresolved.
+ *
+ * @param todayBhavaLogs Array of Bhava logs or card interactions from today
+ * @returns BhavaScore clamped between 0 and 100
+ */
+export function calculateBhavaScore(
+  todayBhavaLogs: (BhavaLog | BhavaCardData | any)[] = []
+): number {
+  if (!todayBhavaLogs || todayBhavaLogs.length === 0) {
+    return 100;
+  }
+
+  let totalPositives = 0;
+  let totalNegatives = 0;
+  let resolvedNegatives = 0;
+
+  for (const item of todayBhavaLogs) {
+    if (isBhavaPositive(item)) {
+      totalPositives += 1;
+    } else {
+      totalNegatives += 1;
+      if (isBhavaNegativeResolved(item)) {
+        resolvedNegatives += 1;
+      }
+    }
+  }
+
+  // Base score: 100 if no negative triggers occurred, else the resolution ratio percentage
+  const baseScore =
+    totalNegatives === 0
+      ? 100
+      : (resolvedNegatives / totalNegatives) * 100;
+
+  // Emotional Surplus bonus: +20 points per positive buffer
+  const positiveBonus = totalPositives * 20;
+
+  return Math.min(100, Math.round(baseScore + positiveBonus));
 }
 
 /**
@@ -64,8 +145,9 @@ function isBhavaResolved(item: any): boolean {
  *   bypass the math and return the special state: 'Resting'.
  * - GateScore (0-100): Percentage of successfully intercepted urges today.
  *   If 0 triggers occurred, defaults to 100.
- * - BhavaScore (0-100): Percentage of successfully resolved interpersonal conflicts today.
- *   If 0 conflicts occurred, defaults to 100.
+ * - BhavaScore (0-100): Emotional Surplus (Buffer) Algorithm:
+ *   BhavaScore = Math.min(100, ((resolvedNegatives / totalNegatives) * 100) + (totalPositives * 20))
+ *   Edge Case: If totalNegatives === 0, base score defaults to 100 and positive bonus is added (capped at 100).
  * - Final Composure Formula:
  *   composureScore = Math.round((todayYuktaScore * 0.50) + (GateScore * 0.30) + (BhavaScore * 0.20))
  *
@@ -77,18 +159,18 @@ function isBhavaResolved(item: any): boolean {
 export function calculateChariotStatus(
   todayYuktaScore: number,
   todayInterceptions?: InterceptionRecord[],
-  todayBhavaLogs?: any[],
+  todayBhavaLogs?: (BhavaLog | BhavaCardData | any)[],
   hasTodayLogs?: boolean
 ): ChariotStatusReport;
 export function calculateChariotStatus(
   todayLog: TrayopastambhaLog | TrayopastambhaLog[] | undefined | null,
   todayInterceptions?: InterceptionRecord[],
-  todayBhavaLogs?: any[]
+  todayBhavaLogs?: (BhavaLog | BhavaCardData | any)[]
 ): ChariotStatusReport;
 export function calculateChariotStatus(
   todayYuktaScoreOrLog: number | TrayopastambhaLog | TrayopastambhaLog[] | undefined | null,
   todayInterceptions: InterceptionRecord[] = [],
-  todayBhavaLogs: any[] = [],
+  todayBhavaLogs: (BhavaLog | BhavaCardData | any)[] = [],
   hasTodayLogs?: boolean
 ): ChariotStatusReport {
   // ================= 1. START OF DAY EDGE CASE =================
@@ -136,12 +218,8 @@ export function calculateChariotStatus(
     GateScore = Math.round((successfulCount / todayInterceptions.length) * 100);
   }
 
-  // BhavaScore: Percentage of successfully resolved interpersonal conflicts today (default 100 if 0 conflicts)
-  let BhavaScore = 100;
-  if (todayBhavaLogs && todayBhavaLogs.length > 0) {
-    const resolvedCount = todayBhavaLogs.filter(isBhavaResolved).length;
-    BhavaScore = Math.round((resolvedCount / todayBhavaLogs.length) * 100);
-  }
+  // BhavaScore: Emotional Surplus (Buffer) algorithm
+  const BhavaScore = calculateBhavaScore(todayBhavaLogs);
 
   // ================= 3. WEIGHTED CAPACITY MODEL =================
   const composureScore = Math.round(
