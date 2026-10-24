@@ -13,11 +13,12 @@ export interface TopBarProps {
 /**
  * TopBar navigation component for BrahmaPath.
  *
- * Combines:
+ * Features:
  * 1. Personalised Sankalpa & Goal Centre quick access (Target icon)
- * 2. Secret Judge Demo Feature: Invisible double-click / 750ms long-press
- *    on the central "BrahmaPath" title that populates 14 days of realistic
- *    data and reloads the page.
+ * 2. Secret Judge Presentation Tool: Double-clicking the main "BrahmaPath" logo
+ *    triggers `injectJudgeDemoData()`, populating local storage with 8 days of realistic
+ *    narrative logs (3 days low Yukta/high Vata-Tamas -> 5 days Sattvic ascendance)
+ *    and executing `window.location.reload()`.
  * 3. Settings modal trigger.
  */
 export const TopBar: React.FC<TopBarProps> = ({
@@ -30,7 +31,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   const longPressTimerRef = useRef<number | null>(null);
   const handleSankalpaClick = onSankalpaClick || onProfileClick;
 
-  // Core trigger handler: Injects 14-day judge demo logs & reloads view
+  // Presentation Trigger: Injects 8 days of realistic logs & reloads application
   const triggerJudgeDemo = useCallback(() => {
     try {
       injectJudgeDemoData();
@@ -42,13 +43,13 @@ export const TopBar: React.FC<TopBarProps> = ({
     }
   }, []);
 
-  // Desktop double-click trigger
+  // Desktop double-click event handler
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     triggerJudgeDemo();
   };
 
-  // Mobile long-press triggers (>= 750ms)
+  // Mobile long-press triggers (>= 750ms) for touchscreen devices
   const handleTouchStart = () => {
     if (longPressTimerRef.current) {
       window.clearTimeout(longPressTimerRef.current);
@@ -90,7 +91,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           <Target className="w-5 h-5 text-terracotta" />
         </button>
 
-        {/* Center: Invisible Judge Demo Trigger on Title */}
+        {/* Center: Main "BrahmaPath" Logo with Double-Click Demo Trigger */}
         <div
           role="button"
           tabIndex={0}
@@ -98,12 +99,15 @@ export const TopBar: React.FC<TopBarProps> = ({
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchCancel}
-          className="text-center cursor-default select-none group focus:outline-none"
+          className="text-center cursor-pointer select-none group focus:outline-none"
           title="BrahmaPath Cognitive Regulation"
         >
           <div className="flex items-center justify-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-amber-600 opacity-80 transition-transform group-active:scale-95" />
-            <h1 className="font-serif text-lg sm:text-xl font-semibold tracking-wide text-charcoal">
+            <h1
+              className="font-serif text-lg sm:text-xl font-semibold tracking-wide text-charcoal cursor-pointer"
+              onDoubleClick={handleDoubleClick}
+            >
               BrahmaPath
             </h1>
           </div>
