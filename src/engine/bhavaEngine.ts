@@ -213,17 +213,18 @@ export const BHAVA_CARDS: BhavaCardData[] = [
     isResolved: false,
   },
 
-  // --- 8. Negative Friction Card (Mudita) ---
+  // --- 8. Negative Friction Card (Karuna) ---
   {
-    id: 'burnout-effortless',
-    title: 'Academic Burnout seeing others succeed effortlessly',
-    sanskritTrait: 'Muditā (Sympathetic Joy)',
+    id: 'paralyzing-academic-overwhelm',
+    title: 'Paralyzing Academic Overwhelm',
+    sanskritTrait: 'Karuṇā (Grounding)',
     isPositive: false,
     explanationText:
-      'When we compare our chapter 1 to someone else’s chapter 10, our mind contracts into exhausting scarcity. Cultivate Mudita.',
+      'The deadlines are piling up, the syllabus looks impossible, and your mind is spinning into a panic state. You feel so overwhelmed that you are completely paralyzed.',
     actionSteps: [
-      'Silently wish them well, and watch your own mental burden disappear.',
-      'Refocus attention onto your immediate Swadharma.',
+      "Stop looking at the mountain. You cannot do a month's work in one night, and staring at the massive pile will only feed the panic.",
+      'Forgive yourself for procrastinating or falling behind—carrying guilt right now just wastes the little energy you have left.',
+      'Pick one single, tiny task. Commit to doing it for just 15 minutes. Action kills anxiety.',
     ],
     isResolved: false,
   },
@@ -243,7 +244,7 @@ export function getBhavaPrescription(emotion: BhavaEmotion | string): BhavaPresc
     if (lower.includes('imposter') || lower.includes('left out') || lower.includes('self-doubt')) {
       return BHAVA_COMPASS_MAP['Imposter Syndrome / Feeling Left Out'];
     }
-    if (lower.includes('burnout') || lower.includes('effortless')) {
+    if (lower.includes('burnout') || lower.includes('effortless') || lower.includes('overwhelm') || lower.includes('paralyz')) {
       return BHAVA_COMPASS_MAP['Academic Burnout seeing others succeed effortlessly'];
     }
     if (lower.includes('partner') || (lower.includes('toxic') && lower.includes('project')) || lower.includes('unfair')) {
