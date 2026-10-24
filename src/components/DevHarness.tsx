@@ -820,7 +820,7 @@ export function DevHarness() {
                   Breathing Sanctum
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Autonomic vagal brake via cyclic exhalations and kumbhaka.
+                  Naturally calm your mind and nervous system through guided, rhythmic breathing.
                 </p>
               </div>
               <ShastraLensButton onClick={() => openShastraLens('breathing')} />
