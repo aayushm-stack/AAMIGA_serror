@@ -817,36 +817,51 @@ export function DevHarness() {
             <div className="flex items-center justify-between border-b pb-3 text-left">
               <div>
                 <h2 className="text-lg font-bold text-slate-900">
-                  Breathing Sanctum (Prāṇamaya Kosha Regulation)
+                  Breathing Sanctum
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Autonomic vagal brake via cyclic exhalations and kumbhaka.
+                  Naturally calm your mind and nervous system through guided, rhythmic breathing.
                 </p>
               </div>
               <ShastraLensButton onClick={() => openShastraLens('breathing')} />
             </div>
 
             {/* Mode selection buttons */}
-            <div className="flex justify-center gap-2">
+            <div className="grid grid-cols-3 gap-2 w-full max-w-md mx-auto">
               {(
                 [
-                  { key: 'SamaVritti', label: 'Sama Vritti (4-4-4-4 Box)' },
-                  { key: 'Relaxation478', label: 'Relaxation (4-7-8)' },
-                  { key: 'NadiShodhana', label: 'Nadi Shodhana (4-4-6)' },
+                  { key: 'SamaVritti', title: 'Sama Vritti', cycle: '4-4-4-4 Box' },
+                  { key: 'Relaxation478', title: 'Relaxation', cycle: '4-7-8 Box' },
+                  { key: 'NadiShodhana', title: 'Nadi Shodhana', cycle: '4-4-6 Box' },
                 ] as const
-              ).map((m) => (
-                <button
-                  key={m.key}
-                  onClick={() => breathing.setMode(m.key)}
-                  style={{
-                    backgroundColor: breathing.mode === m.key ? '#065F46' : '#F1F5F9',
-                    color: breathing.mode === m.key ? '#FFFFFF' : '#334155',
-                  }}
-                  className="px-3.5 py-1.5 rounded-full text-xs font-medium transition"
-                >
-                  {m.label}
-                </button>
-              ))}
+              ).map((m) => {
+                const isActive = breathing.mode === m.key;
+                return (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => breathing.setMode(m.key)}
+                    style={{
+                      backgroundColor: isActive ? '#065F46' : '#F1F5F9',
+                      color: isActive ? '#FFFFFF' : '#334155',
+                      borderColor: isActive ? '#047857' : '#E2E8F0',
+                    }}
+                    className="flex flex-col items-center justify-center py-2 px-1.5 sm:px-2 rounded-xl border text-center transition-all cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+                  >
+                    <span className="text-xs font-bold leading-tight">
+                      {m.title}
+                    </span>
+                    <span
+                      style={{
+                        color: isActive ? '#A7F3D0' : '#64748B',
+                      }}
+                      className="text-[10px] font-medium leading-tight mt-0.5"
+                    >
+                      {m.cycle}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Visual concentric pacer */}
