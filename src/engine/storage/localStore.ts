@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
   LOGS: 'bp_sadhana_logs',
   INTERCEPTIONS: 'bp_interceptions',
   PREFS: 'bp_user_prefs',
+  GOALS: 'bp_sankalpa_goals',
 } as const;
 
 /**

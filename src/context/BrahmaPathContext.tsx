@@ -37,11 +37,15 @@ import {
   importEncryptedBackup,
 } from '../engine/backup/cryptoBackup';
 import { clearAllBrahmaPathData } from '../engine/storage/localStore';
+import { useAccount } from './AccountContext';
 
 /**
  * Full contract for the global BrahmaPath application state and logic layer.
  */
 export interface BrahmaPathContextType {
+  // User Account & Preferred Name (Decoupled Global State)
+  userName: string;
+  setUserName: (name: string) => void;
   // Sadhana & Habits
   logs: TrayopastambhaLog[];
   preferences: UserPreferences;
@@ -94,6 +98,8 @@ const BrahmaPathContext = createContext<BrahmaPathContextType | undefined>(undef
  * state persistence, and Shastra Lens drawers.
  */
 export function BrahmaPathProvider({ children }: { children: ReactNode }) {
+  // Global Account Context (userName)
+  const { userName, setUserName } = useAccount();
   // Underlying persistent hooks
   const {
     logs,
@@ -216,6 +222,8 @@ export function BrahmaPathProvider({ children }: { children: ReactNode }) {
 
   const contextValue: BrahmaPathContextType = useMemo(
     () => ({
+      userName,
+      setUserName,
       logs,
       preferences,
       todayLog,
@@ -242,6 +250,8 @@ export function BrahmaPathProvider({ children }: { children: ReactNode }) {
       resetAllData,
     }),
     [
+      userName,
+      setUserName,
       logs,
       preferences,
       todayLog,

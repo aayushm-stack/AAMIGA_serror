@@ -22,6 +22,8 @@ type TabKey = 'sadhana' | 'interceptor' | 'breathing' | 'bhava' | 'vault';
 
 export function DevHarness() {
   const {
+    userName,
+    setUserName,
     logs,
     preferences,
     todayLog,
@@ -266,6 +268,34 @@ export function DevHarness() {
               >
                 📜 Trayopastambha Lens
               </button>
+            </div>
+          </div>
+
+          {/* Global Settings & Account Preferred Name Section */}
+          <div className="p-3 bg-white border border-slate-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                ⚙️ Global Settings:
+              </span>
+              <span className="text-[11px] text-slate-500">
+                (Account identity kept out of daily task flow)
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <label htmlFor="harness-preferred-name" className="text-xs font-semibold text-slate-700 whitespace-nowrap">
+                Preferred Name:
+              </label>
+              <input
+                id="harness-preferred-name"
+                type="text"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Preferred Name (e.g. Arjuna)"
+                className="px-2.5 py-1 text-xs border border-slate-300 rounded bg-white text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              />
+              <span className="text-[11px] text-amber-800 font-medium">
+                Active: {userName || 'Sadhaka'}
+              </span>
             </div>
           </div>
 
@@ -837,48 +867,51 @@ export function DevHarness() {
             </div>
 
             {/* Visual concentric pacer */}
-            <div className="py-12 flex flex-col items-center justify-center">
-              <div
-                style={{
-                  width: 220,
-                  height: 220,
-                  borderRadius: '50%',
-                  backgroundColor: '#DEF7EC',
-                  borderColor: '#065F46',
-                  borderWidth: 4,
-                  borderStyle: 'solid',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transform: `scale(${breathing.visualScale})`,
-                  transition: 'transform 100ms linear',
-                  boxShadow: '0 10px 25px -5px rgba(6, 95, 70, 0.2)',
-                }}
-              >
+            {/* Visual concentric pacer with anti-overlap container */}
+            <div className="flex flex-col items-center justify-center pt-2 pb-4">
+              <div className="w-full h-80 flex items-center justify-center">
                 <div
                   style={{
-                    width: 140,
-                    height: 140,
+                    width: 200,
+                    height: 200,
                     borderRadius: '50%',
-                    backgroundColor: '#065F46',
-                    color: '#FFFFFF',
+                    backgroundColor: '#DEF7EC',
+                    borderColor: '#065F46',
+                    borderWidth: 4,
+                    borderStyle: 'solid',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: 8,
+                    transform: `scale(${breathing.visualScale})`,
+                    transition: 'transform 100ms linear',
+                    boxShadow: '0 10px 25px -5px rgba(6, 95, 70, 0.2)',
                   }}
                 >
-                  <span className="text-3xl font-extrabold">
-                    {breathing.secondsRemainingInPhase}s
-                  </span>
-                  <span className="text-[10px] text-emerald-200 mt-1 uppercase tracking-wider">
-                    {breathing.phase.replace('_', ' ').split(' ')[0]}
-                  </span>
+                  <div
+                    style={{
+                      width: 130,
+                      height: 130,
+                      borderRadius: '50%',
+                      backgroundColor: '#065F46',
+                      color: '#FFFFFF',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: 8,
+                    }}
+                  >
+                    <span className="text-3xl font-extrabold">
+                      {breathing.secondsRemainingInPhase}s
+                    </span>
+                    <span className="text-[10px] text-emerald-200 mt-1 uppercase tracking-wider">
+                      {breathing.phase.replace('_', ' ').split(' ')[0]}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-8 space-y-1">
+              <div className="mt-4 space-y-1">
                 <p className="text-base font-bold text-slate-800">
                   {breathing.phaseLabel}
                 </p>
@@ -1344,3 +1377,4 @@ export function DevHarness() {
     </div>
   );
 }
+

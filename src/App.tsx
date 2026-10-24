@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AccountProvider } from './context/AccountContext';
 import { BrahmaPathProvider, useBrahmaPath } from './context/BrahmaPathContext';
 import { DevHarness } from './components/DevHarness';
 import {
@@ -15,13 +16,16 @@ import {
   VaultPage,
   FeaturesPage,
   ShastraLensDrawer,
+  SettingsModal,
+  SankalpaHub,
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
 
-type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness';
+type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa';
 
 /**
- * Main application content bound to the global IKS context and unified navigation.
+ * Main application content bound to the global IKS context, decoupled account state,
+ * and unified navigation.
  */
 function MainContent() {
   const {
@@ -31,13 +35,16 @@ function MainContent() {
     closeShastraLens,
   } = useBrahmaPath();
 
-  // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness'
+  // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness' | 'sankalpa'
   const [activeTab, setActiveTab] = useState<AppViewTab>('home');
+
+  // Global Settings Modal state (isolated from daily workflows)
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
 
   // Today's featured shastra verse
   const todayVerse = dailyVersesData[1] || dailyVersesData[0];
 
-  // Derive dominant Guna
+  // Derive dominant Guna for DoshaBalancingCard
   const dominantGunaType =
     gunaDistribution.sattva >= 55
       ? 'Sattva'
@@ -46,7 +53,7 @@ function MainContent() {
       : 'Tamas';
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-[#1E293B] font-sans antialiased">
+    <div className="min-h-screen bg-parchment text-charcoal font-sans antialiased">
       {/* ================= VIEW 1: DEVELOPER / JUDGE TEST HARNESS ================= */}
       {activeTab === 'harness' ? (
         <div>
@@ -73,10 +80,11 @@ function MainContent() {
       ) : (
         /* ================= VIEW 2: PRODUCTION MOBILE-FIRST UI ================= */
         <AppLayout>
-          {/* Top Bar with Settings (⚙️) icon switching to DevHarness & invisible judge double-click */}
+          {/* Top Bar with Sankalpa Goal Centre, isolated Settings modal trigger, and invisible judge double-click */}
           <TopBar
-            onProfileClick={() => openShastraLens('chariot')}
-            onSettingsClick={() => setActiveTab('harness')}
+            onSankalpaClick={() => setActiveTab(activeTab === 'sankalpa' ? 'home' : 'sankalpa')}
+            isSankalpaActive={activeTab === 'sankalpa'}
+            onSettingsClick={() => setIsSettingsOpen(true)}
           />
 
           <main className="p-4 space-y-4">
@@ -122,6 +130,13 @@ function MainContent() {
                 <BreathePage />
               </div>
             )}
+
+            {/* 5. SANKALPA VIEWPORT (Personalised Intentions & Goals) */}
+            {activeTab === 'sankalpa' && (
+              <div className="space-y-4">
+                <SankalpaHub onOpenShastraLens={openShastraLens} />
+              </div>
+            )}
           </main>
 
           {/* 4-Icon Bottom Navigation */}
@@ -144,17 +159,26 @@ function MainContent() {
         commentaryReference={activeLensData?.commentaryReference}
         practicalApplication={activeLensData?.practicalModernApplication}
       />
+
+      {/* Global Settings & Account Modal - Kept out of daily workflow */}
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        onOpenDevHarness={() => setActiveTab('harness')}
+      />
     </div>
   );
 }
 
 /**
- * Root Application Wrapper supplying global context.
+ * Root Application Wrapper supplying decoupled global account state and IKS context.
  */
 export default function App() {
   return (
-    <BrahmaPathProvider>
-      <MainContent />
-    </BrahmaPathProvider>
+    <AccountProvider>
+      <BrahmaPathProvider>
+        <MainContent />
+      </BrahmaPathProvider>
+    </AccountProvider>
   );
 }

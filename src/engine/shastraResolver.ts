@@ -17,23 +17,75 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Charaka Samhita, Sutrasthana 11.35',
     commentaryReference: 'Chakrapani Datta, Ayurveda Dipika on Charaka Sutrasthana 11.35',
     literalMeaning:
-      'Three are the supporting pillars of embodied life: wholesome nourishment and sensory intake (Āhāra), restorative sleep (Svapna), and regulated conduct with preservation of vital energy (Brahmacharya).',
+      'There are three foundational subsidiary pillars (Trayopastambha) of life: Ahara (intake), Nidra (sleep), and Brahmacharya (restraint/energy conservation). Just as a building is supported by its pillars, physical and mental stability is sustained by what we consume, how deeply we rest, and how effectively we conserve our vital energy.',
     practicalModernApplication:
-      'Directs students to balance food and digital intake (<120m/day), preserve consistent circadian sleep schedules, and protect deep cognitive vitality from fragmentation.',
+      'This is why the Daily Sadhana check-in tracks screen time right next to food and sleep. Just like junk food crashes the body, junk digital content crashes the mind. This feature trains you to treat your digital attention with the exact same care as your physical diet.',
   },
-  interceptor: {
-    id: 'shastra-interceptor',
-    featureKey: 'interceptor',
-    sanskritVerse:
-      'वितर्कबाधने प्रतिपक्षभावनम् ॥\nध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते । सङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥',
-    transliteration:
-      'vitarka-bādhane pratipakṣa-bhāvanam ||\ndhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate | saṅgāt sañjāyate kāmaḥ kāmāt krodho \'bhijāyate ||',
-    sourceText: 'Yoga Sutra 2.33 & Bhagavad Gita 2.62-63',
-    commentaryReference: 'Vyasa Bhashya on YS 2.33 & Shankara Bhashya on Gita 2.62',
+  brahmacharya: {
+    id: 'shastra-brahmacharya',
+    featureKey: 'brahmacharya',
+    sanskritVerse: 'ब्रह्मचर्यप्रतिष्ठायां वीर्यलाभः ॥',
+    transliteration: 'brahmacarya-pratiṣṭhāyāṁ vīrya-lābhaḥ ||',
+    sourceText: 'Patanjali Yoga Sutras 2.38',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.38',
     literalMeaning:
-      'When unwholesome impulses (Vitarka) disturb the mind, actively cultivate the opposing wholesome contemplation (Pratipaksha). Dwelling upon sense-objects engenders attachment; from attachment springs intense craving, and thwarted craving gives rise to agitation.',
+      'Upon being firmly established in Brahmacharya (sensory restraint and disciplined focus), one attains profound vitality and vigor (Virya). By deliberately withdrawing attention from endless digital fragmentation and overstimulation, you reclaim the mental stamina required for true self-mastery.',
     practicalModernApplication:
-      'Powers the 90-second Pause Gate: intercepts compulsive dopamine scrolling loops before they cascade from subtle dwelling (Dhyāna) into loss of working memory and executive collapse (Buddhi-nāśa).',
+      'Think of your attention like a battery. The Energy Conservation slider exists because true focus isn\'t just about logging hours at a desk—it\'s about how well you protect your mental charge from draining notifications and digital noise.',
+  },
+  cascade: {
+    id: 'shastra-cascade',
+    featureKey: 'cascade',
+    sanskritVerse:
+      'ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते ।\nसङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥\nक्रोधाद्भवति संमोहः संमोहात्स्मृतिविभ्रमः ।\nस्मृतिभ्रंशाद् बुद्धिनाशो बुद्धिनाशात्प्रणश्यति ॥',
+    transliteration:
+      'dhyāyato viṣayān puṁsaḥ saṅgas teṣūpajāyate |\nsaṅgāt sañjāyate kāmaḥ kāmāt krodho \'bhijāyate ||\nkrodhād bhavati saṁmohaḥ saṁmohāt smṛti-vibhramaḥ |\nsmṛti-bhraṁśād buddhi-nāśo buddhi-nāśāt praṇaśyati ||',
+    sourceText: 'Bhagavad Gita 2.62-63',
+    commentaryReference: 'Adi Shankaracharya Bhashya on Bhagavad Gita 2.62-63',
+    literalMeaning:
+      'Dwelling on sensory objects breeds attachment; attachment births craving; craving obstructed becomes agitation. Agitation leads to delusion, which ultimately destroys the discriminative intellect (Buddhi). This reveals the precise psychology of distraction: failure begins at the subtlest first thought, and intercepting the impulse early is the only way to prevent a complete loss of control.',
+    practicalModernApplication:
+      'Ever open your phone to check the time and suddenly lose an hour? That’s the distraction snowball. The Pause Gate Visualizer shows exactly where you are in that 7-step loop, helping you catch a fleeting urge before it completely overrides your intellect.',
+  },
+  pratipaksha: {
+    id: 'shastra-pratipaksha',
+    featureKey: 'pratipaksha',
+    sanskritVerse: 'वितर्कबाधने प्रतिपक्षभावनम् ॥',
+    transliteration: 'vitarka-bādhane pratipakṣa-bhāvanam ||',
+    sourceText: 'Patanjali Yoga Sutras 2.33',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.33',
+    literalMeaning:
+      'When the mind is afflicted by unwholesome thoughts or destructive impulses (vitarkas), one should deliberately cultivate the exact opposite, wholesome perspective (Pratipaksha Bhavana). This active cognitive reframing cuts the root of toxic loops by redirecting mental energy (Chitta Vritti) rather than merely suppressing it.',
+    practicalModernApplication:
+      'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
+  },
+  yukta: {
+    id: 'shastra-yukta',
+    featureKey: 'yukta',
+    sanskritVerse:
+      'युक्ताहारविहारस्य युक्तचेष्टस्य कर्मसु ।\nयुक्तस्वप्नावबोधस्य योगो भवति दुःखहा ॥',
+    transliteration:
+      'yuktāhāra-vihārasya yukta-ceṣṭasya karmasu |\nyukta-svapnāvabodhasya yogo bhavati duḥkha-hā ||',
+    sourceText: 'Bhagavad Gita 6.17',
+    commentaryReference: 'Adi Shankaracharya Bhashya on Bhagavad Gita 6.17',
+    literalMeaning:
+      'For one who is moderate in eating and recreation, balanced in effort at work, and regulated in sleep and waking, yoga removes all sorrow. True discipline is not extreme asceticism or self-punishment; it is finding sustainable harmony in daily routines.',
+    practicalModernApplication:
+      'This is the exact logic behind the app\'s Yukta Scoring algorithm. The app doesn\'t demand 14 hours of study and zero entertainment. It rewards you for balanced sleep (6.5 to 8 hours), mindful digital boundaries, and sustainable daily focus.',
+  },
+  chariot: {
+    id: 'shastra-chariot',
+    featureKey: 'chariot',
+    sanskritVerse:
+      'आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥\nइन्द्रियाणि हयानाहुर्विषयांस्तेषु गोचरान् ॥',
+    transliteration:
+      'ātmānaṁ rathinaṁ viddhi śarīraṁ rathameva tu | buddhiṁ tu sārathiṁ viddhi manaḥ pragrahameva ca ||\nindriyāṇi hayān āhur viṣayāṁs teṣu gocarān ||',
+    sourceText: 'Katha Upanishad 1.3.3-4',
+    commentaryReference: 'Shankara Bhashya on Katha Upanishad 1.3.3-4',
+    literalMeaning:
+      'The human body is a chariot, the intellect (Buddhi) is the charioteer, the mind (Manas) acts as the reins, and the senses (Indriyas) are the wild horses. If the intellect is asleep and the mind lacks restraint, the sensory horses run wild and drag the chariot off course.',
+    practicalModernApplication:
+      'This is the dynamic visual on your Home Dashboard. Instead of a boring chart, you see your current chariot state. If your digital screen time is too high, your chariot shows as \'Galloping\' out of control, instantly telling you that your intellect needs to pull the reins.',
   },
   breathing: {
     id: 'shastra-breathing',
@@ -44,9 +96,21 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Taittiriya Upanishad, Brahmananda Valli 2.2',
     commentaryReference: 'Shankara Bhashya on Taittiriya Upanishad 2.2 & Yoga Sutra 2.49',
     literalMeaning:
-      'Verily, distinct from this physical body made of food-essence (Annamaya) is another inner sheath consisting of vital breath and prana (Pranamaya), by which the physical body is completely pervaded and enlivened.',
+      'Beyond the physical body (Annamaya Kosha) lies the vital energy sheath (Pranamaya Kosha), governed by the breath (Prana). Because the breath acts as the physical bridge to the mental sheath (Manomaya Kosha), regulating respiration directly stabilizes an agitated mind.',
     practicalModernApplication:
-      'Acts as the foundation for the Breathing Sanctum: pacing conscious exhalations (Rechaka) and retentions (Kumbhaka) regulates autonomic nervous tone, soothing sympathetic digital overdrive.',
+      'This anchors the Breathing Sanctum. When you are overwhelmed, logic and reading don\'t always work. The expanding and contracting concentric rings bypass the thinking brain, using paced rhythms to mechanically slow your heart rate and restore calm.',
+  },
+  interceptor: {
+    id: 'shastra-interceptor',
+    featureKey: 'interceptor',
+    sanskritVerse: 'वितर्कबाधने प्रतिपक्षभावनम् ॥',
+    transliteration: 'vitarka-bādhane pratipakṣa-bhāvanam ||',
+    sourceText: 'Patanjali Yoga Sutras 2.33',
+    commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 2.33',
+    literalMeaning:
+      'When the mind is afflicted by unwholesome thoughts or destructive impulses (vitarkas), one should deliberately cultivate the exact opposite, wholesome perspective (Pratipaksha Bhavana). This active cognitive reframing cuts the root of toxic loops by redirecting mental energy (Chitta Vritti) rather than merely suppressing it.',
+    practicalModernApplication:
+      'You can\'t just delete a bad habit; you have to overwrite it. Instead of just locking you out of an app, the Interceptor asks you to pause, acknowledge the negative urge, and type a better alternative to actively rewire your brain.',
   },
   chitta_prasadanam: {
     id: 'shastra-chitta_prasadanam',
@@ -58,9 +122,9 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
     sourceText: 'Yoga Sutra 1.33',
     commentaryReference: 'Vyasa Bhashya on Patanjali Yoga Sutra 1.33',
     literalMeaning:
-      'By cultivating friendliness (Maitri) toward the happy, compassion (Karuna) toward the suffering, sympathetic joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the unvirtuous/toxic, the consciousness attains profound serenity.',
+      'The mind is purified and pacified (Chitta Prasadanam) by cultivating friendliness (Maitri) toward the happy, compassion (Karuna) for the suffering, joy (Mudita) toward the virtuous, and equanimity (Upeksha) toward the wicked or toxic. Practicing these specific attitudes acts as a social shield, actively dissolving modern interpersonal frictions.',
     practicalModernApplication:
-      'The Bhava Compass engine: transforms peer comparison into Mudita, converts resentment into serene detachment (Upeksha), and safeguards students from reactive online outrage.',
+      'Social media FOMO and peer comparison can easily ruin a good day. The Bhava Compass acts as your emotional reset button. When you feel triggered or stressed by others, it gives you quick journaling prompts to drop the negativity and get your peace back.',
   },
   gunas: {
     id: 'shastra-gunas',
@@ -75,20 +139,6 @@ export const FALLBACK_SHASTRA_DATABASE: Record<ShastraFeatureKey, ShastraLensDat
       'Sattva (clarity/light), Rajas (passion/agitation), and Tamas (inertia/dullness)—these three qualities born of material nature condition the embodied self. Upon the firm establishment of regulated conduct (Brahmacharya), unshakeable cognitive vitality and vigor (Virya) is attained.',
     practicalModernApplication:
       'Daily Guna monitoring and analytics: empowers students to self-diagnose mental states (distracted Rajas, lethargic Tamas, or focused Sattva) and consciously align their daily rhythms.',
-  },
-  chariot: {
-    id: 'shastra-chariot',
-    featureKey: 'chariot',
-    sanskritVerse:
-      'आत्मानं रथिनं विद्धि शरीरं रथमेव तु । बुद्धिं तु सारथिं विद्धि मनः प्रग्रहमेव च ॥\nइन्द्रियाणि हयानाहुर्विषयांस्तेषु गोचरान् ॥',
-    transliteration:
-      'ātmānaṁ rathinaṁ viddhi śarīraṁ rathameva tu | buddhiṁ tu sārathiṁ viddhi manaḥ pragrahameva ca ||\nindriyāṇi hayān āhur viṣayāṁs teṣu gocarān ||',
-    sourceText: 'Katha Upanishad 1.3.3-4',
-    commentaryReference: 'Shankara Bhashya on Katha Upanishad 1.3.3-4',
-    literalMeaning:
-      'Know the Atman (Self) as the rider of the chariot, and the body as the chariot itself. Know the intellect (Buddhi) as the charioteer, and the mind (Manas) as the reins. The senses (Indriyas) are the galloping horses, and the sensory objects (Vishayas) are the roads over which they range.',
-    practicalModernApplication:
-      'The central dashboard visual metaphor: visualizes the student’s daily discipline through the chariot’s composure, showing whether the horses (senses) are in Calm harmony, Brisk engagement, or Galloping unchecked.',
   },
 };
 

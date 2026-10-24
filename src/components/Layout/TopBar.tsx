@@ -1,29 +1,34 @@
 import React, { useRef, useCallback } from 'react';
 import { injectJudgeDemoData } from '../../engine/storage/seedData';
-import { Sparkles, User, Settings } from 'lucide-react';
+import { Target, Settings, Sparkles } from 'lucide-react';
 
 export interface TopBarProps {
+  onSankalpaClick?: () => void;
   onProfileClick?: () => void;
   onSettingsClick?: () => void;
+  isSankalpaActive?: boolean;
   className?: string;
 }
 
 /**
  * TopBar navigation component for BrahmaPath.
  *
- * Secret Judge Demo Feature:
- * Features an invisible double-click and long-press event on the central "BrahmaPath"
- * title. When triggered by hackathon judges or evaluators, it calls `injectJudgeDemoData()`,
- * populates 14 days of realistic transformation data into local storage, and forces a
- * clean window reload so all charts and metrics immediately come to life.
- * Completely invisible to the naked eye.
+ * Combines:
+ * 1. Personalised Sankalpa & Goal Centre quick access (Target icon)
+ * 2. Secret Judge Demo Feature: Invisible double-click / 750ms long-press
+ *    on the central "BrahmaPath" title that populates 14 days of realistic
+ *    data and reloads the page.
+ * 3. Settings modal trigger.
  */
 export const TopBar: React.FC<TopBarProps> = ({
+  onSankalpaClick,
   onProfileClick,
   onSettingsClick,
+  isSankalpaActive = false,
   className = '',
 }) => {
   const longPressTimerRef = useRef<number | null>(null);
+  const handleSankalpaClick = onSankalpaClick || onProfileClick;
 
   // Core trigger handler: Injects 14-day judge demo logs & reloads view
   const triggerJudgeDemo = useCallback(() => {
@@ -68,22 +73,21 @@ export const TopBar: React.FC<TopBarProps> = ({
   };
 
   return (
-    <header
-      style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.92)',
-        borderColor: '#E2E8F0',
-      }}
-      className={`sticky top-0 z-30 w-full backdrop-blur-md border-b px-4 py-3 shadow-2xs transition-colors duration-200 ${className}`}
-    >
-      <div className="max-w-md mx-auto flex items-center justify-between">
-        {/* Left Action: Profile / Self Reflection */}
+    <header className={`sticky top-0 z-30 w-full bg-white/85 backdrop-blur-md border-b border-[#E2E8F0] px-4 py-3 shadow-2xs transition-colors duration-200 ${className}`}>
+      <div className="flex items-center justify-between">
+        {/* Personalised Centre / Culturally aligned Sankalpa (Intent & Focus) Action */}
         <button
           type="button"
-          onClick={onProfileClick}
-          aria-label="Profile and Sankalpa"
-          className="p-2 rounded-xl text-slate-700 hover:bg-slate-100/80 active:bg-slate-200/80 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-700/30 cursor-pointer"
+          onClick={handleSankalpaClick}
+          aria-label="Personalised Sankalpa & Goal Centre"
+          title="Personalised Sankalpa & Goal Centre"
+          className={`p-2 rounded-xl text-terracotta transition-all shadow-xs flex items-center justify-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-terracotta/40 ${
+            isSankalpaActive
+              ? 'bg-orange-200/90 border border-terracotta ring-2 ring-terracotta/30 scale-105'
+              : 'bg-orange-50/80 hover:bg-orange-100 border border-orange-200/50 hover:scale-105 active:scale-95'
+          }`}
         >
-          <User className="w-5 h-5 text-slate-700" />
+          <Target className="w-5 h-5 text-terracotta" />
         </button>
 
         {/* Center: Invisible Judge Demo Trigger on Title */}
@@ -98,22 +102,22 @@ export const TopBar: React.FC<TopBarProps> = ({
           title="BrahmaPath Cognitive Regulation"
         >
           <div className="flex items-center justify-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-600 opacity-90 transition-transform group-active:scale-95" />
-            <h1 className="font-serif text-lg sm:text-xl font-bold tracking-wide text-slate-900 leading-tight">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600 opacity-80 transition-transform group-active:scale-95" />
+            <h1 className="font-serif text-lg sm:text-xl font-semibold tracking-wide text-charcoal">
               BrahmaPath
             </h1>
           </div>
-          <p className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold -mt-0.5">
+          <p className="text-[10px] uppercase tracking-widest text-charcoal/60 font-semibold -mt-0.5">
             Cognitive Regulation
           </p>
         </div>
 
-        {/* Right Action: Settings / Protocol Preferences */}
+        {/* Settings Gear Icon / Action */}
         <button
           type="button"
           onClick={onSettingsClick}
-          aria-label="Settings and Protocol Controls"
-          className="p-2 rounded-xl text-slate-700 hover:bg-slate-100/80 active:bg-slate-200/80 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-600/30 cursor-pointer"
+          aria-label="Settings"
+          className="p-2 rounded-xl text-charcoal hover:bg-black/5 transition-colors focus:outline-none focus:ring-2 focus:ring-terracotta/40 cursor-pointer"
         >
           <Settings className="w-5 h-5 text-slate-700" />
         </button>
