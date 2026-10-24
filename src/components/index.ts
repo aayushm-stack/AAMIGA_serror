@@ -7,7 +7,7 @@ export { BottomNav, type NavTab } from './Layout/BottomNav';
 export { DailyVerseCard, type DailyVerse } from './SadhanaHub/DailyVerseCard';
 
 // Katha Upanishad Chariot Component
-export { ChariotHome } from './Chariot/ChariotHome';
+export { ChariotHome, ChariotStatusBadge, type ChariotStatusBadgeProps } from './Chariot/ChariotHome';
 export { TridoshaBar } from './Chariot/TridoshaBar';
 
 // Trayopastambha / Yukta Logging Components
