@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ShastraLensButton } from '../Shastra/ShastraLensButton';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
 import { BhavaCardData } from '../../types/iks';
 import { BHAVA_CARDS } from '../../engine/bhavaEngine';
@@ -73,14 +74,10 @@ export const CompassMobile: React.FC<CompassMobileProps> = ({ className = '' }) 
         </div>
 
         {openShastraLens && (
-          <button
-            type="button"
+          <ShastraLensButton
             onClick={() => openShastraLens('chitta_prasadanam')}
-            style={{ color: '#065F46' }}
-            className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition"
-          >
-            [YS 1.33 Lens]
-          </button>
+            className="ml-2"
+          />
         )}
       </div>
 
