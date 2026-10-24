@@ -12,6 +12,7 @@ import {
 import { TriggerCategory } from '../../types/iks';
 import { ShieldCheck, Sparkles, CheckCircle2, AlertTriangle, Heart } from 'lucide-react';
 import { CascadeVisualizer } from './CascadeVisualizer';
+import { ReframeInputs, SHREYAS_MICRO_SWAPS } from './ReframeInputs';
 
 export interface InterceptorMobileProps {
   className?: string;
@@ -39,15 +40,9 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
   const [selectedTrigger, setSelectedTrigger] =
     useState<TriggerCategory>('Doomscrolling');
   const [urgeIntensity, setUrgeIntensity] = useState<number>(3);
-  const [vitarkaText, setVitarkaText] = useState<string>(
-    TRIGGER_REFRAME_TEMPLATES.Doomscrolling.vitarkaExample
-  );
-  const [pratipakshaText, setPratipakshaText] = useState<string>(
-    TRIGGER_REFRAME_TEMPLATES.Doomscrolling.suggestedReframe
-  );
-  const [selectedSwap, setSelectedSwap] = useState<string>(
-    TRIGGER_REFRAME_TEMPLATES.Doomscrolling.defaultMicroSwaps[0]
-  );
+  const [vitarkaText, setVitarkaText] = useState<string>('');
+  const [pratipakshaText, setPratipakshaText] = useState<string>('');
+  const [selectedSwap, setSelectedSwap] = useState<string>(SHREYAS_MICRO_SWAPS[0]);
   const [gateFeedback, setGateFeedback] = useState<{
     text: string;
     isError?: boolean;
@@ -57,9 +52,7 @@ export const InterceptorMobile: React.FC<InterceptorMobileProps> = ({
   const handleTriggerSelect = (cat: TriggerCategory) => {
     setSelectedTrigger(cat);
     const tmpl = TRIGGER_REFRAME_TEMPLATES[cat];
-    setVitarkaText(tmpl.vitarkaExample);
-    setPratipakshaText(tmpl.suggestedReframe);
-    setSelectedSwap(tmpl.defaultMicroSwaps[0]);
+    setSelectedSwap(SHREYAS_MICRO_SWAPS[0]);
     setGateFeedback(null);
   };
 
