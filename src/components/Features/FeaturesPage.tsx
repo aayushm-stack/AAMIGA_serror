@@ -1,34 +1,13 @@
 import React, { useState } from 'react';
 import { SadhanaMobile } from './SadhanaMobile';
-export { SadhanaMobile };
+import { InterceptorMobile } from './InterceptorMobile';
+export { SadhanaMobile, InterceptorMobile };
 
 export type FeatureTab = 'sadhana' | 'interceptor' | 'compass';
 
 export interface FeaturesPageProps {
   className?: string;
 }
-
-/**
- * Placeholder for Pause Gate mobile view (Gita 2.62-63 Distraction Interceptor).
- */
-export const InterceptorMobile: React.FC = () => {
-  return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-3">
-      <div className="flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
-        <h3 className="text-base font-bold text-slate-900">
-          Pause Gate (Distraction Interceptor)
-        </h3>
-      </div>
-      <p className="text-xs text-slate-500 leading-relaxed">
-        Gita 2.62-63 7-step psychological descent tracker and Pratipaksha Bhavana (YS 2.33) cognitive reframe.
-      </p>
-      <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
-        &lt;InterceptorMobile /&gt; component placeholder ready for modular controls.
-      </div>
-    </div>
-  );
-};
 
 /**
  * Placeholder for Bhava Compass mobile view (Yoga Sutra 1.33 Chitta Prasadanam).
