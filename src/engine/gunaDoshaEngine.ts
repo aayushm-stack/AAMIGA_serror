@@ -7,6 +7,15 @@ import {
 } from '../types/iks';
 
 /**
+ * Proportional Tri-Dosha balance distribution.
+ */
+export interface DoshaDistribution {
+  vata: number;
+  pitta: number;
+  kapha: number;
+}
+
+/**
  * Diagnostic result detailing biological humor imbalance and classical Ayurvedic remedies.
  */
 export interface DoshaDiagnosisResult {
@@ -15,6 +24,9 @@ export interface DoshaDiagnosisResult {
   dinacharyaRemedy: string;
   dietaryAdvice: string;
   pranayamaSuggestion: string;
+  physicalRemedy: string;
+  doshaScores: DoshaDistribution;
+  normalizedPercentages: DoshaDistribution;
 }
 
 /**
@@ -147,7 +159,11 @@ export function calculateGunaDistribution(
 
 /**
  * Analyzes behavioral signals and urge triggers to detect acute Dosha imbalances
- * and provides targeted classical Dinacharya and Ayurvedic lifestyle corrections.
+ * based strictly on real user logs rather than arbitrary percentages:
+ *
+ * - Vata: Spiked by high screen time, irregular sleep, or "Academic Anxiety".
+ * - Pitta: Spiked by "Social Comparison" or "Toxic Hostility".
+ * - Kapha: Spiked by >9 hours of sleep or Tamasic nutritional intake.
  */
 export function diagnoseDoshaImbalance(
   logs: TrayopastambhaLog[],
@@ -157,87 +173,186 @@ export function diagnoseDoshaImbalance(
   let pittaScore = 0;
   let kaphaScore = 0;
 
+  // 1. Evaluate user lifestyle logs (Ahara & Nidra signals)
   const recentLogs = logs.slice(-7);
   for (const log of recentLogs) {
-    // Vata signals: high screen time, erratic sleep, disturbed rest
-    if (log.ahara.digitalConsumptionMinutes > 150) vataScore += 3;
-    if (log.nidra.restQuality === 'Disturbed') vataScore += 4;
-    if (!log.nidra.bedtimeConsistency) vataScore += 3;
-    if (log.nidra.hoursSlept < 6) vataScore += 3;
+    // VATA: Spikes with high screen time (>120 mins)
+    if (log.ahara.digitalConsumptionMinutes > 120) {
+      const excessIntervals = Math.floor((log.ahara.digitalConsumptionMinutes - 120) / 30) + 1;
+      vataScore += excessIntervals * 10;
+    }
 
-    // Pitta signals: rajasic food, driven tension
-    if (log.ahara.nutritionQuality === 'Rajasic') pittaScore += 2;
-    if (log.brahmacharya.dominantGuna === 'Rajas') pittaScore += 2;
+    // VATA: Spikes with irregular sleep (erratic schedule or disturbed rest)
+    if (!log.nidra.bedtimeConsistency) {
+      vataScore += 15;
+    }
+    if (log.nidra.restQuality === 'Disturbed') {
+      vataScore += 15;
+    }
+    if (log.nidra.hoursSlept < 6) {
+      vataScore += 12;
+    }
 
-    // Kapha signals: oversleeping, lethargic rest, tamasic food
-    if (log.nidra.restQuality === 'Lethargic') kaphaScore += 4;
-    if (log.nidra.hoursSlept > 9) kaphaScore += 3;
-    if (log.ahara.nutritionQuality === 'Tamasic') kaphaScore += 3;
+    // KAPHA: Spikes if user logs > 9 hours of sleep
+    if (log.nidra.hoursSlept > 9) {
+      kaphaScore += 25;
+    }
+    if (log.nidra.restQuality === 'Lethargic') {
+      kaphaScore += 15;
+    }
+
+    // KAPHA: Spikes if user logs Tamasic nutritional intake
+    if (log.ahara.nutritionQuality === 'Tamasic') {
+      kaphaScore += 25;
+    }
+
+    // PITTA: Supporting dietary heating signals
+    if (log.ahara.nutritionQuality === 'Rajasic') {
+      pittaScore += 10;
+    }
+    if (log.brahmacharya.dominantGuna === 'Rajas') {
+      pittaScore += 8;
+    }
   }
 
-  const recentInterceptions = interceptions.slice(0, 10);
+  // 2. Evaluate specific trigger categories from Interceptions
+  const recentInterceptions = interceptions.slice(0, 15);
   for (const rec of recentInterceptions) {
-    // Vata triggers: anxiety, fragmentation, compulsive checking
+    const trigger = rec.triggerCategory as string;
+    const vitarka = (rec.vitarkaText || '').toLowerCase();
+
+    // VATA: Spike if user triggers "Academic Anxiety"
     if (
-      rec.triggerCategory === 'Academic_Anxiety' ||
-      rec.triggerCategory === 'Doomscrolling'
+      trigger === 'Academic_Anxiety' ||
+      trigger === 'Academic Anxiety' ||
+      vitarka.includes('academic') ||
+      vitarka.includes('exam') ||
+      vitarka.includes('anxiety')
     ) {
-      vataScore += 4;
+      vataScore += 30;
+    } else if (trigger === 'Doomscrolling') {
+      vataScore += 15;
     }
 
-    // Pitta triggers: social comparison, envy, anger/agitation
+    // PITTA: Spike if user triggers "Social Comparison" or "Toxic Hostility"
     if (
-      rec.triggerCategory === 'Social_Comparison' ||
-      rec.cascadeStageReached === 'Krodha_Agitation'
+      trigger === 'Social_Comparison' ||
+      trigger === 'Social Comparison' ||
+      vitarka.includes('comparison') ||
+      vitarka.includes('envy') ||
+      vitarka.includes('jealous')
     ) {
-      pittaScore += 5;
+      pittaScore += 30;
     }
 
-    // Kapha triggers: lethargy, inertia, post-lunch dullness
     if (
-      rec.triggerCategory === 'Lethargy' ||
-      rec.cascadeStageReached === 'Sammoha_Delusion'
+      trigger === 'Toxic_Hostility' ||
+      trigger === 'Toxic Hostility' ||
+      rec.cascadeStageReached === 'Krodha_Agitation' ||
+      vitarka.includes('hostil') ||
+      vitarka.includes('toxic') ||
+      vitarka.includes('anger')
     ) {
-      kaphaScore += 5;
+      pittaScore += 35;
+    }
+
+    // KAPHA: Spike if user triggers "Lethargy"
+    if (trigger === 'Lethargy' || vitarka.includes('letharg') || vitarka.includes('inertia')) {
+      kaphaScore += 30;
     }
   }
 
-  // Select dominant aggravated dosha
+  // Natural balanced baseline if no severe disruptions exist yet
+  if (vataScore === 0 && pittaScore === 0 && kaphaScore === 0) {
+    vataScore = 10;
+    pittaScore = 10;
+    kaphaScore = 10;
+  }
+
+  // Calculate normalized percentages summing to exactly 100%
+  const total = vataScore + pittaScore + kaphaScore;
+  const vataPercentage = Math.round((vataScore / total) * 100);
+  const pittaPercentage = Math.round((pittaScore / total) * 100);
+  const kaphaPercentage = 100 - (vataPercentage + pittaPercentage);
+
+  const normalizedPercentages: DoshaDistribution = {
+    vata: vataPercentage,
+    pitta: pittaPercentage,
+    kapha: kaphaPercentage,
+  };
+
+  const doshaScores: DoshaDistribution = {
+    vata: vataScore,
+    pitta: pittaScore,
+    kapha: kaphaScore,
+  };
+
+  // Determine dominant aggravated dosha
+  let aggravatedDosha: DoshaType = 'Vata';
   if (pittaScore > vataScore && pittaScore >= kaphaScore) {
+    aggravatedDosha = 'Pitta';
+  } else if (kaphaScore > vataScore && kaphaScore > pittaScore) {
+    aggravatedDosha = 'Kapha';
+  } else {
+    aggravatedDosha = 'Vata';
+  }
+
+  // Generate compassionate, one-line physical remedy based on dominant imbalance
+  let physicalRemedy = '';
+  if (aggravatedDosha === 'Vata') {
+    physicalRemedy =
+      'High Vata detected: Step away from screens for 10 minutes and sip warm water.';
+  } else if (aggravatedDosha === 'Pitta') {
+    physicalRemedy =
+      'High Pitta detected: Cool mental heat with 3 minutes of Sheetali breathing and splash cold water on your face and eyes.';
+  } else {
+    physicalRemedy =
+      'High Kapha detected: Counter physical stagnation with 10 brisk Surya Namaskars or a 10-minute brisk walk in fresh air.';
+  }
+
+  if (aggravatedDosha === 'Pitta') {
     return {
       aggravatedDosha: 'Pitta',
+      physicalRemedy,
+      doshaScores,
+      normalizedPercentages,
       cause:
-        'Cognitive overheating from social comparison, competitive perfectionism, and acute emotional agitation (Krodha).',
+        'Cognitive overheating triggered by Social Comparison, Toxic Hostility, or competitive tension.',
       dinacharyaRemedy:
-        'Step away from screens during midday solar peak, practice Upeksha (equanimity and deliberate non-reactivity), and take gentle walks in natural greenery.',
+        'Step away from screens during midday solar peak, practice Upeksha (serene equanimity and non-reactivity), and walk in natural greenery.',
       dietaryAdvice:
-        'Prioritize cooling, sweet, and bitter foods (fresh coconut water, sweet juicy fruits, mint infusion, leafy greens); strictly reduce spicy, pungent, and oily snacks.',
+        'Prioritize cooling, sweet, and bitter foods (fresh coconut water, sweet juicy fruits, mint infusion, leafy greens); avoid pungent/spicy snacks.',
       pranayamaSuggestion:
-        'Relaxation 4-7-8 breathing with extended cool exhalation (Rechaka) or Sheetali / Sitkari pranayama to pacify mental heat.',
+        'Sheetali / Sitkari cooling breath or 4-7-8 relaxation breathing with prolonged exhalation to dissipate internal heat.',
     };
   }
 
-  if (kaphaScore > vataScore && kaphaScore > pittaScore) {
+  if (aggravatedDosha === 'Kapha') {
     return {
       aggravatedDosha: 'Kapha',
+      physicalRemedy,
+      doshaScores,
+      normalizedPercentages,
       cause:
-        'Mental inertia and physical stagnation driven by sedentary screen trance, oversleeping, and heavy Tamasic intake.',
+        'Mental inertia and physical stagnation driven by >9 hours of sleep, Tamasic nutrition, or prolonged screen trance.',
       dinacharyaRemedy:
-        'Awaken before 6:00 AM (during the active morning Vata window), engage in vigorous physical movement or 12 cycles of Surya Namaskar, and avoid daytime post-lunch naps.',
+        'Awaken before 6:00 AM during the active morning window, engage in 12 brisk Surya Namaskars, and eliminate post-lunch naps.',
       dietaryAdvice:
-        'Consume warm, light, freshly prepared meals with digestive spices (ginger, black pepper, cinnamon); eliminate heavy dairy, sugary desserts, and cold beverages.',
+        'Consume warm, light, freshly prepared meals seasoned with black pepper, dry ginger, and cinnamon; eliminate heavy dairy and sugary sweets.',
       pranayamaSuggestion:
-        'Stimulating Kapalabhati or Bhastrika (bellows breath) to revitalize sluggish circulation and awaken cognitive sharpness.',
+        'Stimulating Kapalabhati or Bhastrika (bellows breath) to revitalize circulation and clear mental fog.',
     };
   }
 
-  // Default to Vata aggravation (most prevalent in digital overload and student stress)
   return {
     aggravatedDosha: 'Vata',
+    physicalRemedy,
+    doshaScores,
+    normalizedPercentages,
     cause:
-      'Excessive digital screen stimulation, irregular sleep timing, and recurrent academic anxiety destabilizing nervous system rhythm.',
+      'Excessive digital screen stimulation, irregular sleep patterns, or Academic Anxiety destabilizing the nervous system.',
     dinacharyaRemedy:
-      'Establish unwavering regular sleep-wake hours, practice warm foot massage with sesame oil before bed, and institute an absolute screen-free wind-down buffer.',
+      'Step away from screens for 10 minutes, sip warm water, establish unwavering sleep timing, and massage feet with warm sesame oil before bed.',
     dietaryAdvice:
       'Nourish with warm, freshly cooked, grounding foods enriched with healthy fats (ghee, hot soups, whole grains, warm spiced milk); avoid dry, cold, raw foods.',
     pranayamaSuggestion:
