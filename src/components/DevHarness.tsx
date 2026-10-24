@@ -817,7 +817,7 @@ export function DevHarness() {
             <div className="flex items-center justify-between border-b pb-3 text-left">
               <div>
                 <h2 className="text-lg font-bold text-slate-900">
-                  Breathing Sanctum (Prāṇamaya Kosha Regulation)
+                  Breathing Sanctum
                 </h2>
                 <p className="text-xs text-slate-500">
                   Autonomic vagal brake via cyclic exhalations and kumbhaka.
