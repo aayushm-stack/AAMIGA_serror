@@ -13,6 +13,7 @@ import {
   BhavaCompassGrid,
   BhavaResultCard,
   type BhavaKey,
+  type BhavaItem,
   DoshaBalancingCard,
   GunaProgressBar,
   DashboardView,
@@ -20,8 +21,10 @@ import {
 } from './components';
 import dailyVersesData from './data/dailyVerses.json';
 
+type AppViewTab = 'home' | 'features' | 'vault' | 'breathe' | 'harness';
+
 /**
- * Main application interior connected to live IKS logic via useBrahmaPath().
+ * Main application content bound to the global IKS context and unified navigation.
  */
 function MainContent() {
   const {
@@ -32,19 +35,20 @@ function MainContent() {
     activeLensData,
     openShastraLens,
     closeShastraLens,
+    exportPlainJsonBackup,
+    exportEncryptedBackup,
   } = useBrahmaPath();
 
-  // Active view mode: production Mobile UI or full Judge/Dev Harness
-  const [viewMode, setViewMode] = useState<'mobile' | 'harness'>('mobile');
-  const [activeTab, setActiveTab] = useState<NavTab>('home');
+  // Navigation tab state: 'home' | 'features' | 'vault' | 'breathe' | 'harness'
+  const [activeTab, setActiveTab] = useState<AppViewTab>('home');
 
   // Bhava Compass interaction state
   const [selectedBhavaKey, setSelectedBhavaKey] = useState<BhavaKey | null>(null);
 
-  // Today's featured verse
+  // Today's featured shastra verse
   const todayVerse = dailyVersesData[1] || dailyVersesData[0];
 
-  // Convert Dosha diagnosis to Guna state for Milan's DoshaBalancingCard
+  // Derive dominant Guna for Milan's DoshaBalancingCard
   const dominantGunaType =
     gunaDistribution.sattva >= 55
       ? 'Sattva'
@@ -54,64 +58,52 @@ function MainContent() {
 
   return (
     <div className="min-h-screen bg-parchment text-charcoal font-sans antialiased">
-      {/* Top Banner to switch between Production Mobile UI & Deep Dev Harness */}
-      <div className="bg-charcoal text-white text-xs px-4 py-2 flex items-center justify-between border-b border-charcoal/30">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-semibold tracking-wide">BrahmaPath 2.0 (IKS IIT Roorkee)</span>
-        </div>
-        <div className="flex items-center gap-1.5 bg-white/10 p-1 rounded-lg">
-          <button
-            type="button"
-            onClick={() => setViewMode('mobile')}
-            className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${
-              viewMode === 'mobile'
-                ? 'bg-terracotta text-white shadow-xs'
-                : 'text-white/70 hover:text-white'
-            }`}
-          >
-            📱 Mobile UI
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('harness')}
-            className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${
-              viewMode === 'harness'
-                ? 'bg-terracotta text-white shadow-xs'
-                : 'text-white/70 hover:text-white'
-            }`}
-          >
-            🛠️ Judge Harness
-          </button>
-        </div>
-      </div>
+      {/* ================= VIEW 1: DEVELOPER / JUDGE TEST HARNESS ================= */}
+      {activeTab === 'harness' ? (
+        <div>
+          {/* Header to quickly navigate back to the Mobile UI */}
+          <div className="bg-[#1E293B] text-white text-xs px-4 py-2.5 flex items-center justify-between border-b border-slate-700 sticky top-0 z-50 shadow-md">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+              <span className="font-semibold tracking-wide">
+                BrahmaPath Dev / Judge Harness Mode
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('home')}
+              className="px-3 py-1 bg-[#D97706] text-white rounded text-xs font-semibold hover:bg-amber-700 transition flex items-center gap-1 shadow-xs"
+            >
+              📱 Back to Mobile UI
+            </button>
+          </div>
 
-      {viewMode === 'harness' ? (
-        /* Full End-to-End Judge & Developer Test Harness */
-        <DevHarness />
+          {/* DevHarness component kept 100% intact for developer/judge evaluation */}
+          <DevHarness />
+        </div>
       ) : (
-        /* Milan's Production Mobile-First Layout */
+        /* ================= VIEW 2: PRODUCTION MOBILE-FIRST UI ================= */
         <AppLayout>
-          {/* Top Bar with Shastra Trigger */}
+          {/* Top Bar with Settings (⚙️) icon switching to DevHarness */}
           <TopBar
             onProfileClick={() => openShastraLens('chariot')}
-            onSettingsClick={() => setViewMode('harness')}
+            onSettingsClick={() => setActiveTab('harness')}
           />
 
           <main className="p-4 space-y-4">
-            {/* ================= TAB 1: HOME ================= */}
+            {/* 1. HOME TAB */}
             {activeTab === 'home' && (
               <div className="space-y-4">
                 {/* Katha Upanishad Chariot Allegory */}
                 <ChariotHome />
 
-                {/* Daily Gita / Sutra Anchor Verse */}
+                {/* Daily Anchor Shloka */}
                 <DailyVerseCard
                   verse={todayVerse}
                   onOpenShastraLens={() => openShastraLens('trayopastambha')}
                 />
 
-                {/* Live Guna Distribution Progress */}
+                {/* Live Tri-Guna Balance Progress */}
                 <GunaProgressBar distribution={gunaDistribution} />
 
                 {/* Dosha & Circadian Balancing Recommendation */}
@@ -122,27 +114,27 @@ function MainContent() {
               </div>
             )}
 
-            {/* ================= TAB 2: TRAYOPASTAMBHA LOG ================= */}
-            {activeTab === 'log' && (
+            {/* 2. FEATURES TAB (Sadhana Hub & Bhava Compass) */}
+            {activeTab === 'features' && (
               <div className="space-y-4">
-                <div className="border-b pb-2">
+                <div className="border-b border-slate-200 pb-2">
                   <h2 className="font-serif text-lg font-bold text-charcoal">
-                    Trayopastambha (The 3 Pillars)
+                    Features &amp; Practices
                   </h2>
                   <p className="text-xs text-charcoal/60">
-                    Charaka Samhita Sutrasthana 11.35
+                    Trayopastambha logging, YS 1.33 Bhāva Compass &amp; Interceptor
                   </p>
                 </div>
 
-                {/* Ahara Sensory Intake Card */}
+                {/* Trayopastambha Logging Card */}
                 <TrayopastambhaCard
-                  value={todayLog?.ahara.sensoryMindfulnessScore ?? 3}
+                  value={todayLog?.ahara.sensoryMindfulnessScore ?? 4}
                   onValueChange={(val) => {
                     const today = new Date().toISOString().split('T')[0];
                     const existingAhara = todayLog?.ahara ?? {
                       nutritionQuality: 'Sattvic',
                       digitalConsumptionMinutes: 90,
-                      sensoryMindfulnessScore: 3,
+                      sensoryMindfulnessScore: 4,
                     };
                     const existingNidra = todayLog?.nidra ?? {
                       hoursSlept: 7.5,
@@ -165,98 +157,147 @@ function MainContent() {
                         nidra: existingNidra,
                         brahmacharya: existingBrahmacharya,
                       },
-                      78
+                      82
                     );
                   }}
                   onInspectShastra={() => openShastraLens('trayopastambha')}
                 />
 
-                {/* Quick Pause Gate Trigger Shortcut */}
-                <div className="p-4 bg-orange-50/60 border border-orange-200 rounded-2xl flex items-center justify-between">
+                {/* Bhāva Compass (Chitta Prasādanam - YS 1.33) */}
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-serif text-sm font-bold text-charcoal">
+                      Bhāva Compass (YS 1.33)
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => openShastraLens('chitta_prasadanam')}
+                      className="text-xs font-semibold text-[#065F46] hover:underline"
+                    >
+                      [Shastra Lens]
+                    </button>
+                  </div>
+
+                  {!selectedBhavaKey ? (
+                    <BhavaCompassGrid
+                      onSelect={(item: BhavaItem) => setSelectedBhavaKey(item.key)}
+                      selectedKey={selectedBhavaKey}
+                      onInspectShastra={() => openShastraLens('chitta_prasadanam')}
+                    />
+                  ) : (
+                    <BhavaResultCard
+                      attitude={
+                        selectedBhavaKey === 'mudita'
+                          ? 'Mudita'
+                          : selectedBhavaKey === 'maitri'
+                          ? 'Maitri'
+                          : selectedBhavaKey === 'karuna'
+                          ? 'Karuna'
+                          : 'Upeksha'
+                      }
+                      onBack={() => setSelectedBhavaKey(null)}
+                      onSubmit={(reflection) => {
+                        alert(`Reflection saved to sadhana memory: "${reflection}"`);
+                        setSelectedBhavaKey(null);
+                      }}
+                    />
+                  )}
+                </div>
+
+                {/* Pause Gate Shortcut */}
+                <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-2xl flex items-center justify-between shadow-xs">
                   <div>
-                    <h4 className="text-xs font-bold text-terracotta-dark uppercase tracking-wider">
-                      Feeling the Compulsive Pull?
+                    <h4 className="text-xs font-bold text-[#D97706] uppercase tracking-wider">
+                      Pause Gate (Loop Breaker)
                     </h4>
-                    <p className="text-xs text-charcoal/70">
-                      Engage the 90-second Gita 2.62 Pause Gate.
+                    <p className="text-xs text-charcoal/70 mt-0.5">
+                      Gita 2.62-63 urge interceptor and cognitive reframe.
                     </p>
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      setViewMode('harness');
-                    }}
-                    className="px-3 py-1.5 bg-terracotta text-white text-xs font-semibold rounded-xl hover:bg-terracotta-dark transition shadow-xs"
+                    onClick={() => setActiveTab('harness')}
+                    className="px-3 py-1.5 bg-[#D97706] text-white text-xs font-semibold rounded-xl hover:bg-amber-700 transition shadow-xs"
                   >
-                    Open Gate
+                    Launch Gate
                   </button>
                 </div>
               </div>
             )}
 
-            {/* ================= TAB 3: BHAVA COMPASS ================= */}
-            {activeTab === 'compass' && (
+            {/* 3. VAULT TAB (Analytics & Offline Backup) */}
+            {activeTab === 'vault' && (
               <div className="space-y-4">
-                <div className="border-b pb-2">
+                <div className="border-b border-slate-200 pb-2">
                   <h2 className="font-serif text-lg font-bold text-charcoal">
-                    Bhāva Compass (Chitta Prasādanam)
+                    Vault &amp; Analytics
                   </h2>
                   <p className="text-xs text-charcoal/60">
-                    Patanjali Yoga Sutras 1.33
+                    Equilibrium metrics, trigger analytics, and encrypted storage
                   </p>
                 </div>
 
-                {!selectedBhavaKey ? (
-                  <BhavaCompassGrid
-                    onSelect={(item) => setSelectedBhavaKey(item.key)}
-                    selectedKey={selectedBhavaKey}
-                    onInspectShastra={() => openShastraLens('chitta_prasadanam')}
-                  />
-                ) : (
-                  <BhavaResultCard
-                    attitude={
-                      selectedBhavaKey === 'mudita'
-                        ? 'Mudita'
-                        : selectedBhavaKey === 'maitri'
-                        ? 'Maitri'
-                        : selectedBhavaKey === 'karuna'
-                        ? 'Karuna'
-                        : 'Upeksha'
-                    }
-                    onBack={() => setSelectedBhavaKey(null)}
-                    onSubmit={(reframe) => {
-                      alert(`Reflective thought grounded in YS 1.33: "${reframe}"`);
-                      setSelectedBhavaKey(null);
-                    }}
-                  />
-                )}
+                {/* Milan's Dashboard Analytics View */}
+                <DashboardView
+                  gunaDistribution={gunaDistribution}
+                  onInspectShastra={() => openShastraLens('gunas')}
+                />
+
+                {/* Client-Side Vault Actions */}
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-3">
+                  <h3 className="font-serif text-sm font-bold text-charcoal">
+                    Data Sovereignty &amp; Offline Backup
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    BrahmaPath runs 100% locally on your device without cloud telemetry.
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={exportPlainJsonBackup}
+                      className="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-medium rounded-xl transition border border-slate-200"
+                    >
+                      Export JSON
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('harness')}
+                      className="py-2 px-3 bg-[#065F46] hover:bg-emerald-800 text-white text-xs font-semibold rounded-xl transition shadow-xs"
+                    >
+                      Encrypted Vault (.bplock)
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* ================= TAB 4: BREATHING SANCTUM ================= */}
+            {/* 4. BREATHE TAB (Prāṇamaya Kosha Regulation) */}
             {activeTab === 'breathe' && (
               <div className="space-y-4">
-                <div className="border-b pb-2">
+                <div className="border-b border-slate-200 pb-2">
                   <h2 className="font-serif text-lg font-bold text-charcoal">
                     Breathing Sanctum
                   </h2>
                   <p className="text-xs text-charcoal/60">
-                    Prāṇamaya Kosha Autonomic Regulation
+                    Prāṇamaya Kosha autonomic vagal regulation
                   </p>
                 </div>
 
-                {/* Milan's Interactive Concentric Rings Breathing Circle */}
+                {/* Milan's Concentric Rings Breathing Circle */}
                 <BreathingCircle />
               </div>
             )}
           </main>
 
-          {/* Bottom Navigation */}
-          <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+          {/* 4-Icon Bottom Navigation */}
+          <BottomNav
+            activeTab={activeTab as NavTab}
+            onTabChange={(tab) => setActiveTab(tab)}
+          />
         </AppLayout>
       )}
 
-      {/* Universal Shastra Lens Slide-out Drawer */}
+      {/* Slide-out Shastra Lens Drawer */}
       <ShastraLensDrawer
         isOpen={Boolean(activeLensData)}
         onClose={closeShastraLens}

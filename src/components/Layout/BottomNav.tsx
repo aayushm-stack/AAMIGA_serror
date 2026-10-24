@@ -1,10 +1,10 @@
 import React from 'react';
-import { Home, ClipboardList, Compass, Wind } from 'lucide-react';
+import { Home, LayoutGrid, Database, Wind } from 'lucide-react';
 
-export type NavTab = 'home' | 'log' | 'compass' | 'breathe';
+export type NavTab = 'home' | 'features' | 'vault' | 'breathe';
 
 interface BottomNavProps {
-  activeTab: NavTab;
+  activeTab: NavTab | 'harness';
   onTabChange: (tab: NavTab) => void;
 }
 
@@ -16,8 +16,8 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'home', label: 'Home', icon: Home },
-  { id: 'log', label: 'Log', icon: ClipboardList },
-  { id: 'compass', label: 'Compass', icon: Compass },
+  { id: 'features', label: 'Features', icon: LayoutGrid },
+  { id: 'vault', label: 'Vault', icon: Database },
   { id: 'breathe', label: 'Breathe', icon: Wind },
 ];
 
@@ -26,7 +26,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   onTabChange,
 }) => {
   return (
-    <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 z-30">
+    <nav className="fixed bottom-0 w-full max-w-md bg-white border-t border-slate-200 z-30 shadow-lg">
       <div className="flex items-center justify-around py-2 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -37,20 +37,20 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               key={item.id}
               type="button"
               onClick={() => onTabChange(item.id)}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-2 rounded-xl transition-colors duration-150 ${
+              className={`flex flex-col items-center justify-center flex-1 py-1.5 px-2 rounded-xl transition-colors duration-150 ${
                 isActive
-                  ? 'text-terracotta'
-                  : 'text-gray-400 hover:text-charcoal'
+                  ? 'text-[#D97706]'
+                  : 'text-[#64748B] hover:text-slate-900'
               }`}
             >
               <Icon
                 className={`w-5 h-5 transition-transform duration-150 ${
-                  isActive ? 'scale-110' : ''
+                  isActive ? 'scale-110 text-[#D97706]' : 'text-[#64748B]'
                 }`}
               />
               <span
                 className={`text-[11px] mt-1 font-medium leading-none ${
-                  isActive ? 'text-terracotta font-semibold' : 'text-gray-500'
+                  isActive ? 'text-[#D97706] font-bold' : 'text-[#64748B]'
                 }`}
               >
                 {item.label}
