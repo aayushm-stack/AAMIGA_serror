@@ -25,6 +25,28 @@ export interface SadhanaLogInput extends Partial<TrayopastambhaLog> {
 }
 
 /**
+ * Data structure representing a single day in the 14-day sadhana trajectory.
+ */
+export interface FourteenDayTrendPoint {
+  /** ISO Date string (YYYY-MM-DD) */
+  date: string;
+  /** Human-readable short date for X-Axis labels (e.g., 'Oct 22') */
+  displayDate: string;
+  /** Consolidated or decayed Yukta equilibrium score (0-100) */
+  yuktaScore: number;
+  /** Hours slept on this date */
+  sleepHours: number;
+  /** Digital screen minutes consumed on this date */
+  digitalMinutes: number;
+  /** Dominant psychological Guna */
+  dominantGuna: string;
+  /** Whether the user actively recorded a sadhana log on this date */
+  hasLogs: boolean;
+  /** Whether a -5% natural decay penalty was applied due to absence of daily reflection */
+  penaltyApplied: boolean;
+}
+
+/**
  * Assigns stepped time-weight (w_i) to an entry based on time of day:
  * - Morning: 1.0 (w_i = 1.0)
  * - Afternoon: 1.5 (w_i = 1.5)
@@ -126,7 +148,7 @@ function extractLogScore(log: SadhanaLogInput): number {
  *   Evening/Final logs: weight (w_i) = 2.0 (rewarding users who recover discipline by the end of the day)
  *
  * Mathematical logic:
- *   E_daily = \frac{\sum (S_i \cdot w_i)}{\sum w_i}
+ *   \[ E_{daily} = \frac{\sum (S_i \cdot w_i)}{\sum w_i} \]
  *
  * @param logs Array of daily Trayopastambha logs or entries.
  * @param targetDate The specific calendar date ('YYYY-MM-DD'). If omitted, defaults to the log date or today.
@@ -189,7 +211,6 @@ export function calculateDailyEquilibrium(
         return d.toISOString().slice(0, 10) === normalizedTargetDate;
       }
     }
-    // If no explicit date field was provided on the log, consider it part of the day batch
     return true;
   });
 
@@ -215,9 +236,161 @@ export function calculateDailyEquilibrium(
   }
 
   const eDaily = weightedSum / totalWeight;
-
-  // Return clean consolidated score (rounded to 2 decimal places if non-integer)
   return Math.round(eDaily * 100) / 100;
+}
+
+/**
+ * Calculates a backwards-looking trend up to a maximum of 14 days from today.
+ *
+ * Crucial New User Edge Case:
+ *   Calculates the "Account Age". If the user created their account 3 days ago,
+ *   the returned array strictly contains 3 days of data—preventing a 14-day flatline.
+ *
+ * Natural Decay Logic:
+ *   Applies a -5% penalty for days with zero logs, simulating that cognitive discipline
+ *   requires daily maintenance.
+ *
+ * @param logs Array of user Trayopastambha logs.
+ * @param accountCreationDate Date string, Date object, or numeric day age representing account creation.
+ * @returns Array of FourteenDayTrendPoint items sized strictly between 1 and 14 days.
+ */
+export function getFourteenDayTrend(
+  logs: TrayopastambhaLog[] = [],
+  accountCreationDate?: string | Date | number
+): FourteenDayTrendPoint[] {
+  const now = new Date();
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  let accountAgeDays = 14;
+
+  // 1. Calculate Account Age
+  if (typeof accountCreationDate === 'number' && !isNaN(accountCreationDate)) {
+    accountAgeDays = Math.max(1, Math.round(accountCreationDate));
+  } else if (accountCreationDate) {
+    let creationDate: Date;
+    if (typeof accountCreationDate === 'string') {
+      const parts = accountCreationDate.slice(0, 10).split('-').map(Number);
+      if (parts.length === 3 && !parts.some(isNaN)) {
+        creationDate = new Date(parts[0], parts[1] - 1, parts[2]);
+      } else {
+        creationDate = new Date(accountCreationDate);
+      }
+    } else {
+      creationDate = new Date(accountCreationDate);
+    }
+
+    if (!isNaN(creationDate.getTime())) {
+      const creationMidnight = new Date(
+        creationDate.getFullYear(),
+        creationDate.getMonth(),
+        creationDate.getDate()
+      );
+      const diffMs = todayMidnight.getTime() - creationMidnight.getTime();
+      const rawDiffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // Account age includes today: day 0 -> 1 day; day 2 -> 3 days
+      accountAgeDays = Math.max(1, rawDiffDays + 1);
+    }
+  } else if (logs && logs.length > 0) {
+    // If no explicit accountCreationDate is provided, infer from earliest recorded date
+    const sortedDates = logs
+      .map((l) => l.date?.slice(0, 10))
+      .filter(Boolean)
+      .sort();
+    if (sortedDates.length > 0) {
+      const [y, m, d] = sortedDates[0].split('-').map(Number);
+      const earliestMidnight = new Date(y, m - 1, d);
+      const diffMs = todayMidnight.getTime() - earliestMidnight.getTime();
+      const rawDiff = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      accountAgeDays = Math.max(1, rawDiff + 1);
+    }
+  }
+
+  // Look backward up to a maximum of 14 days
+  const effectiveDays = Math.min(14, accountAgeDays);
+
+  // Generate target dates array in chronological order (oldest to today)
+  const targetDates: string[] = [];
+  for (let i = effectiveDays - 1; i >= 0; i--) {
+    const d = new Date(todayMidnight);
+    d.setDate(todayMidnight.getDate() - i);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    targetDates.push(`${year}-${month}-${day}`);
+  }
+
+  // Group existing logs by calendar date (YYYY-MM-DD)
+  const dateLogMap = new Map<string, TrayopastambhaLog[]>();
+  for (const log of logs) {
+    if (log && log.date) {
+      const d = log.date.slice(0, 10);
+      if (!dateLogMap.has(d)) {
+        dateLogMap.set(d, []);
+      }
+      dateLogMap.get(d)!.push(log);
+    }
+  }
+
+  // Determine initial baseline score (find first logged score or baseline 75)
+  let lastDisciplineScore = 75;
+  const firstLoggedDate = targetDates.find((d) => (dateLogMap.get(d) || []).length > 0);
+  if (firstLoggedDate) {
+    const initialDayLogs = dateLogMap.get(firstLoggedDate)!;
+    lastDisciplineScore = calculateDailyEquilibrium(initialDayLogs, firstLoggedDate);
+  }
+
+  const result: FourteenDayTrendPoint[] = [];
+
+  for (const dateStr of targetDates) {
+    const dayLogs = dateLogMap.get(dateStr) || [];
+    const hasLogs = dayLogs.length > 0;
+
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    const displayDate = dateObj.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+
+    let yuktaScore: number;
+    let penaltyApplied = false;
+    let sleepHours = 0;
+    let digitalMinutes = 0;
+    let dominantGuna = 'Sattva';
+
+    if (hasLogs) {
+      yuktaScore = calculateDailyEquilibrium(dayLogs, dateStr);
+      lastDisciplineScore = yuktaScore;
+      penaltyApplied = false;
+
+      const latestLog = dayLogs[dayLogs.length - 1];
+      sleepHours = latestLog.nidra?.hoursSlept ?? 0;
+      digitalMinutes = dayLogs.reduce(
+        (sum, l) => sum + (l.ahara?.digitalConsumptionMinutes || 0),
+        0
+      );
+      dominantGuna = latestLog.brahmacharya?.dominantGuna ?? 'Sattva';
+    } else {
+      // Natural decay: apply -5% penalty for missing daily reflection
+      penaltyApplied = true;
+      yuktaScore = Math.max(0, Math.round(lastDisciplineScore * 0.95));
+      lastDisciplineScore = yuktaScore;
+      dominantGuna = 'Rajas'; // Restlessness / inert drift when unobserved
+    }
+
+    result.push({
+      date: dateStr,
+      displayDate,
+      yuktaScore,
+      sleepHours,
+      digitalMinutes,
+      dominantGuna,
+      hasLogs,
+      penaltyApplied,
+    });
+  }
+
+  return result;
 }
 
 /**

@@ -94,4 +94,6 @@ export interface UserPreferences {
   preferredMicroSwaps: string[];
   /** Whether the user has completed the initial onboarding setup */
   onboardingCompleted: boolean;
+  /** ISO calendar date when user profile was created (YYYY-MM-DD) */
+  accountCreationDate?: string;
 }

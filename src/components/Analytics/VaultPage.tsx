@@ -1,18 +1,106 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useBrahmaPath } from '../../context/BrahmaPathContext';
-import { ShieldCheck, Download, Upload, Lock, RefreshCw, KeyRound } from 'lucide-react';
+import {
+  getFourteenDayTrend,
+  FourteenDayTrendPoint,
+} from '../../engine/analyticsEngine';
+import {
+  ShieldCheck,
+  Download,
+  Upload,
+  Lock,
+  RefreshCw,
+  KeyRound,
+  TrendingUp,
+  Activity,
+  AlertCircle,
+} from 'lucide-react';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ReferenceLine,
+} from 'recharts';
 
 export interface VaultPageProps {
   className?: string;
 }
 
 /**
+ * Custom Tooltip for the 14-Day Trajectory chart styled with BrahmaPath parchment aesthetic.
+ */
+interface TooltipPayloadItem {
+  payload: FourteenDayTrendPoint;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+}
+
+const ChartCustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data: FourteenDayTrendPoint = payload[0].payload;
+    return (
+      <div className="bg-white/95 backdrop-blur-xs p-3 rounded-xl border border-slate-200 shadow-md text-xs space-y-1.5 min-w-[170px]">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-1 font-bold text-slate-800">
+          <span>{data.displayDate}</span>
+          <span
+            className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+              data.hasLogs
+                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                : 'bg-amber-50 text-amber-800 border border-amber-200'
+            }`}
+          >
+            {data.hasLogs ? 'Active Reflection' : 'Natural Decay (-5%)'}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-slate-500">Yukta Equilibrium:</span>
+          <span className="font-bold text-emerald-800">{data.yuktaScore} / 100</span>
+        </div>
+
+        <div className="flex items-center justify-between text-[11px] text-slate-600">
+          <span>Dominant Guna:</span>
+          <span className="font-semibold">{data.dominantGuna}</span>
+        </div>
+
+        {data.hasLogs ? (
+          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5 border-t border-slate-100">
+            <span>Rest / Screen:</span>
+            <span>
+              {data.sleepHours}h / {data.digitalMinutes}m
+            </span>
+          </div>
+        ) : (
+          <div className="text-[10px] text-amber-700 italic pt-0.5 border-t border-slate-100">
+            Discipline requires daily practice; -5% decay applied.
+          </div>
+        )}
+      </div>
+    );
+  }
+  return null;
+};
+
+/**
  * Standalone mobile Vault & Analytics page replicating the exact
  * logic, weekly trend table, trigger loop analytics, and PBKDF2/AES-GCM
  * client-side encrypted vault backup from DevHarness.tsx.
+ *
+ * Includes the dynamic 14-day Recharts LineChart that scales dynamically
+ * based on account age (e.g., 3-day-old user sees a beautiful 3-day line,
+ * avoiding a 14-day flatline).
  */
 export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
   const {
+    logs,
+    preferences,
     weeklyTrend,
     triggerBreakdown,
     openShastraLens,
@@ -27,6 +115,14 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
   const [vaultPassword, setVaultPassword] = useState<string>('');
   const [vaultMessage, setVaultMessage] = useState<string>('');
 
+  // 14-Day Trajectory: Dynamically computed with account-age boundary and natural decay
+  const fourteenDayTrend = useMemo(() => {
+    return getFourteenDayTrend(logs, preferences?.accountCreationDate);
+  }, [logs, preferences?.accountCreationDate]);
+
+  const accountAgeDays = fourteenDayTrend.length;
+  const isNewUser = accountAgeDays < 14;
+
   return (
     <div
       style={{
@@ -38,14 +134,14 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
       {/* Main Container Card */}
       <div
         style={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0' }}
-        className="p-5 sm:p-6 rounded-2xl border shadow-xs space-y-6"
+        className="p-5 sm:p-6 rounded-3xl border shadow-xs space-y-6"
       >
         {/* Header with Title and Shastra Lens Trigger */}
-        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+        <div className="flex items-center justify-between border-b border-slate-200/90 pb-4">
           <div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-800" />
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900">
                 Vault, Analytics &amp; Local-First Backup
               </h2>
             </div>
@@ -57,13 +153,106 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
             type="button"
             onClick={() => openShastraLens('gunas')}
             style={{ color: '#065F46' }}
-            className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2"
+            className="text-xs font-semibold hover:underline cursor-pointer flex-shrink-0 ml-2 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1.5 rounded-lg border border-emerald-200 transition"
           >
             [Inspect Shastra Lens]
           </button>
         </div>
 
-        {/* Weekly Trend Table */}
+        {/* 1. Dynamic 14-Day Recharts LineChart (Dynamically Scaled to Account Age) */}
+        <div className="space-y-3 p-4 sm:p-5 rounded-2xl bg-slate-50/70 border border-slate-200/80">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-emerald-800" />
+              <h3 className="text-sm font-bold text-slate-800">
+                {isNewUser
+                  ? `${accountAgeDays}-Day Sadhana Progression (Account Day ${accountAgeDays})`
+                  : '14-Day Sadhana Trajectory (Yukta Equilibrium)'}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-2 text-[11px]">
+              <span
+                style={{
+                  backgroundColor: isNewUser ? '#DEF7EC' : '#F1F5F9',
+                  color: isNewUser ? '#03543F' : '#475569',
+                }}
+                className="px-2.5 py-0.5 rounded-full font-bold border border-slate-200"
+              >
+                {accountAgeDays}-Day Active Horizon
+              </span>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            {isNewUser
+              ? `Dynamic X-axis scaled strictly to your ${accountAgeDays} days since joining. Unrecorded days apply a -5% natural decay penalty to simulate habit entropy.`
+              : 'Continuous 14-day rolling window. Unrecorded days apply a -5% natural decay penalty, simulating that mental clarity requires daily maintenance.'}
+          </p>
+
+          {/* Responsive Recharts LineChart */}
+          <div className="w-full h-56 sm:h-64 pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={fourteenDayTrend}
+                margin={{ top: 10, right: 12, left: -22, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#E2E8F0"
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey="displayDate"
+                  interval={0}
+                  tick={{ fontSize: 11, fill: '#64748B' }}
+                  stroke="#CBD5E1"
+                  tickLine={false}
+                  padding={{ left: 16, right: 16 }}
+                />
+                <YAxis
+                  domain={[0, 100]}
+                  ticks={[0, 25, 50, 75, 100]}
+                  tick={{ fontSize: 11, fill: '#64748B' }}
+                  stroke="#CBD5E1"
+                  tickLine={false}
+                />
+                <Tooltip content={<ChartCustomTooltip />} />
+                <ReferenceLine
+                  y={75}
+                  stroke="#065F46"
+                  strokeDasharray="4 4"
+                  label={{
+                    value: 'Yukta (75)',
+                    fill: '#065F46',
+                    fontSize: 10,
+                    position: 'insideTopRight',
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="yuktaScore"
+                  stroke="#065F46"
+                  strokeWidth={2.5}
+                  dot={{
+                    r: 4,
+                    fill: '#065F46',
+                    strokeWidth: 1.5,
+                    stroke: '#FFFFFF',
+                  }}
+                  activeDot={{
+                    r: 6,
+                    fill: '#D97706',
+                    stroke: '#FFFFFF',
+                    strokeWidth: 2,
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* 2. Weekly Trend Table */}
         <div className="space-y-2.5">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-800">
@@ -128,7 +317,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* Trigger Breakdown */}
+        {/* 3. Trigger Loop Breakdown */}
         <div className="space-y-2.5 pt-2">
           <h3 className="text-sm font-bold text-slate-800">
             Trigger Loop Breakdown
@@ -150,7 +339,7 @@ export const VaultPage: React.FC<VaultPageProps> = ({ className = '' }) => {
           </div>
         </div>
 
-        {/* Backup & Encryption Management */}
+        {/* 4. Backup & Encryption Management */}
         <div className="pt-4 border-t border-slate-200 space-y-4">
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-emerald-800" />
