@@ -1,27 +1,34 @@
 import React from 'react';
-import { Circle, Sparkles, Trash2, Plus, Zap, GripVertical } from 'lucide-react';
+import {
+  Circle,
+  Sparkles,
+  Trash2,
+  MinusCircle,
+  PlusCircle,
+  RotateCcw,
+  Zap,
+} from 'lucide-react';
 import { Goal } from './types';
 
 export interface ShortTermListContainerProps {
   goals: Goal[];
   isEditing?: boolean;
   onUpdateGoalText?: (id: string, text: string) => void;
-  onDeleteGoal?: (id: string) => void;
-  onAddGoal?: () => void;
+  onTogglePendingDelete?: (id: string) => void;
   className?: string;
 }
 
 /**
- * ShortTermListContainer: Prioritizes primary indicators for F-pattern scanning,
- * ensuring high-frequency daily tasks are visible within the first 3 seconds of viewing.
- * Supports clean read-only mode and inline batch-editing mode without modals.
+ * ShortTermListContainer: Prioritizes primary indicators for F-pattern scanning.
+ * Adheres strictly to W3C WCAG 2.2 Level AA accessibility guidelines:
+ * - Uses multiple non-color visual indicators (strikethrough + destructive shape / bold + constructive shape).
+ * - Minimum 3:1 contrast ratio against light backgrounds (red-800 #991B1B at 7.89:1, emerald-800 #065F46 at 7.09:1).
  */
 export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
   goals,
   isEditing = false,
   onUpdateGoalText,
-  onDeleteGoal,
-  onAddGoal,
+  onTogglePendingDelete,
   className = '',
 }) => {
   return (
@@ -56,81 +63,140 @@ export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
             No immediate intentions defined yet.
           </div>
         ) : (
-          goals.map((goal, index) => (
-            <div
-              key={goal.id}
-              className={`p-3.5 rounded-xl border transition-all duration-150 flex items-start gap-3 bg-white/90 shadow-2xs ${
-                isEditing
-                  ? 'border-terracotta/40 ring-1 ring-terracotta/20 bg-orange-50/20'
-                  : 'border-[#E2E8F0]'
-              }`}
-            >
-              {/* Left Indicator for F-Pattern eye-fixation */}
-              {isEditing ? (
-                <div className="mt-2 text-charcoal/30 flex-shrink-0">
-                  <GripVertical className="w-4 h-4" />
-                </div>
-              ) : (
-                <div className="mt-0.5 flex-shrink-0 text-terracotta">
-                  <Circle className="w-5 h-5 text-terracotta/60" />
-                </div>
-              )}
+          goals.map((goal, index) => {
+            const isPendingDelete = Boolean(goal.pendingDelete);
+            const isPendingAdd = Boolean(goal.pendingAdd);
 
-              {/* Goal Text: Read-Only vs Inline Input */}
-              <div className="flex-1 min-w-0 space-y-1">
-                {isEditing ? (
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-semibold text-charcoal/50 uppercase tracking-wider block">
-                      Intention #{index + 1}
-                    </label>
-                    <input
-                      type="text"
-                      value={goal.text}
-                      onChange={(e) => onUpdateGoalText?.(goal.id, e.target.value)}
-                      placeholder="e.g. I focus my attention for 90 minutes..."
-                      className="w-full px-3 py-1.5 text-sm font-medium text-charcoal bg-white rounded-lg border border-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-terracotta/40 transition shadow-2xs"
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-sm leading-snug font-medium text-charcoal">
-                      {goal.text}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-terracotta bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/50">
-                        <Zap className="w-2.5 h-2.5" />
-                        Short-Term Sankalpa
-                      </span>
+            return (
+              <div
+                key={goal.id}
+                className={`p-3.5 rounded-xl border transition-all duration-150 flex items-start gap-3 shadow-2xs ${
+                  isPendingDelete
+                    ? 'border-red-400 bg-red-50/80 ring-1 ring-red-400/40'
+                    : isPendingAdd
+                    ? 'border-emerald-400 bg-emerald-50/70 ring-1 ring-emerald-500/30'
+                    : isEditing
+                    ? 'border-terracotta/30 bg-orange-50/20'
+                    : 'border-[#E2E8F0] bg-white/90'
+                }`}
+              >
+                {/* Visual Indicator 1 & 2: Shape/Icon according to WCAG 2.2 AA non-color conveyance */}
+                <div className="mt-1 flex-shrink-0">
+                  {isPendingDelete ? (
+                    // Destructive shape icon: MinusCircle in high-contrast red (#991B1B, 7.89:1 ratio)
+                    <div
+                      title="Marked for deletion"
+                      className="text-red-800 flex items-center justify-center"
+                    >
+                      <MinusCircle className="w-5 h-5 stroke-[2.2]" />
                     </div>
-                  </>
+                  ) : isPendingAdd ? (
+                    // Constructive icon: PlusCircle in high-contrast emerald (#065F46, 7.09:1 ratio)
+                    <div
+                      title="New pending intention"
+                      className="text-emerald-800 flex items-center justify-center"
+                    >
+                      <PlusCircle className="w-5 h-5 stroke-[2.2]" />
+                    </div>
+                  ) : isEditing ? (
+                    <div className="text-terracotta/70 flex items-center justify-center">
+                      <Zap className="w-4 h-4 text-terracotta" />
+                    </div>
+                  ) : (
+                    <div className="text-terracotta flex items-center justify-center">
+                      <Circle className="w-5 h-5 text-terracotta/60" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Area */}
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  {isEditing ? (
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <label
+                          htmlFor={`st-goal-input-${goal.id}`}
+                          className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/60"
+                        >
+                          Intention #{index + 1}
+                        </label>
+
+                        {/* Status Badges for non-color identification */}
+                        {isPendingDelete && (
+                          <span className="text-[10px] font-bold text-red-800 bg-red-100/90 px-2 py-0.5 rounded border border-red-300">
+                            Marked for Removal
+                          </span>
+                        )}
+                        {isPendingAdd && (
+                          <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded border border-emerald-300">
+                            New Intention (Pending)
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Strikethrough visual indicator applied when pendingDelete */}
+                      <input
+                        id={`st-goal-input-${goal.id}`}
+                        type="text"
+                        disabled={isPendingDelete}
+                        value={goal.text}
+                        onChange={(e) => onUpdateGoalText?.(goal.id, e.target.value)}
+                        placeholder="e.g. I focus my attention for 90 minutes..."
+                        className={`w-full px-3 py-1.5 text-sm rounded-lg border transition shadow-2xs focus:outline-none focus:ring-2 ${
+                          isPendingDelete
+                            ? 'line-through decoration-red-800 decoration-2 text-red-900 bg-red-100/50 border-red-300 cursor-not-allowed'
+                            : isPendingAdd
+                            ? 'font-bold text-emerald-950 bg-white border-emerald-400 focus:ring-emerald-600/40'
+                            : 'font-medium text-charcoal bg-white border-[#E2E8F0] focus:ring-terracotta/40'
+                        }`}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-sm leading-snug font-medium text-charcoal">
+                        {goal.text}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-terracotta bg-orange-50 px-2 py-0.5 rounded-md border border-orange-200/50">
+                          <Zap className="w-2.5 h-2.5" />
+                          Short-Term Sankalpa
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Delete / Undo Toggle Icon when isEditing is true */}
+                {isEditing && (
+                  <div className="flex items-center gap-1 mt-4 flex-shrink-0">
+                    {isPendingDelete ? (
+                      <button
+                        type="button"
+                        onClick={() => onTogglePendingDelete?.(goal.id)}
+                        aria-label={`Restore intention: ${goal.text}`}
+                        title="Restore intention"
+                        className="p-1.5 text-xs font-semibold text-charcoal bg-white hover:bg-slate-100 rounded-lg border border-slate-300 flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5 text-charcoal" />
+                        <span className="text-[10px]">Undo</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => onTogglePendingDelete?.(goal.id)}
+                        aria-label={`Mark intention for deletion: ${goal.text}`}
+                        title="Mark for deletion"
+                        className="p-1.5 text-red-800 hover:text-red-900 hover:bg-red-100/70 rounded-lg border border-transparent hover:border-red-300 transition-colors cursor-pointer"
+                      >
+                        {/* Destructive shape icon */}
+                        <Trash2 className="w-4 h-4 text-red-800" />
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
-
-              {/* Action: Delete button in edit mode */}
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={() => onDeleteGoal?.(goal.id)}
-                  aria-label="Delete intention"
-                  className="p-1.5 mt-4 text-charcoal/40 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          ))
-        )}
-
-        {/* Inline Add Button when editing */}
-        {isEditing && (
-          <button
-            type="button"
-            onClick={onAddGoal}
-            className="w-full py-2.5 px-3 rounded-xl border border-dashed border-terracotta/50 bg-orange-50/40 hover:bg-orange-50 text-terracotta text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Immediate Intention</span>
-          </button>
+            );
+          })
         )}
       </div>
     </section>

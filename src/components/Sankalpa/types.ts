@@ -4,12 +4,16 @@
  */
 
 /**
- * Strict schema for a Sankalpa Goal.
+ * Strict schema for a Sankalpa Goal, supporting inline batch-editing flags.
  */
 export interface Goal {
   id: string;
   text: string;
   type: 'SHORT_TERM' | 'LONG_TERM';
+  /** Flag for inline batch deletion awaiting user confirmation/commit */
+  pendingDelete?: boolean;
+  /** Flag for inline batch addition awaiting user confirmation/commit */
+  pendingAdd?: boolean;
 }
 
 export type SankalpaTimeline = 'short_term' | 'long_term';

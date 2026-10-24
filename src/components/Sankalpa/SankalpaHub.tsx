@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { Target, Flame, HelpCircle, Edit3, Check, X, ShieldAlert } from 'lucide-react';
+import {
+  Target,
+  Flame,
+  HelpCircle,
+  Edit3,
+  Check,
+  X,
+  PlusCircle,
+  AlertCircle,
+} from 'lucide-react';
 import { useAccount } from '../../context/AccountContext';
 import { getLocalItem, setLocalItem, STORAGE_KEYS } from '../../engine/storage/localStore';
 import { ShortTermListContainer } from './ShortTermListContainer';
@@ -49,8 +58,11 @@ export const INITIAL_COMMITTED_GOALS: Goal[] = [
 
 /**
  * SankalpaHub: Dedicated viewport for the Vedic Goal Manager module.
- * Provides an inline batch-editing experience that preserves spatial context
- * between Immediate Intentions and Horizon Goals.
+ * Implements strict data models and mutation handlers for draft state with
+ * W3C WCAG 2.2 Level AA accessibility compliance:
+ * - Multi-indicator non-color status conveyance (strikethrough + destructive shape / bold + constructive shape).
+ * - Minimum 3:1 luminance contrast ratio against backgrounds.
+ * - Inline batch editing preserving spatial context across timelines.
  */
 export const SankalpaHub: React.FC<SankalpaHubProps> = ({
   className = '',
@@ -64,50 +76,85 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
     getLocalItem<Goal[]>(STORAGE_KEYS.GOALS, INITIAL_COMMITTED_GOALS)
   );
 
-  // 2. Boolean state for read-only vs inline editing
+  // 2. Boolean state for read-only vs inline editing (default false)
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  // 3. Local draft state array for inline batch edits
+  // 3. Local draft state array for inline batch mutations
   const [draftState, setDraftState] = useState<Goal[]>([]);
 
-  // Toggle edit state and handle batch commit
+  // Local state for the "Add Goal" form
+  const [newGoalText, setNewGoalText] = useState<string>('');
+  const [newGoalType, setNewGoalType] = useState<'SHORT_TERM' | 'LONG_TERM'>('SHORT_TERM');
+  const [formError, setFormError] = useState<string>('');
+
+  // Toggle Edit mode and batch-commit changes
   const handleToggleEdit = () => {
     if (!isEditing) {
       // Enter Edit Mode: Deep clone committedGoals into local draftState
       setDraftState(committedGoals.map((g) => ({ ...g })));
       setIsEditing(true);
     } else {
-      // Commit Update: Persist draftState into committedGoals and database
-      setCommittedGoals(draftState);
-      setLocalItem(STORAGE_KEYS.GOALS, draftState);
+      // Commit Updates: Exclude pendingDelete items and strip pendingAdd flags
+      const finalizedGoals: Goal[] = draftState
+        .filter((g) => !g.pendingDelete && g.text.trim().length > 0)
+        .map((g) => ({
+          id: g.id,
+          text: g.text.trim(),
+          type: g.type,
+        }));
+
+      setCommittedGoals(finalizedGoals);
+      setLocalItem(STORAGE_KEYS.GOALS, finalizedGoals);
       setIsEditing(false);
+      setDraftState([]);
+      setNewGoalText('');
+      setFormError('');
     }
   };
 
-  // Discard changes
+  // Discard draft edits
   const handleCancelEdit = () => {
     setIsEditing(false);
     setDraftState([]);
+    setNewGoalText('');
+    setFormError('');
   };
 
-  // Handlers for inline edits on draftState
+  // Mutation Handler: Toggle pendingDelete on goal object
+  const handleTogglePendingDelete = (id: string) => {
+    setDraftState((prev) =>
+      prev.map((g) =>
+        g.id === id ? { ...g, pendingDelete: !g.pendingDelete } : g
+      )
+    );
+  };
+
+  // Mutation Handler: Update draft goal text
   const handleUpdateGoalText = (id: string, text: string) => {
     setDraftState((prev) =>
       prev.map((g) => (g.id === id ? { ...g, text } : g))
     );
   };
 
-  const handleDeleteGoal = (id: string) => {
-    setDraftState((prev) => prev.filter((g) => g.id !== id));
-  };
+  // Mutation Handler: Submit "Add Goal" form (visible only when isEditing is true)
+  const handleAddGoalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = newGoalText.trim();
+    if (!trimmed) {
+      setFormError('Please enter a specific, present-tense resolve.');
+      return;
+    }
 
-  const handleAddGoal = (type: 'SHORT_TERM' | 'LONG_TERM') => {
     const newGoal: Goal = {
-      id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
-      text: '',
-      type,
+      id: `goal-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      text: trimmed,
+      type: newGoalType,
+      pendingAdd: true,
     };
+
     setDraftState((prev) => [...prev, newGoal]);
+    setNewGoalText('');
+    setFormError('');
   };
 
   const displayName = userName && userName.trim() ? userName.trim() : 'Sadhaka';
@@ -116,6 +163,10 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
   const activeGoals = isEditing ? draftState : committedGoals;
   const shortTermGoals = activeGoals.filter((g) => g.type === 'SHORT_TERM');
   const longTermGoals = activeGoals.filter((g) => g.type === 'LONG_TERM');
+
+  // Count pending batch operations
+  const pendingDeletionsCount = draftState.filter((g) => g.pendingDelete).length;
+  const pendingAdditionsCount = draftState.filter((g) => g.pendingAdd).length;
 
   return (
     <div
@@ -172,22 +223,39 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
         </div>
       </header>
 
-      {/* Inline Editing Feedback Banner */}
+      {/* Inline Editing Feedback & Batch Summary Banner */}
       {isEditing && (
-        <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl flex items-center justify-between gap-2 shadow-2xs">
-          <div className="flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 text-amber-700 flex-shrink-0" />
-            <p className="text-xs text-amber-900 font-medium">
-              Editing inline • Spatial context preserved across all timelines
-            </p>
+        <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl space-y-1.5 shadow-2xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              Inline Batch-Editing Active
+            </span>
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="text-[11px] font-semibold text-charcoal/60 hover:text-charcoal px-2 py-0.5 rounded hover:bg-black/5 transition cursor-pointer"
+            >
+              Discard Changes
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={handleCancelEdit}
-            className="text-[11px] font-semibold text-charcoal/60 hover:text-charcoal px-2 py-0.5 rounded hover:bg-black/5 transition cursor-pointer"
-          >
-            Cancel
-          </button>
+          <p className="text-xs text-charcoal/80 leading-relaxed">
+            Spatial context preserved across both timelines. Mutate or stage goals below, then click{' '}
+            <strong className="text-charcoal font-semibold">Update List</strong> to commit.
+          </p>
+          {(pendingDeletionsCount > 0 || pendingAdditionsCount > 0) && (
+            <div className="flex items-center gap-2 pt-1 text-[11px]">
+              {pendingDeletionsCount > 0 && (
+                <span className="px-2 py-0.5 bg-red-100 text-red-800 font-bold rounded border border-red-300">
+                  {pendingDeletionsCount} marked for deletion
+                </span>
+              )}
+              {pendingAdditionsCount > 0 && (
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded border border-emerald-300">
+                  {pendingAdditionsCount} new pending
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -196,8 +264,7 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
         goals={shortTermGoals}
         isEditing={isEditing}
         onUpdateGoalText={handleUpdateGoalText}
-        onDeleteGoal={handleDeleteGoal}
-        onAddGoal={() => handleAddGoal('SHORT_TERM')}
+        onTogglePendingDelete={handleTogglePendingDelete}
       />
 
       {/* ================= 2. LONG-TERM CONTAINER (HORIZON GOALS) ================= */}
@@ -205,9 +272,96 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
         goals={longTermGoals}
         isEditing={isEditing}
         onUpdateGoalText={handleUpdateGoalText}
-        onDeleteGoal={handleDeleteGoal}
-        onAddGoal={() => handleAddGoal('LONG_TERM')}
+        onTogglePendingDelete={handleTogglePendingDelete}
       />
+
+      {/* ================= ADD GOAL FORM (VISIBLE ONLY WHEN isEditing IS TRUE) ================= */}
+      {isEditing && (
+        <section
+          aria-label="Add Goal Form"
+          className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200"
+        >
+          <div className="flex items-center gap-2 pb-1 border-b border-[#E2E8F0]">
+            <PlusCircle className="w-4 h-4 text-emerald-800" />
+            <h3 className="font-serif text-sm font-bold text-charcoal">
+              Add New Sankalpa (Present-Tense Resolve)
+            </h3>
+          </div>
+
+          <form onSubmit={handleAddGoalSubmit} className="space-y-3">
+            {/* Timeline selector */}
+            <div className="space-y-1">
+              <label className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/60 block">
+                Timeline Category
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setNewGoalType('SHORT_TERM')}
+                  className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all text-center cursor-pointer ${
+                    newGoalType === 'SHORT_TERM'
+                      ? 'bg-orange-50 border-terracotta text-terracotta ring-1 ring-terracotta/30'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Immediate (Short-Term)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNewGoalType('LONG_TERM')}
+                  className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all text-center cursor-pointer ${
+                    newGoalType === 'LONG_TERM'
+                      ? 'bg-emerald-50 border-sage text-sage ring-1 ring-sage/30'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  Horizon (Long-Term)
+                </button>
+              </div>
+            </div>
+
+            {/* Input for present-tense text */}
+            <div className="space-y-1">
+              <label
+                htmlFor="new-sankalpa-input"
+                className="text-[10px] font-semibold uppercase tracking-wider text-charcoal/60 block"
+              >
+                Present-Tense Affirmation
+              </label>
+              <input
+                id="new-sankalpa-input"
+                type="text"
+                value={newGoalText}
+                onChange={(e) => {
+                  setNewGoalText(e.target.value);
+                  if (formError) setFormError('');
+                }}
+                placeholder={
+                  newGoalType === 'SHORT_TERM'
+                    ? 'e.g. I maintain deep sensory focus during morning study...'
+                    : 'e.g. I embody calm mental equanimity in daily life...'
+                }
+                className="w-full px-3.5 py-2.5 text-sm font-medium text-charcoal bg-white rounded-xl border border-[#E2E8F0] placeholder:text-charcoal/30 focus:outline-none focus:ring-2 focus:ring-terracotta/40 transition shadow-2xs"
+              />
+              {formError && (
+                <p className="text-xs text-red-800 font-semibold flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{formError}</span>
+                </p>
+              )}
+            </div>
+
+            {/* Submit button for Add Goal */}
+            <button
+              type="submit"
+              className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
+            >
+              <PlusCircle className="w-4 h-4 text-emerald-400" />
+              <span>Add Goal to Draft</span>
+            </button>
+          </form>
+        </section>
+      )}
 
       {/* ================= INLINE BATCH EDITING ACTION BUTTON AT BOTTOM ================= */}
       <div className="pt-3 border-t border-[#E2E8F0] flex items-center gap-3">
