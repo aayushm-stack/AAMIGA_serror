@@ -58,7 +58,7 @@ export { VaultPage } from './Analytics/VaultPage';
 export { SettingsModal } from './Settings/SettingsModal';
 
 // Sankalpa (Goal Manager) Components
-export { SankalpaHub, ShortTermListContainer, LongTermListContainer } from './Sankalpa';
+export { SankalpaHub, ShortTermListContainer, LongTermListContainer, GoalConfirmationModal } from './Sankalpa';
 export type { Goal, SankalpaItem, SankalpaTimeline, SankalpaCategory } from './Sankalpa';
 
 // Features Shell Components

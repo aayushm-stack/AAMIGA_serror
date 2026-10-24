@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Target,
   Flame,
@@ -8,11 +8,14 @@ import {
   X,
   PlusCircle,
   AlertCircle,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAccount } from '../../context/AccountContext';
 import { getLocalItem, setLocalItem, STORAGE_KEYS } from '../../engine/storage/localStore';
+import { sendGoalMutations } from '../../services/goalApi';
 import { ShortTermListContainer } from './ShortTermListContainer';
 import { LongTermListContainer } from './LongTermListContainer';
+import { GoalConfirmationModal } from './GoalConfirmationModal';
 import { Goal } from './types';
 
 export interface SankalpaHubProps {
@@ -59,10 +62,7 @@ export const INITIAL_COMMITTED_GOALS: Goal[] = [
 /**
  * SankalpaHub: Dedicated viewport for the Vedic Goal Manager module.
  * Implements strict data models and mutation handlers for draft state with
- * W3C WCAG 2.2 Level AA accessibility compliance:
- * - Multi-indicator non-color status conveyance (strikethrough + destructive shape / bold + constructive shape).
- * - Minimum 3:1 luminance contrast ratio against backgrounds.
- * - Inline batch editing preserving spatial context across timelines.
+ * W3C WCAG 2.2 Level AA accessibility compliance and transactional confirmation modal.
  */
 export const SankalpaHub: React.FC<SankalpaHubProps> = ({
   className = '',
@@ -71,7 +71,7 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
   // Subscribe to global userName state
   const { userName } = useAccount();
 
-  // 1. Database-backed committed goals array
+  // 1. Master database-backed committed goals array
   const [committedGoals, setCommittedGoals] = useState<Goal[]>(() =>
     getLocalItem<Goal[]>(STORAGE_KEYS.GOALS, INITIAL_COMMITTED_GOALS)
   );
@@ -82,39 +82,94 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
   // 3. Local draft state array for inline batch mutations
   const [draftState, setDraftState] = useState<Goal[]>([]);
 
+  // 4. Transactional confirmation modal state
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+
+  // 5. Success toast message state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Local state for the "Add Goal" form
   const [newGoalText, setNewGoalText] = useState<string>('');
   const [newGoalType, setNewGoalType] = useState<'SHORT_TERM' | 'LONG_TERM'>('SHORT_TERM');
   const [formError, setFormError] = useState<string>('');
 
-  // Toggle Edit mode and batch-commit changes
+  // Clear toast timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+  }, []);
+
+  // Intercept button click: If editing, open confirmation modal; else enter editing mode
   const handleToggleEdit = () => {
     if (!isEditing) {
       // Enter Edit Mode: Deep clone committedGoals into local draftState
       setDraftState(committedGoals.map((g) => ({ ...g })));
       setIsEditing(true);
     } else {
-      // Commit Updates: Exclude pendingDelete items and strip pendingAdd flags
-      const finalizedGoals: Goal[] = draftState
-        .filter((g) => !g.pendingDelete && g.text.trim().length > 0)
-        .map((g) => ({
-          id: g.id,
-          text: g.text.trim(),
-          type: g.type,
-        }));
-
-      setCommittedGoals(finalizedGoals);
-      setLocalItem(STORAGE_KEYS.GOALS, finalizedGoals);
-      setIsEditing(false);
-      setDraftState([]);
-      setNewGoalText('');
-      setFormError('');
+      // Intercept submit action with intentional friction: Open Confirmation Modal
+      setIsConfirmModalOpen(true);
     }
   };
 
-  // Discard draft edits
+  // Confirmation Modal Action 1: Return to Editing (perfectly preserves draftState)
+  const handleReturnToEditing = () => {
+    setIsConfirmModalOpen(false);
+  };
+
+  // Confirmation Modal Action 2: Confirm Changes
+  // Extracts mutations, dispatches DELETE and POST payloads, optimistic update, flips isEditing false, triggers toast
+  const handleConfirmChanges = async () => {
+    // 1. Extract mutations from draftState
+    const deleteIds = draftState.filter((g) => g.pendingDelete).map((g) => g.id);
+    const addedGoals = draftState
+      .filter((g) => g.pendingAdd && !g.pendingDelete && g.text.trim().length > 0)
+      .map((g) => ({ id: g.id, text: g.text.trim(), type: g.type }));
+    const updatedGoals = draftState
+      .filter(
+        (g) =>
+          !g.pendingDelete &&
+          !g.pendingAdd &&
+          g.text.trim().length > 0 &&
+          committedGoals.some((c) => c.id === g.id && c.text !== g.text.trim())
+      )
+      .map((g) => ({ id: g.id, text: g.text.trim(), type: g.type }));
+
+    // 2. Dispatch DELETE and POST payloads to backend
+    sendGoalMutations({ deleteIds, addedGoals, updatedGoals });
+
+    // 3. Immediately apply optimistic update: overwrite master committedGoals with sanitized draftState
+    const finalizedGoals: Goal[] = draftState
+      .filter((g) => !g.pendingDelete && g.text.trim().length > 0)
+      .map((g) => ({
+        id: g.id,
+        text: g.text.trim(),
+        type: g.type,
+      }));
+
+    setCommittedGoals(finalizedGoals);
+    setLocalItem(STORAGE_KEYS.GOALS, finalizedGoals);
+
+    // 4. Flip isEditing to false, close modal, and reset draft inputs
+    setIsEditing(false);
+    setIsConfirmModalOpen(false);
+    setDraftState([]);
+    setNewGoalText('');
+    setFormError('');
+
+    // 5. Trigger brief success toast
+    setToastMessage('Sankalpa list updated successfully! Changes saved.');
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
+  };
+
+  // Discard draft edits entirely
   const handleCancelEdit = () => {
     setIsEditing(false);
+    setIsConfirmModalOpen(false);
     setDraftState([]);
     setNewGoalText('');
     setFormError('');
@@ -174,7 +229,7 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
         backgroundColor: '#FDFBF7',
         color: '#1E293B',
       }}
-      className={`w-full min-h-full pb-16 space-y-5 ${className}`}
+      className={`w-full min-h-full pb-16 space-y-5 relative ${className}`}
     >
       {/* ================= TOP VIEWPORT HEADER ================= */}
       <header className="space-y-3">
@@ -398,6 +453,39 @@ export const SankalpaHub: React.FC<SankalpaHubProps> = ({
           )}
         </button>
       </div>
+
+      {/* ================= TRANSACTIONAL CONFIRMATION MODAL ================= */}
+      <GoalConfirmationModal
+        isOpen={isConfirmModalOpen}
+        draftState={draftState}
+        committedGoals={committedGoals}
+        onReturnToEditing={handleReturnToEditing}
+        onConfirmChanges={handleConfirmChanges}
+      />
+
+      {/* ================= SUCCESS TOAST ================= */}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[90%] bg-[#1E293B] text-white px-4 py-3 rounded-2xl shadow-2xl border border-emerald-500/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300"
+        >
+          <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+            <CheckCircle2 className="w-4 h-4" />
+          </div>
+          <p className="text-xs font-medium text-slate-100 flex-1">
+            {toastMessage}
+          </p>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="text-slate-400 hover:text-white p-1 cursor-pointer"
+            aria-label="Dismiss notification"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
