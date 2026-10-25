@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Circle,
+  Target,
   Trash2,
   MinusCircle,
   PlusCircle,
@@ -87,11 +87,11 @@ export const ShortTermListContainer: React.FC<ShortTermListContainerProps> = ({
                       </div>
                     ) : isEditing ? (
                       <div className="w-6 h-6 rounded-lg bg-terracotta/15 text-terracotta flex items-center justify-center">
-                        <Zap className="w-3.5 h-3.5" />
+                        <Target className="w-3.5 h-3.5" />
                       </div>
                     ) : (
                       <div className="w-7 h-7 rounded-lg bg-terracotta/10 text-terracotta flex items-center justify-center mt-0.5">
-                        <Circle className="w-4 h-4 text-terracotta" />
+                        <Target className="w-4 h-4" />
                       </div>
                     )}
                   </div>
